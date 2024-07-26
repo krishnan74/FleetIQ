@@ -22,8 +22,8 @@ const SideBar: React.FC<SideBarProps> = ({ links }) => {
   console.log(pathname);
   return (
     <div className="flex flex-col  gap-3 left-0 h-[100vh] fixed bg-[#F6F6F6] w-[13vw] border text-black">
-      <h1 className="text-lg font-bold tracking-wider text-center mt-10 mb-10">
-        TM Service
+      <h1 className="text-2xl font-bold tracking-wider text-center mt-10 mb-10">
+        FleetIQ
       </h1>
       <div className="flex flex-col  gap-3 pr-2">
         {links.map((link) => (
