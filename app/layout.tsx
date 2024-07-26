@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
+import SideBar from "@/components/SideBar";
+import { RiBarChart2Fill } from "react-icons/ri";
+import { BiTrip } from "react-icons/bi";
+import { FaTruck } from "react-icons/fa6";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { FaFileInvoice } from "react-icons/fa";
+import { BsFillPeopleFill } from "react-icons/bs";
 
 const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +25,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${outfit.className} `}>
+        <SideBar
+          links={[
+            { name: "Dashboard", icon: <RiBarChart2Fill /> },
+            { name: "Vendors", icon: <BsFillPeopleFill /> },
+            { name: "Trips", icon: <BiTrip /> },
+
+            { name: "Drivers", icon: <BsFillPeopleFill /> },
+            { name: "Trucks", icon: <FaTruck /> },
+            { name: "Expenses", icon: <FaMoneyBillTransfer /> },
+            { name: "Invoices", icon: <FaFileInvoice /> },
+          ]}
+        />
+        <div className="bg-[#F6F6F6] p-5  w-[87vw] right-0 absolute">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
