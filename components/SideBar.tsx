@@ -29,7 +29,7 @@ const SideBar: React.FC<SideBarProps> = ({ links }) => {
         {links.map((link) => (
           <Link
             href={`/${link.name.toLowerCase()}`}
-            className={`flex gap-4 pl-10 w-[200px] py-4 items-center text-black rounded-br-lg rounded-tr-lg ${
+            className={`flex gap-4 pl-10 w-[180px] py-4 items-center text-black rounded-br-lg rounded-tr-lg ${
               path == link.name.toLowerCase()
                 ? colorHex + "  text-white"
                 : "bg-transparent"
