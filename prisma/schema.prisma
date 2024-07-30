@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Vendor {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  email   String
+  phone   String
+  address Address?
+  trips   Trip[]
+
+  @@index([name])
+}
+
+model Address {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  doorNumber String
+  street   String
+  city     String
+  state    String
+  zipCode  String
+  vendor   Vendor  @relation(fields: [vendorId], references: [id])
+  vendorId String  @unique @db.ObjectId
+}
+
+model Trip {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  status    TripStatus
+  vendor    Vendor     @relation(fields: [vendorId], references: [id])
+  vendorId  String     @db.ObjectId
+  createdAt DateTime   @default(now())
+  from      String
+  to        String
+  updatedAt DateTime   @updatedAt
+
+  @@index([vendorId])
+}
+
+enum TripStatus {
+  PLANNED
+  COMPLETED
+  CANCELLED
+}

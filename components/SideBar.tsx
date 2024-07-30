@@ -17,7 +17,7 @@ interface TabDetails {
 const SideBar: React.FC<SideBarProps> = ({ links }) => {
   const pathname = usePathname();
   const path = pathname.split("/")[1];
-  const colorHex = "bg-[#FF7C51]";
+  const colorHex = "bg-blue-500";
 
   console.log(pathname);
   return (

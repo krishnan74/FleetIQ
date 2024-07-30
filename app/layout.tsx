@@ -9,6 +9,7 @@ import { FaTruck } from "react-icons/fa6";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FaFileInvoice } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 const outfit = Outfit({ subsets: ["latin"] });
@@ -41,6 +42,7 @@ export default function RootLayout({
         <div className="bg-[#F6F6F6] p-5  w-[87vw] right-0 absolute">
           {children}
         </div>
+        <Toaster />
       </body>
     </html>
   );
