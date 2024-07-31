@@ -1,5 +1,6 @@
 import React from "react";
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
+import Link from "next/link";
 
 interface VendorCardProps {
   id: string;
@@ -27,7 +28,10 @@ const VendorCard: React.FC<VendorCardProps> = ({
   trips,
 }) => {
   return (
-    <div className="relative w-[300px] p-6 h-full bg-white border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
+    <Link
+      href={`/vendors/${id}`}
+      className="relative w-[300px] p-6 h-full bg-white border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
+    >
       <div className="absolute top-4 right-4 text-gray-600">
         <PiDotsThreeOutlineFill className="text-xl cursor-pointer hover:text-gray-800" />
       </div>
@@ -49,7 +53,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
           {address.city}, {address.state} {address.zipCode}
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
