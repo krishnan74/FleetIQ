@@ -7,6 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Party{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  phone String
+  openingBalance Float
+  openingBalanceDate DateTime
+  trips Trip[]
+  gstNumber String
+  PANNumber String
+  companyName String
+  address Address?
+  transactions Transactions[]
+}
+model Transactions{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  party Party @relation(fields: [partyId], references: [id])
+  partyId String @db.ObjectId
+  amount Float
+  transactionType TransactionType
+  transactionDate DateTime
+  transactionMode TransactionMode
+  transactionReference String
+  transactionDescription String
+}
+
 model Vendor {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   name    String
@@ -14,7 +39,6 @@ model Vendor {
   phone   String
   address Address?
   trips   Trip[]
-
   @@index([name])
 }
 
@@ -27,6 +51,8 @@ model Address {
   zipCode  String
   vendor   Vendor  @relation(fields: [vendorId], references: [id])
   vendorId String  @unique @db.ObjectId
+  party   Party   @relation(fields: [partyId], references: [id])
+  partyId String  @unique @db.ObjectId
 }
 
 model Trip {
@@ -34,11 +60,12 @@ model Trip {
   status    TripStatus
   vendor    Vendor     @relation(fields: [vendorId], references: [id])
   vendorId  String     @db.ObjectId
+  party     Party     @relation(fields: [partyId], references: [id])
+  partyId   String     @db.ObjectId
   createdAt DateTime   @default(now())
   from      String
   to        String
   updatedAt DateTime   @updatedAt
-
   @@index([vendorId])
 }
 
@@ -46,4 +73,16 @@ enum TripStatus {
   PLANNED
   COMPLETED
   CANCELLED
+}
+
+enum TransactionType{
+  CREDIT
+  DEBIT
+}
+
+enum TransactionMode{
+  CASH
+  UPI
+  NETBANKING
+  CHEQUE
 }
