@@ -11,13 +11,13 @@ export async function GET(
 ) {
   try {
     const id = context.params.id;
-    const vendor = await prisma.vendor.findFirst({
+    const vendor = await prisma.vendor.findUnique({
       where: {
         id: id,
       },
       include: {
-        address: true,
         trips: true,
+        trucks: true,
       },
     });
 

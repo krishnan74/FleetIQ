@@ -7,19 +7,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//actors
+
 model Party{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   phone String
   openingBalance Float
-  openingBalanceDate DateTime
+  openingBalanceDate DateTime @default(now())
   trips Trip[]
-  gstNumber String
-  PANNumber String
-  companyName String
-  address Address?
+  gstNumber String?
+  PANNumber String?
+  companyName String?
+  
   transactions Transactions[]
 }
+
+model Vendor {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  email   String
+  phone   String
+  
+  trips   Trip[]
+  trucks  Truck[]
+  @@index([name])
+}
+
+model Driver{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  phone String
+  status DriverStatus
+  balance Float
+  trips Trip[]
+  truck Truck?
+}
+
+model Truck{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  registrationNumber String
+  truckType TruckType
+  truckOwnerShip TruckOwnership
+  driver Driver @relation(fields: [driverId], references: [id])
+  driverId String @unique @db.ObjectId
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+  vendorId String @unique @db.ObjectId
+  trips Trip[]
+  status TruckStatus
+}
+
+//entities
 model Transactions{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   party Party @relation(fields: [partyId], references: [id])
@@ -32,16 +70,6 @@ model Transactions{
   transactionDescription String
 }
 
-model Vendor {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  name    String
-  email   String
-  phone   String
-  address Address?
-  trips   Trip[]
-  @@index([name])
-}
-
 model Address {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   doorNumber String
@@ -49,10 +77,6 @@ model Address {
   city     String
   state    String
   zipCode  String
-  vendor   Vendor  @relation(fields: [vendorId], references: [id])
-  vendorId String  @unique @db.ObjectId
-  party   Party   @relation(fields: [partyId], references: [id])
-  partyId String  @unique @db.ObjectId
 }
 
 model Trip {
@@ -62,6 +86,10 @@ model Trip {
   vendorId  String     @db.ObjectId
   party     Party     @relation(fields: [partyId], references: [id])
   partyId   String     @db.ObjectId
+  driver    Driver     @relation(fields: [driverId], references: [id])
+  driverId  String     @db.ObjectId
+  truck Truck @relation(fields: [truckId], references: [id])
+  truckId String @db.ObjectId
   createdAt DateTime   @default(now())
   from      String
   to        String
@@ -85,4 +113,29 @@ enum TransactionMode{
   UPI
   NETBANKING
   CHEQUE
+}
+
+enum DriverStatus{
+  ONTRIP
+  AVAILABLE
+}
+
+enum TruckStatus{
+  ONTRIP
+  AVAILABLE
+}
+
+enum TruckType{
+  MINI_TRUCK
+  OPEN_BODY_TRUCK
+  CLOSE_CONTAINER
+  TRAILER
+  TANKER
+  TIPPER
+  OTHER
+}
+
+enum TruckOwnership{
+  MARKET_TRUCK
+  MY_TRUCK
 }

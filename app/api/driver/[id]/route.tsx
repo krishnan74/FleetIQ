@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function GET(
@@ -10,14 +10,12 @@ export async function GET(
   }
 ) {
   try {
-    const trip = await prisma.trip.findUnique({
+    const driver = await prisma.driver.findUnique({
       where: {
         id: context.params.id,
       },
       include: {
-        vendor: true,
-        driver: true,
-        party: true,
+        trips: true,
         truck: true,
       },
     });
@@ -25,7 +23,7 @@ export async function GET(
     return NextResponse.json(
       {
         message: "success",
-        data: trip,
+        data: driver,
       },
       { status: 200 }
     );

@@ -1,23 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import { DriverStatus } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
-    const vendors = await prisma.vendor.findMany({
-      include: {
-        trips: true,
-        trucks: true,
-      },
-    });
+    const drivers = await prisma.driver.findMany();
     return NextResponse.json(
       {
         message: "success",
-        data: vendors,
+        data: drivers,
       },
       { status: 200 }
     );
   } catch (e: any) {
-    console.log("Error while fetching vendors :: ", e);
+    console.log("Error while fetching drivers :: ", e);
     return NextResponse.json(
       { message: "Failed", error: e.message },
       { status: 500 }
@@ -28,22 +24,27 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, phone } = body;
 
-    const vendor = await prisma.vendor.create({
+    const { name, phone } = body;
+
+    const driver = await prisma.driver.create({
       data: {
         name,
-        email,
         phone,
+        status: DriverStatus.AVAILABLE,
+        balance: 0,
       },
     });
 
     return NextResponse.json(
-      { message: "success", data: vendor },
+      {
+        message: "success",
+        data: driver,
+      },
       { status: 200 }
     );
   } catch (e: any) {
-    console.log("Error while creating vendor :: ", e);
+    console.log("Error while creating driver :: ", e);
     return NextResponse.json(
       { message: "Failed", error: e.message },
       { status: 500 }
