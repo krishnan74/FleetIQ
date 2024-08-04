@@ -5,7 +5,6 @@ export async function GET(req: NextRequest) {
   try {
     const vendors = await prisma.vendor.findMany({
       include: {
-        address: true,
         trips: true,
         trucks: true,
       },
@@ -27,24 +26,15 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  //console.log("DATABASE_URL: ", process.env.DATABASE_URL);
-
   try {
     const body = await req.json();
-    console.log("Body :: ", body);
+    const { name, email, phone } = body;
 
-    // Create the vendor with the nested address
     const vendor = await prisma.vendor.create({
       data: {
-        name: body.name,
-        email: body.email,
-        phone: body.phone,
-        address: {
-          create: body.address,
-        },
-      },
-      include: {
-        address: true,
+        name,
+        email,
+        phone,
       },
     });
 

@@ -25,10 +25,12 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    const { name, phone } = body;
+
     const driver = await prisma.driver.create({
       data: {
-        name: body.name,
-        phone: body.phone,
+        name,
+        phone,
         status: DriverStatus.AVAILABLE,
         balance: 0,
       },

@@ -19,7 +19,7 @@ model Party{
   gstNumber String?
   PANNumber String?
   companyName String?
-  address Address?
+  
   transactions Transactions[]
 }
 
@@ -28,7 +28,7 @@ model Vendor {
   name    String
   email   String
   phone   String
-  address Address?
+  
   trips   Trip[]
   trucks  Truck[]
   @@index([name])
@@ -53,7 +53,7 @@ model Truck{
   driverId String @unique @db.ObjectId
   vendor Vendor @relation(fields: [vendorId], references: [id])
   vendorId String @unique @db.ObjectId
-  trip Trip[]
+  trips Trip[]
   status TruckStatus
 }
 
@@ -77,10 +77,6 @@ model Address {
   city     String
   state    String
   zipCode  String
-  vendor   Vendor  @relation(fields: [vendorId], references: [id])
-  vendorId String  @unique @db.ObjectId
-  party   Party   @relation(fields: [partyId], references: [id])
-  partyId String  @unique @db.ObjectId
 }
 
 model Trip {

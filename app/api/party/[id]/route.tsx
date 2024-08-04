@@ -9,13 +9,13 @@ export async function GET(
     };
   }
 ) {
+  console.log("Fetching party with id :: ", context.params.id);
   try {
     const party = await prisma.party.findUnique({
       where: {
         id: context.params.id,
       },
       include: {
-        address: true,
         trips: true,
         transactions: true,
       },
