@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
       include: {
         address: true,
         trips: true,
+        trucks: true,
       },
     });
     return NextResponse.json(
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  console.log("DATABASE_URL: ", process.env.DATABASE_URL);
+  //console.log("DATABASE_URL: ", process.env.DATABASE_URL);
 
   try {
     const body = await req.json();

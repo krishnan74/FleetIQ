@@ -57,9 +57,17 @@ export async function POST(req: NextRequest) {
             id: body.partyId,
           },
         },
+
+        truck: {
+          connect: {
+            id: body.truckId,
+          },
+        },
       },
       include: {
         vendor: true,
+        driver: true,
+        party: true,
       },
     });
 
