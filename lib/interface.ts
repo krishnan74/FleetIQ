@@ -1,4 +1,5 @@
-interface PartyDetails {
+export interface PartyDetails {
+  id: string;
   name: string;
   phone: string;
   openingBalance: number;
@@ -18,21 +19,34 @@ interface Trip {
   updatedAt: Date;
 }
 
-
-
-interface VendorDetails {
+export interface VendorDetails {
   id: string;
   name: string;
   email: string;
   phone: string;
-  address: {
-    id: string;
-    doorNumber: string;
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    vendorId: string;
-  };
-  trips: [];
+  trips: Trip[];
+  trucks: Truck[];
+}
+
+export interface DriverDetails {
+  id: string;
+  name: string;
+  phone: string;
+  status: string;
+  balance: number;
+  trips: Trip[];
+  truck: Truck;
+}
+
+export interface Truck {
+  id: string;
+  registrationNumber: string;
+  truckType: string;
+  truckOwnerShip: string;
+
+  driverId: string;
+
+  vendorId: string;
+  trips: Trip[];
+  status: string;
 }

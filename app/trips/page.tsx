@@ -1,257 +1,147 @@
-// "use client";
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { CiSearch } from "react-icons/ci";
-// import { FaBell } from "react-icons/fa";
-// import { IoMdSettings } from "react-icons/io";
-// import { useToast } from "@/components/ui/use-toast";
-// import VendorCard from "@/components/VendorCard";
-// import { TripStatus, Vendor } from "@prisma/client";
+"use client";
+import React, { useEffect, useState } from "react";
+import { FaBell } from "react-icons/fa";
+import { PiLineVerticalThin } from "react-icons/pi";
+import axios from "axios";
+import { AvatarComponent } from "@/components/Avatar";
+import { Button } from "@/components/ui/button";
+import AppPartyDialogComponent from "./components/AddTripDialogComponent";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHeader,
+  TableRow,
+  TableHead,
+} from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 
-// interface VendorDetails {
-//   id: string;
-//   name: string;
-//   email: string;
-//   phone: string;
-//   address: {
-//     id: string;
-//     doorNumber: string;
-//     street: string;
-//     city: string;
-//     state: string;
-//     zipCode: string;
-//     vendorId: string;
-//   };
-//   trips: [];
-// }
+interface Truck {
+  id: string;
+  registrationNumber: string;
+  truckType: string;
+  truckOwnerShip: string;
+  driverId: string;
+  vendorId: string;
+  status: string;
+}
 
-// interface TripDetails {
-//   id: string;
-//   status: TripStatus;
-//   vendor: VendorDetails;
-//   vendorId: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   from: String;
-//   to: String;
-// }
+interface PartyDetails {
+  id: string;
+  name: string;
+  phone: string;
+  openingBalance: number;
+  openingBalanceDate: string;
+}
 
-// const Page = () => {
-//   const { toast } = useToast();
-//   const [tripDetails, setVendorDetails] = useState<TripDetails[]>();
-//   const [formData, setFormData] = useState({
-//     status: TripStatus.PLANNED,
-//     from: "",
-//     to: "",
-//     vendorId: "",
-//   });
+interface Trip {
+  id: string;
+  status: string;
+  vendorId: string;
+  partyId: string;
+  driverId: string;
+  truckId: string;
+  createdAt: string;
+  from: string;
+  to: string;
+  updatedAt: string;
+  party: PartyDetails;
+  truck: Truck; // Ensure truck can be null or undefined
+}
 
-//   useEffect(() => {
-//     fetchData();
-//   }, []);
+const Page = () => {
+  const [trips, setTrips] = useState<Trip[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-//   const fetchVendors = async () => {
-//     try {
-//       const response = await axios.get("/api/vendor/");
-//       if (response.data.message === "success") {
-//         setVendorDetails(response.data.data);
-//         console.log("Vendor details : ", response.data.data);
-//       }
-//     } catch (e: any) {
-//       console.log("Error while fetching vendors :: ", e);
-//     }
-//   };
+  const router = useRouter();
 
-//   const fetchData = async () => {
-//     try {
-//       const response = await axios.get("/api/trip/");
-//       if (response.data.message === "success") {
-//         setVendorDetails(response.data.data);
-//         console.log("Vendor details : ", response.data.data);
-//       }
-//     } catch (e: any) {
-//       console.log("Error while fetching trips :: ", e);
-//     }
-//   };
+  const fetchTrips = async () => {
+    try {
+      const response = await axios.get("/api/trip");
+      if (response.data.message === "success") {
+        setTrips(response.data.data);
+      } else {
+        setError("Failed to fetch trips");
+      }
+    } catch (error) {
+      setError("An error occurred while fetching trips");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const { name, value } = e.target;
-//     const [key, nestedKey] = name.split(".");
+  const redirectToDetails = (id: string) => () => {
+    router.push(`/${id}`);
+  };
 
-//     if (nestedKey) {
-//       // Handling nested address fields
-//       setFormData((prevFormData) => ({
-//         ...prevFormData,
-//         address: {
-//           ...prevFormData.address,
-//           [nestedKey]: value,
-//         },
-//       }));
-//     } else {
-//       // Handling non-nested fields
-//       setFormData((prevFormData) => ({
-//         ...prevFormData,
-//         [name]: value,
-//       }));
-//     }
-//   };
+  useEffect(() => {
+    fetchTrips();
+  }, []);
 
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     console.log("Form Data :: ", formData);
-//     e.preventDefault(); // Prevents default form submission behavior
-//     try {
-//       const response = await axios.post("/api/trip/", formData);
-//       if (response.data.message === "success") {
-//         toast({
-//           title: "Vendor created successfully",
-//           description: `Name: ${response.data.data.name} | Email: ${response.data.data.email}`,
-//         });
-//       }
-//     } catch (e: any) {
-//       console.log("Error while creating trip :: ", e);
-//     }
-//   };
+  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
-//   return (
-//     <div className="flex flex-col p-8 bg-white gap-10 w-full h-full rounded-lg">
-//       <div className="">
-//         <p className="text-2xl font-bold mb-4">Current Vendors</p>
-//         {tripDetails ? (
-//           <div className="flex flex-wrap gap-10">
-//             {tripDetails.map((trip) => (
-//               <VendorCard key={trip.id} {...trip} />
-//             ))}
-//           </div>
-//         ) : (
-//           <p>No trips found</p>
-//         )}
-//       </div>
+  return (
+    <div className="flex flex-col p-8 bg-gray-50 w-full max-w-7xl mx-auto rounded-lg shadow-lg">
+      <div className="flex justify-between items-center mb-8">
+        <p className="text-2xl font-bold text-gray-800">
+          Trips <br />
+          <span className="text-base font-normal text-gray-500">
+            10th July 2024
+          </span>
+        </p>
+        <div className="flex items-center space-x-4">
+          <AppPartyDialogComponent />
+          <FaBell className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
+          <PiLineVerticalThin className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
+          <AvatarComponent />
+          <p className="font-bold text-lg text-gray-800">Rajesh Kumar</p>
+        </div>
+      </div>
 
-//       <div className=" mb-4">
-//         <p className="text-2xl font-bold mb-4">
-//           Create Vendor <br />{" "}
-//           <span className="text-base font-normal text-[#666] ">
-//             Fill in the details below
-//           </span>
-//         </p>
-//         <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-//           <div>
-//             <label className="block text-sm font-medium text-gray-700">
-//               Vendor Name
-//             </label>
-//             <input
-//               type="text"
-//               name="name"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//               placeholder="Enter trip name"
-//               value={formData.name}
-//               onChange={handleChange}
-//             />
-//           </div>
-//           <div>
-//             <label className="block text-sm font-medium text-gray-700">
-//               Email
-//             </label>
-//             <input
-//               type="email"
-//               name="email"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//               placeholder="Enter email"
-//               value={formData.email}
-//               onChange={handleChange}
-//             />
-//           </div>
-//           <div>
-//             <label className="block text-sm font-medium text-gray-700">
-//               Phone Number
-//             </label>
-//             <input
-//               type="tel"
-//               name="phone"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//               placeholder="Enter phone number"
-//               value={formData.phone}
-//               onChange={handleChange}
-//             />
-//           </div>
-//           <div className="flex gap-10">
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">
-//                 Door Number
-//               </label>
-//               <input
-//                 type="text"
-//                 name="address.doorNumber"
-//                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//                 placeholder="Enter door number"
-//                 value={formData.address.doorNumber}
-//                 onChange={handleChange}
-//               />
-//             </div>
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">
-//                 Street Address
-//               </label>
-//               <input
-//                 type="text"
-//                 name="address.street"
-//                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//                 placeholder="Enter street address"
-//                 value={formData.address.street}
-//                 onChange={handleChange}
-//               />
-//             </div>
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">
-//                 City
-//               </label>
-//               <input
-//                 type="text"
-//                 name="address.city"
-//                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//                 placeholder="Enter city"
-//                 value={formData.address.city}
-//                 onChange={handleChange}
-//               />
-//             </div>
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">
-//                 State
-//               </label>
-//               <input
-//                 type="text"
-//                 name="address.state"
-//                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//                 placeholder="Enter state"
-//                 value={formData.address.state}
-//                 onChange={handleChange}
-//               />
-//             </div>
+      <div>
+        <Table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
+          <TableCaption className="text-gray-600">
+            A list of your recent trips.
+          </TableCaption>
+          <TableHeader>
+            <TableRow className="bg-gray-100 text-gray-600 border-b border-gray-300">
+              <TableHead className="py-3 px-4 text-left">Start Date</TableHead>
+              <TableHead className="py-3 px-4 text-left">Party Name</TableHead>
+              <TableHead className="py-3 px-4 text-left">Truck No</TableHead>
+              <TableHead className="py-3 px-4 text-left">Route</TableHead>
+              <TableHead className="py-3 px-4 text-left">Trip Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {trips?.map((trip) => (
+              <TableRow
+                key={trip.id}
+                onClick={redirectToDetails(trip.id)}
+                className="cursor-pointer hover:bg-gray-50 transition-colors"
+              >
+                <TableCell className="py-3 px-4 font-medium">
+                  {new Date(trip.createdAt).toDateString()}
+                </TableCell>
+                <TableCell className="py-3 px-4">{trip.party.name}</TableCell>
+                <TableCell className="py-3 px-4">
+                  {trip.truck.registrationNumber}
+                </TableCell>
+                <TableCell className="py-3 px-4 font-medium">
+                  {`${trip.from} ==> ${trip.to}`}
+                </TableCell>
+                <TableCell className="py-3 px-4 font-medium">
+                  {trip.status}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+};
 
-//             <div>
-//               <label className="block text-sm font-medium text-gray-700">
-//                 ZIP Code
-//               </label>
-//               <input
-//                 type="text"
-//                 name="address.zipCode"
-//                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-//                 placeholder="Enter ZIP code"
-//                 value={formData.address.zipCode}
-//                 onChange={handleChange}
-//               />
-//             </div>
-//           </div>
-//           <button
-//             type="submit"
-//             className="mt-4 p-2 bg-blue-500 text-white rounded-md"
-//           >
-//             Submit
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Page;
+export default Page;

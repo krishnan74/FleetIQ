@@ -28,7 +28,6 @@ model Vendor {
   name    String
   email   String
   phone   String
-  
   trips   Trip[]
   trucks  Truck[]
   @@index([name])
