@@ -30,6 +30,7 @@ export default function RootLayout({
         <SideBar
           links={[
             { name: "Dashboard", icon: <RiBarChart2Fill /> },
+            { name: "Parties", icon: <BsFillPeopleFill /> },
             { name: "Vendors", icon: <BsFillPeopleFill /> },
             { name: "Trips", icon: <BiTrip /> },
 

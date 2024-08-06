@@ -7,6 +7,7 @@ interface PartyDetails {
   phone: string;
   openingBalance: number;
   gstNumber: string;
+  openingBalanceDate: string;
   PANNumber: string;
   companyName: string;
 }
@@ -36,14 +37,22 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body: PartyDetails = await req.json();
-    const { name, phone, openingBalance, gstNumber, PANNumber, companyName } =
-      body;
+    const {
+      name,
+      phone,
+      openingBalance,
+      openingBalanceDate,
+      gstNumber,
+      PANNumber,
+      companyName,
+    } = body;
 
     const party = await prisma.party.create({
       data: {
         name,
         phone,
         openingBalance,
+        openingBalanceDate,
       },
     });
 

@@ -7,7 +7,7 @@ import { RxAvatar } from "react-icons/rx";
 import { AreaChartComponent } from "./components/AreaChartComponent";
 import { PieChartComponent } from "./components/PieChartComponent";
 import { TransactionComponent } from "./components/TransactionComponent";
-import { AvatarComponent } from "./components/Avatar";
+import { AvatarComponent } from "../../components/Avatar";
 import DummyCard from "./components/DummyCard";
 
 const Page = () => {

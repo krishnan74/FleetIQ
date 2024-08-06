@@ -14,7 +14,7 @@ model Party{
   name String
   phone String
   openingBalance Float
-  openingBalanceDate DateTime @default(now())
+  openingBalanceDate DateTime 
   trips Trip[]
   gstNumber String?
   PANNumber String?
