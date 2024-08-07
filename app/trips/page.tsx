@@ -73,7 +73,7 @@ const Page = () => {
   };
 
   const redirectToDetails = (id: string) => () => {
-    router.push(`/${id}`);
+    router.push(`/trips/${id}`);
   };
 
   useEffect(() => {
@@ -84,23 +84,7 @@ const Page = () => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="flex flex-col p-8 bg-gray-50 w-full max-w-7xl mx-auto rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-8">
-        <p className="text-2xl font-bold text-gray-800">
-          Trips <br />
-          <span className="text-base font-normal text-gray-500">
-            10th July 2024
-          </span>
-        </p>
-        <div className="flex items-center space-x-4">
-          <AppPartyDialogComponent />
-          <FaBell className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
-          <PiLineVerticalThin className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
-          <AvatarComponent />
-          <p className="font-bold text-lg text-gray-800">Rajesh Kumar</p>
-        </div>
-      </div>
-
+    <>
       <div>
         <Table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
           <TableCaption className="text-gray-600">
@@ -140,7 +124,7 @@ const Page = () => {
           </TableBody>
         </Table>
       </div>
-    </div>
+    </>
   );
 };
 

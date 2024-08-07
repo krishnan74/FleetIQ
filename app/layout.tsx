@@ -10,6 +10,7 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FaFileInvoice } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { Toaster } from "@/components/ui/toaster";
+import NavBar from "@/components/NavBar";
 
 const inter = Inter({ subsets: ["latin"] });
 const outfit = Outfit({ subsets: ["latin"] });
@@ -40,8 +41,12 @@ export default function RootLayout({
             { name: "Invoices", icon: <FaFileInvoice /> },
           ]}
         />
-        <div className="bg-[#F6F6F6] p-5  w-[87vw] right-0 absolute">
-          {children}
+
+        <div className="bg-[#F6F6F6] p-5  w-[87vw] h-[100vh] right-0 absolute">
+          <div className="flex flex-col p-8 bg-white  w-full rounded-lg shadow-lg">
+            <NavBar />
+            {children}
+          </div>
         </div>
         <Toaster />
       </body>

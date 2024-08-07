@@ -59,7 +59,7 @@ const AppPartyDialogComponent = () => {
         ...formData,
         openingBalanceDate: formattedDate,
       });
-      if (response.data.message === "Success") {
+      if (response.data.message === "success") {
         toast({
           title: "Party created successfully",
           description: `Name: ${response.data.data.name} | Opening Balance: ${response.data.data.openingBalance}`,

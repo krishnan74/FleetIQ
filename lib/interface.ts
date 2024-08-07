@@ -9,14 +9,21 @@ export interface PartyDetails {
   companyName: string;
 }
 
-interface Trip {
+export interface Trip {
   id: string;
+  status: string;
+  vendorId: string;
+  partyId: string;
+  driverId: string;
+  truckId: string;
+  createdAt: string;
   from: string;
   to: string;
+  updatedAt: string;
+  truck: Truck;
+  party: PartyDetails;
+  driver: DriverDetails;
   vendor: VendorDetails;
-  vendorId: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface VendorDetails {

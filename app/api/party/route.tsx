@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Success",
+        message: "success",
         data: parties,
       },
       {
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Success",
+        message: "success",
         data: party,
       },
       {
