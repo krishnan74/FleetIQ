@@ -12,36 +12,36 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
-import { DriverDetails } from "@/lib/interface";
+import { Truck } from "@/lib/interface";
 
 const Page = () => {
-  const [drivers, setdrivers] = useState<DriverDetails[] | null>(null);
+  const [trucks, settrucks] = useState<Truck[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
-  const fetchdrivers = async () => {
+  const fetchtrucks = async () => {
     try {
-      const response = await axios.get("/api/driver");
+      const response = await axios.get("/api/truck");
       if (response.data.message === "success") {
-        setdrivers(response.data.data);
+        settrucks(response.data.data);
       } else {
-        setError("Failed to fetch drivers");
+        setError("Failed to fetch trucks");
       }
     } catch (error) {
-      setError("An error occurred while fetching drivers");
+      setError("An error occurred while fetching trucks");
     } finally {
       setLoading(false);
     }
   };
 
   const redirectToDetails = (id: string) => () => {
-    router.push(`/drivers/${id}`);
+    router.push(`/trucks/${id}`);
   };
 
   useEffect(() => {
-    fetchdrivers();
+    fetchtrucks();
   }, []);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
@@ -51,33 +51,40 @@ const Page = () => {
     <div>
       <Table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
         <TableCaption className="text-gray-600">
-          A list of your recent drivers.
+          A list of your recent trucks.
         </TableCaption>
         <TableHeader>
           <TableRow className="bg-gray-100 text-gray-600 border-b border-gray-300">
-            <TableHead className="py-3 px-4 text-left">Driver Name</TableHead>
-            <TableHead className="py-3 px-4 text-left">Phone</TableHead>
+            <TableHead className="py-3 px-4 text-left">
+              Registration Number
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left">Truck Type</TableHead>
+            <TableHead className="py-3 px-4 text-left">
+              Truck OwnerShip
+            </TableHead>
             <TableHead className="py-3 px-4 text-left">Status</TableHead>
-            <TableHead className="py-3 px-4 text-left">Balance</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {drivers?.map((driver) => (
+          {trucks?.map((truck) => (
             <TableRow
-              key={driver.id}
-              onClick={redirectToDetails(driver.id)}
+              key={truck.id}
+              onClick={redirectToDetails(truck.id)}
               className="cursor-pointer hover:bg-gray-50 transition-colors"
             >
-              <TableCell className="py-3 px-4">{driver.name}</TableCell>
+              <TableCell className="py-3 px-4">
+                {truck.registrationNumber}
+              </TableCell>
 
               <TableCell className="py-3 px-4 font-medium">
-                {driver.phone}
+                {truck.truckType}
               </TableCell>
               <TableCell className="py-3 px-4 font-medium">
-                {driver.status}
+                {truck.truckOwnerShip}
               </TableCell>
+
               <TableCell className="py-3 px-4 font-medium">
-                ₹ {driver.balance}
+                {truck.status}
               </TableCell>
             </TableRow>
           ))}

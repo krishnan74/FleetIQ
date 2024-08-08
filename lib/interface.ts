@@ -50,9 +50,7 @@ export interface Truck {
   registrationNumber: string;
   truckType: string;
   truckOwnerShip: string;
-
   driverId: string;
-
   vendorId: string;
   trips: Trip[];
   status: string;

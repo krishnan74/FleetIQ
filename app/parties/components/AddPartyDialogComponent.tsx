@@ -22,7 +22,7 @@ interface PartyDetails {
   openingBalanceDate: string;
 }
 
-const AppPartyDialogComponent = () => {
+const AddPartyDialogComponent = () => {
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [open, setOpen] = useState(false);
@@ -185,4 +185,4 @@ const AppPartyDialogComponent = () => {
   );
 };
 
-export default AppPartyDialogComponent;
+export default AddPartyDialogComponent;
