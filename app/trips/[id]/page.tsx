@@ -5,11 +5,14 @@ import { Trip } from "@/lib/interface";
 import axios from "axios";
 
 import { FaTruck } from "react-icons/fa6";
+import { Button } from "@/components/ui/button";
 import { GiSteeringWheel } from "react-icons/gi";
 import { FaChevronRight } from "react-icons/fa";
-import AppTripDialogComponent from "../components/AddTripDialogComponent";
+import AddTripDialogComponent from "../components/AddTripDialogComponent";
+import CompleteTripDialogComponent from "../components/CompleteTripDialogComponent";
 import Link from "next/link";
 import { CiCircleChevRight } from "react-icons/ci";
+import TripProgress from "../components/TripProgress";
 
 const page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
@@ -33,7 +36,7 @@ const page = () => {
   }, []);
 
   return (
-    <div className="flex ">
+    <div className="flex gap-x-5">
       <div className="flex flex-col w-[70%] gap-y-5">
         <div className="flex gap-10 w-full justify-between">
           <Link
@@ -70,7 +73,7 @@ const page = () => {
         <div className="flex flex-col p-5 rounded-md border">
           <div className="flex justify-between border-b pb-5">
             <p className="text-2xl font-bold">{tripDetails?.party.name}</p>
-            <AppTripDialogComponent />
+            <AddTripDialogComponent />
           </div>
 
           <div className="grid grid-cols-4 gap-3 mt-5">
@@ -134,11 +137,66 @@ const page = () => {
             </div>
           </div>
         </div>
-        <div className="fflex gap-10 w-full justify-between">
-            
+
+        <TripProgress status={tripDetails?.status ? tripDetails?.status : ""} />
+
+        <div className="flex gap-5 w-full justify-between">
+          <div className="flex-1 ">
+            <CompleteTripDialogComponent />
+          </div>
+
+          <div className="flex-1">
+            <CompleteTripDialogComponent />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex justify-between py-3 items-center">
+            <p>Freight Amount</p>
+            {"₹0"}
+          </div>
         </div>
       </div>
-      <div className="w-[30%]"></div>
+      <div className="w-[30%] flex flex-col gap-5">
+        <div className="w-full p-5 gap-y-2 border rounded-md">
+          <div className="flex justify-between pb-5 border-b items-center">
+            <p>Trip Profit</p>
+            <Button>Add Expense</Button>
+          </div>
+
+          <div className="">
+            <div className="flex justify-between py-3 items-center">
+              <p>(+) Revenue</p>
+              {"₹0"}
+            </div>
+            <div className="flex justify-between py-3 border-b items-center">
+              <p>(-) Expense</p>
+              {"₹0"}
+            </div>
+          </div>
+          <div className="flex justify-between py-3 border-t items-center">
+            <p>(-) Profit</p>
+            {"₹0"}
+          </div>
+        </div>
+
+        <div className="w-full p-5 gap-y-2 border rounded-md">
+          <div className="flex justify-between pb-5 border-b items-center">
+            <p>{tripDetails?.party.name}</p>
+          </div>
+
+          <div className="flex flex-col gap-5">
+            <div className="flex justify-between p-3 items-center border rounded-md">
+              <p>Online Bilty/LR</p>
+              <Button>Create LR</Button>
+            </div>
+            <div className="flex justify-between p-3 border-b items-center border rounded-md">
+              <p>POD Challan</p>
+              <Button>Add POD</Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

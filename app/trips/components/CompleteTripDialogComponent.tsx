@@ -42,7 +42,7 @@ interface Trip {
   to: string;
 }
 
-const AddTripDialogComponent = () => {
+const CompleteTripDialogComponent = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
@@ -123,10 +123,16 @@ const AddTripDialogComponent = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
-          <Button onClick={() => setOpen(true)}>Add Trip</Button>
+          <Button
+            onClick={() => setOpen(true)}
+            variant={"secondary"}
+            className="w-full"
+          >
+            Complete Trip
+          </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -286,4 +292,4 @@ const AddTripDialogComponent = () => {
   );
 };
 
-export default AddTripDialogComponent;
+export default CompleteTripDialogComponent;

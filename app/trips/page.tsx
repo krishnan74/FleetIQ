@@ -1,11 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaBell } from "react-icons/fa";
-import { PiLineVerticalThin } from "react-icons/pi";
 import axios from "axios";
-import { AvatarComponent } from "@/components/Avatar";
-import { Button } from "@/components/ui/button";
-import AppPartyDialogComponent from "./components/AddTripDialogComponent";
+
 import {
   Table,
   TableBody,
