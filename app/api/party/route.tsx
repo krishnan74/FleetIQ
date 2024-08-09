@@ -47,12 +47,15 @@ export async function POST(req: NextRequest) {
       companyName,
     } = body;
 
+    const totalBalance = openingBalance;
+
     const party = await prisma.party.create({
       data: {
         name,
         phone,
         openingBalance,
         openingBalanceDate,
+        totalBalance,
       },
     });
 

@@ -9,15 +9,19 @@ import { Button } from "@/components/ui/button";
 import { GiSteeringWheel } from "react-icons/gi";
 import { FaChevronRight } from "react-icons/fa";
 import AddTripDialogComponent from "../components/AddTripDialogComponent";
+import AddAdvanceDialogComponent from "../components/AddAdvanceDialogComponent";
 import CompleteTripDialogComponent from "../components/CompleteTripDialogComponent";
 import Link from "next/link";
 import { CiCircleChevRight } from "react-icons/ci";
 import TripProgress from "../components/TripProgress";
+import AddChargeDialogComponent from "../components/AddChargeDialogComponent";
+import AddPaymentDialogComponent from "../components/AddPaymentDialogComponent";
 
 const Page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
   const pathname = usePathname();
   const id = pathname.split("/")[2];
+  const [refresh, setRefresh] = useState(false);
 
   const fetchTripDetails = async () => {
     try {
@@ -86,7 +90,7 @@ const Page = () => {
               <div>
                 <p className="text-sm font-light">Party Balance</p>
                 <p className="text-lg font-bold">
-                  {tripDetails?.party.openingBalance}
+                  ₹ {tripDetails?.partyBalance}
                 </p>
               </div>
             </div>
@@ -94,14 +98,14 @@ const Page = () => {
             <div className="flex items-center justify-center p-5 col-span-1 border rounded-md">
               <div className="">
                 <p className="text-sm font-light">LR Number</p>
-                <p className="text-lg font-bold">LRN-001</p>
+                <p className="text-lg font-bold">{tripDetails?.lrNumber}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-center p-5 col-span-1 border rounded-md">
               <div className="">
                 <p className="text-sm font-light">Material</p>
-                <p className="text-lg font-bold">---</p>
+                <p className="text-lg font-bold">{tripDetails?.material}</p>
               </div>
             </div>
 
@@ -127,7 +131,10 @@ const Page = () => {
             <div className="flex justify-between col-span-2 p-5 border rounded-md">
               <div className="">
                 <p className="text-sm font-light">Start KMs Reading</p>
-                <p className="text-lg font-bold">---</p>
+                <p className="text-lg font-bold">
+                  {tripDetails?.startKMSReadings}{" "}
+                  <span className="text-sm ">kms</span>
+                </p>
               </div>
 
               <div>
@@ -152,23 +159,38 @@ const Page = () => {
 
         <div>
           <div className="flex justify-between py-3 items-center">
-            <p>Freight Amount</p>
+            <p>Freight Amount</p>₹ {tripDetails?.partyFreightAmount}
+          </div>
+
+          <div className="flex justify-between py-3 items-center">
+            <div>
+              <p>(-) Advance</p>
+              <AddAdvanceDialogComponent />
+            </div>
             {"₹0"}
           </div>
 
           <div className="flex justify-between py-3 items-center">
-            <p>(-) Advance</p>
+            <div>
+              <p>(+) Charges</p>
+              <AddChargeDialogComponent />
+            </div>
+
             {"₹0"}
           </div>
 
           <div className="flex justify-between py-3 items-center">
-            <p>(+) Charges</p>
+            <div>
+              <p>(-) Payments</p>
+              <AddPaymentDialogComponent />
+            </div>
             {"₹0"}
           </div>
+        </div>
 
+        <div className="pt-5 border-t ">
           <div className="flex justify-between py-3 items-center">
-            <p>(-) Payments</p>
-            {"₹0"}
+            <p>Party Balance</p>₹ {tripDetails?.partyBalance}
           </div>
         </div>
       </div>

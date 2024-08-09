@@ -15,12 +15,12 @@ model Party{
   phone String
   openingBalance Float
   openingBalanceDate DateTime 
+  totalBalance Float
   trips Trip[]
   gstNumber String?
   PANNumber String?
   companyName String?
-  
-  transactions Transactions[]
+  transactions PartyTransaction[]
 }
 
 model Vendor {
@@ -30,6 +30,7 @@ model Vendor {
   phone   String
   trips   Trip[]
   trucks  Truck[]
+  transactions VendorTransaction[]
   @@index([name])
 }
 
@@ -41,6 +42,7 @@ model Driver{
   balance Float
   trips Trip[]
   truck Truck?
+  transactions DriverTransaction[]
 }
 
 model Truck{
@@ -56,8 +58,10 @@ model Truck{
   status TruckStatus
 }
 
+
 //entities
-model Transactions{
+
+model PartyTransaction{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   party Party @relation(fields: [partyId], references: [id])
   partyId String @db.ObjectId
@@ -65,7 +69,28 @@ model Transactions{
   transactionType TransactionType
   transactionDate DateTime
   transactionMode TransactionMode
-  transactionReference String
+  transactionDescription String
+}
+
+model VendorTransaction{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+  vendorId String @db.ObjectId
+  amount Float
+  transactionType TransactionType
+  transactionDate DateTime
+  transactionMode TransactionMode
+  transactionDescription String
+}
+
+model DriverTransaction{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  driver Driver @relation(fields: [driverId], references: [id])
+  driverId String @db.ObjectId
+  amount Float
+  transactionType TransactionType
+  transactionDate DateTime
+  transactionMode TransactionMode
   transactionDescription String
 }
 
@@ -79,8 +104,21 @@ model Address {
 }
 
 model Trip {
+  //tripDetails
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
   status    TripStatus
+  from      String
+  to        String
+  partyFreightAmount Float
+  partyBalance Float 
+  lrNumber String?
+  material String?
+  notes String?
+  startKMSReadings Float?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  //references to other models
   vendor    Vendor     @relation(fields: [vendorId], references: [id])
   vendorId  String     @db.ObjectId
   party     Party     @relation(fields: [partyId], references: [id])
@@ -89,11 +127,21 @@ model Trip {
   driverId  String     @db.ObjectId
   truck Truck @relation(fields: [truckId], references: [id])
   truckId String @db.ObjectId
-  createdAt DateTime   @default(now())
-  from      String
-  to        String
-  updatedAt DateTime   @updatedAt
-  @@index([vendorId])
+
+  //transactions of the Trip
+  transactions TripTransaction[]
+}
+
+model TripTransaction{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  trip Trip @relation(fields: [tripId], references: [id])
+  tripId String @db.ObjectId
+  amount Float
+  tripTransactionType TripTransactionType
+  transactionType TransactionType
+  transactionDate DateTime
+  transactionMode TransactionMode
+  transactionDescription String
 }
 
 enum TripStatus {
@@ -107,11 +155,22 @@ enum TransactionType{
   DEBIT
 }
 
+enum TripTransactionType{
+  FREIGHT
+  ADVANCE
+  CHARGE
+  PAYMENT
+  EXPENSE
+}
+
 enum TransactionMode{
   CASH
   UPI
   NETBANKING
   CHEQUE
+  BANKTRANSFER
+  FUEL
+  OTHER
 }
 
 enum DriverStatus{

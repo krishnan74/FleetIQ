@@ -32,15 +32,7 @@ import {
 } from "@/lib/interface";
 
 import { locations } from "@/lib/utils";
-
-interface Trip {
-  vendorId: string;
-  partyId: string;
-  driverId: string;
-  truckId: string;
-  from: string;
-  to: string;
-}
+import { Trip } from "@/lib/createInterface";
 
 const AddTripDialogComponent = () => {
   const { toast } = useToast();
@@ -85,12 +77,24 @@ const AddTripDialogComponent = () => {
     driverId: "",
     partyId: "",
     truckId: "",
+    partyFreightAmount: 0,
+    startKMSReadings: 0,
+    lrNumber: "",
+    material: "",
+    notes: "",
   });
 
-  const handleChange = (name: string, value: string) => {
+  const handleChange = (name: string, value: any) => {
+    if (name == "partyFreightAmount" || name == "startKMSReadings") {
+      value = Number(value);
+    }
+
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value,
+      [name]:
+        name == "partyFreightAmount" || name == "startKMSReadings"
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -126,23 +130,30 @@ const AddTripDialogComponent = () => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
-          <Button onClick={() => setOpen(true)}>Add Trip</Button>
+          <Button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700">
+            Add Trip
+          </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="max-w-3xl bg-white p-6 rounded-lg shadow-lg">
           <DialogHeader>
-            <DialogTitle className="font-bold text-2xl pb-10 border-b mb-5">
+            <DialogTitle className="font-bold text-2xl text-gray-800 pb-4 border-b mb-6">
               Add Trip Details
             </DialogTitle>
             <DialogDescription>
-              <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-x-5 gap-y-5">
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-2 gap-6">
                   <div className="flex flex-col">
-                    <label htmlFor="party">Select Party</label>
+                    <label
+                      htmlFor="party"
+                      className="text-gray-700 font-medium"
+                    >
+                      Select Party
+                    </label>
                     <Select
                       value={formData.partyId}
                       onValueChange={(value) => handleChange("partyId", value)}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
                         <SelectValue placeholder="Select a party" />
                       </SelectTrigger>
                       <SelectContent>
@@ -158,12 +169,17 @@ const AddTripDialogComponent = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label htmlFor="vendor">Select Vendor</label>
+                    <label
+                      htmlFor="vendor"
+                      className="text-gray-700 font-medium"
+                    >
+                      Select Vendor
+                    </label>
                     <Select
                       value={formData.vendorId}
                       onValueChange={(value) => handleChange("vendorId", value)}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
                         <SelectValue placeholder="Select a vendor" />
                       </SelectTrigger>
                       <SelectContent>
@@ -179,12 +195,17 @@ const AddTripDialogComponent = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label htmlFor="driver">Select Driver</label>
+                    <label
+                      htmlFor="driver"
+                      className="text-gray-700 font-medium"
+                    >
+                      Select Driver
+                    </label>
                     <Select
                       value={formData.driverId}
                       onValueChange={(value) => handleChange("driverId", value)}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
                         <SelectValue placeholder="Select a driver" />
                       </SelectTrigger>
                       <SelectContent>
@@ -200,14 +221,17 @@ const AddTripDialogComponent = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label htmlFor="truck">
+                    <label
+                      htmlFor="truck"
+                      className="text-gray-700 font-medium"
+                    >
                       Select Truck Registration Number
                     </label>
                     <Select
                       value={formData.truckId}
                       onValueChange={(value) => handleChange("truckId", value)}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
                         <SelectValue placeholder="Select a Truck Registration Number" />
                       </SelectTrigger>
                       <SelectContent>
@@ -223,12 +247,14 @@ const AddTripDialogComponent = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label htmlFor="from">From</label>
+                    <label htmlFor="from" className="text-gray-700 font-medium">
+                      From
+                    </label>
                     <Select
                       value={formData.from}
                       onValueChange={(value) => handleChange("from", value)}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
                         <SelectValue placeholder="Select Origin" />
                       </SelectTrigger>
                       <SelectContent>
@@ -244,12 +270,14 @@ const AddTripDialogComponent = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label htmlFor="to">To</label>
+                    <label htmlFor="to" className="text-gray-700 font-medium">
+                      To
+                    </label>
                     <Select
                       value={formData.to}
                       onValueChange={(value) => handleChange("to", value)}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
                         <SelectValue placeholder="Select Destination" />
                       </SelectTrigger>
                       <SelectContent>
@@ -263,19 +291,102 @@ const AddTripDialogComponent = () => {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="partyFreightAmount"
+                      className="text-gray-700 font-medium"
+                    >
+                      Party Freight Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.partyFreightAmount}
+                      onChange={(e) =>
+                        handleChange("partyFreightAmount", e.target.value)
+                      }
+                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="startKMSReadings"
+                      className="text-gray-700 font-medium"
+                    >
+                      Start KMS Readings
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.startKMSReadings}
+                      onChange={(e) =>
+                        handleChange("startKMSReadings", e.target.value)
+                      }
+                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="lrNumber"
+                      className="text-gray-700 font-medium"
+                    >
+                      LR Number
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lrNumber?.toString()}
+                      onChange={(e) => handleChange("lrNumber", e.target.value)}
+                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="material"
+                      className="text-gray-700 font-medium"
+                    >
+                      Material
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.material?.toString()}
+                      onChange={(e) => handleChange("material", e.target.value)}
+                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                    />
+                  </div>
+
+                  <div className="flex flex-col col-span-2">
+                    <label
+                      htmlFor="notes"
+                      className="text-gray-700 font-medium"
+                    >
+                      Notes
+                    </label>
+                    <textarea
+                      value={formData.notes?.toString()}
+                      onChange={(e) => handleChange("notes", e.target.value)}
+                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                      rows={4}
+                    />
+                  </div>
                 </div>
 
-                <DialogFooter className="justify-end border-t pt-10">
-                  <DialogClose asChild>
+                <DialogFooter className="flex justify-end mt-6">
+                  <Button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700"
+                  >
+                    Submit
+                  </Button>
+                  <DialogClose className="ml-3 text-gray-500 " asChild>
                     <Button
                       type="button"
-                      variant="secondary"
-                      onClick={() => setOpen(false)}
+                      className="bg-red-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-700"
                     >
-                      Close
+                      Cancel
                     </Button>
                   </DialogClose>
-                  <Button type="submit">Save Changes</Button>
                 </DialogFooter>
               </form>
             </DialogDescription>

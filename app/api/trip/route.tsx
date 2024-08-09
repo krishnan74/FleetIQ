@@ -31,7 +31,21 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { from, to, vendorId, driverId, partyId, truckId } = body;
+    const {
+      from,
+      to,
+      vendorId,
+      driverId,
+      partyId,
+      truckId,
+      partyFreightAmount,
+      startKMSReadings,
+      lrNumber,
+      material,
+      notes,
+    } = body;
+
+    const partyBalance = partyFreightAmount;
 
     // Create the trip with the nested vendor
     const trip = await prisma.trip.create({
@@ -59,6 +73,13 @@ export async function POST(req: NextRequest) {
             id: truckId,
           },
         },
+
+        partyFreightAmount,
+        startKMSReadings,
+        partyBalance,
+        lrNumber,
+        material,
+        notes,
       },
       include: {
         vendor: true,

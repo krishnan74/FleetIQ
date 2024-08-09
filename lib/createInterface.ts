@@ -1,0 +1,28 @@
+import { TransactionMode } from "@prisma/client";
+import { TransactionType } from "@prisma/client";
+import { TripTransactionType } from "@prisma/client";
+
+export interface Trip {
+  from: string;
+  to: string;
+  vendorId: string;
+  partyId: string;
+  driverId: string;
+  truckId: string;
+  partyFreightAmount: number;
+  startKMSReadings: number;
+  lrNumber: String | null;
+  material: String | null;
+  notes: String | null;
+}
+
+export interface TripTransaction {
+  tripId: string;
+  amount: number;
+  tripTransactionType: TripTransactionType;
+  transactionType: TransactionType;
+  transactionDate: string;
+  transactionMode: TransactionMode;
+  transactionDescription: string;
+  partyBalance: number;
+}

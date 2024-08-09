@@ -102,86 +102,66 @@ const Page = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="flex flex-col p-8 bg-white w-full rounded-3xl">
-      <div className="flex justify-between items-center mb-8">
-        <p className="text-2xl font-bold">
-          Parties <br />
-          <span className="text-base font-normal text-[#666]">
-            10th July 2024
-          </span>
-        </p>
-        <div className="flex items-center">
-          <AppPartyDialogComponent />
-          <FaBell className="text-2xl ml-8" />
-          <PiLineVerticalThin className="text-2xl ml-4 mr-3" />
-          <AvatarComponent />
-          <p className="font-bold text-lg ml-4">Rajesh Kumar</p>
-        </div>
+    <div>
+      <div className="flex gap-5 mb-5">
+        <Link
+          href={`/parties/trips/${id}`}
+          className={`px-4 py-2 ${currentTab == "trips" ? "border-b" : " "}`}
+        >
+          Trips
+        </Link>
+        <Link
+          href={`/parties/passbook/${id}`}
+          className={`px-4 py-2 ${currentTab == "passbook" ? "border-b" : " "}`}
+        >
+          Passbook
+        </Link>
+        <Link
+          href={`/parties/monthlyBalances/${id}`}
+          className={`px-4 py-2 ${
+            currentTab == "monthlyBalances" ? "border-b" : " "
+          }`}
+        >
+          Monthly Balances
+        </Link>
+        <Link
+          href={`/parties/partyDetails/${id}`}
+          className={`px-4 py-2 ${
+            currentTab == "partyDetails" ? "border-b" : " "
+          }`}
+        >
+          Party Details
+        </Link>
       </div>
-
-      <div>
-        <div className="flex gap-5 mb-5">
-          <Link
-            href={`/parties/trips/${id}`}
-            className={`px-4 py-2 ${currentTab == "trips" ? "border-b" : " "}`}
-          >
-            Trips
-          </Link>
-          <Link
-            href={`/parties/passbook/${id}`}
-            className={`px-4 py-2 ${
-              currentTab == "passbook" ? "border-b" : " "
-            }`}
-          >
-            Passbook
-          </Link>
-          <Link
-            href={`/parties/monthlyBalances/${id}`}
-            className={`px-4 py-2 ${
-              currentTab == "monthlyBalances" ? "border-b" : " "
-            }`}
-          >
-            Monthly Balances
-          </Link>
-          <Link
-            href={`/parties/partyDetails/${id}`}
-            className={`px-4 py-2 ${
-              currentTab == "partyDetails" ? "border-b" : " "
-            }`}
-          >
-            Party Details
-          </Link>
-        </div>
-        <Table>
-          <TableCaption>A list of recent trips.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Start Date</TableHead>
-              <TableHead>Truck No</TableHead>
-              <TableHead>Route</TableHead>
-              <TableHead>Status</TableHead>
+      <Table>
+        <TableCaption>A list of recent trips.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Start Date</TableHead>
+            <TableHead>Truck No</TableHead>
+            <TableHead>Route</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {trips.map((trip) => (
+            <TableRow
+              key={trip.id}
+              onClick={redirectToDetails(trip.id)}
+              className=" cursor-pointer"
+            >
+              <TableCell className="font-medium">
+                {new Date(trip.createdAt).toDateString()}
+              </TableCell>
+              <TableCell className="font-medium">
+                {trip.truck?.registrationNumber || "N/A"}
+              </TableCell>
+              <TableCell>{`${trip.from} ==> ${trip.to}`}</TableCell>
+              <TableCell>{trip.status}</TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {trips.map((trip) => (
-              <TableRow
-                key={trip.id}
-                onClick={redirectToDetails(trip.id)}
-                className=" cursor-pointer"
-              >
-                <TableCell className="font-medium">
-                  {new Date(trip.createdAt).toDateString()}
-                </TableCell>
-                <TableCell className="font-medium">
-                  {trip.truck?.registrationNumber || "N/A"}
-                </TableCell>
-                <TableCell>{`${trip.from} ==> ${trip.to}`}</TableCell>
-                <TableCell>{trip.status}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

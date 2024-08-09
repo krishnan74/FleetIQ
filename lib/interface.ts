@@ -24,6 +24,12 @@ export interface Trip {
   party: PartyDetails;
   driver: DriverDetails;
   vendor: VendorDetails;
+  partyFreightAmount: number;
+  partyBalance: number;
+  startKMSReadings: number;
+  lrNumber: String | null;
+  material: String | null;
+  notes: String | null;
 }
 
 export interface VendorDetails {

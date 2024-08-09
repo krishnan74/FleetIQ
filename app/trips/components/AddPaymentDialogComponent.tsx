@@ -32,7 +32,7 @@ interface dataFormProps {
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddAdvanceDialogComponent = () =>
+const AddPaymentDialogComponent = () =>
   //setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   {
     const pathname = usePathname();
@@ -49,7 +49,7 @@ const AddAdvanceDialogComponent = () =>
     const [formData, setFormData] = useState<TripTransaction>({
       tripId: "",
       amount: 0,
-      tripTransactionType: TripTransactionType.ADVANCE,
+      tripTransactionType: TripTransactionType.PAYMENT,
       transactionType: TransactionType.CREDIT,
       transactionDate: "",
       transactionMode: TransactionMode.CASH,
@@ -102,9 +102,9 @@ const AddAdvanceDialogComponent = () =>
       } catch (error) {
         toast({
           title: "Error",
-          description: "An error occurred while creating the trip.",
+          description: "An error occurred while updating the trip.",
         });
-        console.error("Error while creating trip:", error);
+        console.error("Error while updating trip:", error);
       }
     };
 
@@ -113,13 +113,13 @@ const AddAdvanceDialogComponent = () =>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger>
             <div className="text-blue-500 ml-5" onClick={() => setOpen(true)}>
-              Add Advance
+              Add Payment
             </div>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle className="font-bold text-2xl pb-5 border-b mb-5">
-                Add Advance
+                Add Payment
               </DialogTitle>
               <DialogDescription>
                 <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
@@ -128,7 +128,7 @@ const AddAdvanceDialogComponent = () =>
                       htmlFor="amount"
                       className="text-gray-700 font-medium"
                     >
-                      Advance Amount
+                      Payment Amount
                     </label>
                     <input
                       type="number"
@@ -257,4 +257,4 @@ const AddAdvanceDialogComponent = () =>
     );
   };
 
-export default AddAdvanceDialogComponent;
+export default AddPaymentDialogComponent;
