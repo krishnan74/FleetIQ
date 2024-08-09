@@ -16,12 +16,20 @@ import { CiCircleChevRight } from "react-icons/ci";
 import TripProgress from "../components/TripProgress";
 import AddChargeDialogComponent from "../components/AddChargeDialogComponent";
 import AddPaymentDialogComponent from "../components/AddPaymentDialogComponent";
+import { TripTransaction } from "@/lib/interface";
+import AddExpenseDialogComponent from "../components/AddExpenseDialogComponent";
+import { Expense } from "@/lib/createInterface";
+import { set } from "date-fns";
 
 const Page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
   const pathname = usePathname();
   const id = pathname.split("/")[2];
   const [refresh, setRefresh] = useState(false);
+  const [advances, setAdvances] = useState<TripTransaction[]>();
+  const [charges, setCharges] = useState<TripTransaction[]>();
+  const [payments, setPayments] = useState<TripTransaction[]>();
+  const [expenses, setExpenses] = useState<Expense[]>();
 
   const fetchTripDetails = async () => {
     try {
@@ -30,6 +38,30 @@ const Page = () => {
         console.log(response.data.data);
         setTripDetails(response.data.data);
       }
+
+      const advanceFilter = response.data.data?.transactions.filter(
+        (transaction: TripTransaction) =>
+          transaction.tripTransactionType == "ADVANCE"
+      );
+
+      setAdvances(advanceFilter);
+
+      const chargeFilter = response.data.data?.transactions.filter(
+        (transaction: TripTransaction) =>
+          transaction.tripTransactionType == "CHARGE"
+      );
+
+      setCharges(chargeFilter);
+
+      const paymentFilter = response.data.data?.transactions.filter(
+        (transaction: TripTransaction) =>
+          transaction.tripTransactionType == "PAYMENT"
+      );
+
+      setPayments(paymentFilter);
+
+      const expenseResponse: Expense[] = response.data.data?.expenses;
+      setExpenses(expenseResponse);
     } catch (error) {
       console.error("An error occurred while fetching data", error);
     }
@@ -162,35 +194,91 @@ const Page = () => {
             <p>Freight Amount</p>₹ {tripDetails?.partyFreightAmount}
           </div>
 
-          <div className="flex justify-between py-3 items-center">
-            <div>
-              <p>(-) Advance</p>
-              <AddAdvanceDialogComponent />
+          <div className="flex flex-col py-3 items-center">
+            <div className="flex justify-between w-full mb-5">
+              <div className="flex gap-1">
+                <p>( - ) Advance</p>
+                <AddAdvanceDialogComponent />
+              </div>
+              {"₹0"}
             </div>
-            {"₹0"}
+
+            <div className="flex flex-col gap-y-5 w-full">
+              {advances?.map((advance) => (
+                <div className="flex justify-between w-full bg-gray-100 rounded-md p-5">
+                  <div className="flex gap-3 justify-center items-center">
+                    <p className="font-bold text-sm">
+                      {new Date(advance.transactionDate)
+                        .toDateString()
+                        .substring(3)}
+                    </p>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    <p className=" capitalize">{advance.transactionMode}</p>
+                  </div>
+                  {advance.amount}
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="flex justify-between py-3 items-center">
-            <div>
-              <p>(+) Charges</p>
-              <AddChargeDialogComponent />
+          <div className="flex flex-col py-3 items-center">
+            <div className="flex justify-between w-full mb-5">
+              <div className="flex gap-1">
+                <p>( + ) Charges</p>
+                <AddChargeDialogComponent />
+              </div>
+              {"₹0"}
             </div>
 
-            {"₹0"}
+            <div className="flex flex-col gap-y-5 w-full">
+              {charges?.map((charge) => (
+                <div className="flex justify-between w-full bg-gray-100 rounded-md p-5">
+                  <div className="flex gap-3 justify-center items-center">
+                    <p className="font-bold text-sm">
+                      {new Date(charge.transactionDate)
+                        .toDateString()
+                        .substring(3)}
+                    </p>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    <p className=" capitalize">{charge.transactionMode}</p>
+                  </div>
+                  {charge.amount}
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="flex justify-between py-3 items-center">
-            <div>
-              <p>(-) Payments</p>
-              <AddPaymentDialogComponent />
+          <div className="flex flex-col py-3 items-center">
+            <div className="flex justify-between w-full mb-5">
+              <div className="flex gap-1">
+                <p>( - ) Payments</p>
+                <AddPaymentDialogComponent />
+              </div>
+              {"₹0"}
             </div>
-            {"₹0"}
+
+            <div className="flex flex-col gap-y-5 w-full">
+              {payments?.map((payment) => (
+                <div className="flex justify-between w-full bg-gray-100 rounded-md p-5">
+                  <div className="flex gap-3 justify-center items-center">
+                    <p className="font-bold text-sm">
+                      {new Date(payment.transactionDate)
+                        .toDateString()
+                        .substring(3)}
+                    </p>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    <p className=" capitalize">{payment.transactionMode}</p>
+                  </div>
+                  {payment.amount}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         <div className="pt-5 border-t ">
           <div className="flex justify-between py-3 items-center">
-            <p>Party Balance</p>₹ {tripDetails?.partyBalance}
+            <p>Pending Party Balance</p>₹ {tripDetails?.partyBalance}
           </div>
         </div>
       </div>
@@ -198,22 +286,31 @@ const Page = () => {
         <div className="w-full p-5 gap-y-2 border rounded-md">
           <div className="flex justify-between pb-5 border-b items-center">
             <p>Trip Profit</p>
-            <Button>Add Expense</Button>
+            <AddExpenseDialogComponent />
           </div>
 
           <div className="">
             <div className="flex justify-between py-3 items-center">
-              <p>(+) Revenue</p>
-              {"₹0"}
+              <p>(+) Revenue</p>₹ {tripDetails?.partyFreightAmount}
             </div>
-            <div className="flex justify-between py-3 border-b items-center">
-              <p>(-) Expense</p>
-              {"₹0"}
+            <div>
+              <div className="flex justify-between py-3 border-b items-center mb-2">
+                <p>(-) Expense</p>₹ {tripDetails?.totalExpenseAmount}
+              </div>
+              <div className="flex flex-col gap-y-2 border rounded-md p-5 mb-2 bg-gray-100">
+                {expenses?.map((expense) => (
+                  <div className="flex justify-between w-full border-b pb-2">
+                    <div className="flex gap-3 justify-center items-center">
+                      <p className=" capitalize">{expense.expenseType}</p>
+                    </div>
+                    ₹ {expense.amount}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <div className="flex justify-between py-3 border-t items-center">
-            <p>(-) Profit</p>
-            {"₹0"}
+            <p>Profit</p>₹ {tripDetails?.partyFreightAmount}
           </div>
         </div>
 

@@ -110,7 +110,9 @@ model Trip {
   from      String
   to        String
   partyFreightAmount Float
-  partyBalance Float 
+  partyBalance Float
+  totalExpenseAmount Float
+  
   lrNumber String?
   material String?
   notes String?
@@ -128,8 +130,17 @@ model Trip {
   truck Truck @relation(fields: [truckId], references: [id])
   truckId String @db.ObjectId
 
+  expenses Expense[]
   //transactions of the Trip
   transactions TripTransaction[]
+}
+
+model Expense{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  amount Float
+  expenseType ExpenseType
+  trip Trip @relation(fields: [tripId], references: [id])
+  tripId String @db.ObjectId
 }
 
 model TripTransaction{
@@ -161,6 +172,21 @@ enum TripTransactionType{
   CHARGE
   PAYMENT
   EXPENSE
+}
+
+enum ExpenseType{
+  Brokerage
+  Detention_Charges
+  Driver_Bhatta
+  Driver_Payment
+  Fuel_Expense
+  Loading_Charges
+  Unloading_Charges
+  Toll_Expense
+  RTO_Expense
+  Repair_Expense
+  Weight_Charges
+  Police_Charges
 }
 
 enum TransactionMode{

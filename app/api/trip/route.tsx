@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
           },
         },
 
+        totalExpenseAmount: 0,
         partyFreightAmount,
         startKMSReadings,
         partyBalance,
@@ -85,6 +86,8 @@ export async function POST(req: NextRequest) {
         vendor: true,
         driver: true,
         party: true,
+        truck: true,
+        transactions: true,
       },
     });
 

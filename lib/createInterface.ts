@@ -1,6 +1,7 @@
 import { TransactionMode } from "@prisma/client";
 import { TransactionType } from "@prisma/client";
 import { TripTransactionType } from "@prisma/client";
+import { ExpenseType } from "@prisma/client";
 
 export interface Trip {
   from: string;
@@ -25,4 +26,10 @@ export interface TripTransaction {
   transactionMode: TransactionMode;
   transactionDescription: string;
   partyBalance: number;
+}
+
+export interface Expense {
+  amount: number;
+  expenseType: ExpenseType;
+  tripId: string;
 }

@@ -21,6 +21,7 @@ export async function GET(
         party: true,
         truck: true,
         transactions: true,
+        expenses: true,
       },
     });
 
@@ -61,6 +62,7 @@ export async function PUT(
     } = body;
 
     var newPartyBalance: number = 0;
+    var newExpense: number = 0;
 
     switch (tripTransactionType) {
       case "ADVANCE":
@@ -75,6 +77,10 @@ export async function PUT(
         newPartyBalance = partyBalance - amount;
         break;
 
+      case "EXPENSE":
+        newExpense = amount;
+        break;
+
       default:
         break;
     }
@@ -83,7 +89,12 @@ export async function PUT(
       where: {
         id: context.params.id,
       },
-      data: { partyBalance: newPartyBalance },
+      data: {
+        partyBalance: newPartyBalance,
+        totalExpenseAmount: {
+          increment: newExpense,
+        },
+      },
     });
 
     return NextResponse.json(

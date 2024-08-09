@@ -30,6 +30,20 @@ export interface Trip {
   lrNumber: String | null;
   material: String | null;
   notes: String | null;
+  transactions: TripTransaction[];
+  totalExpenseAmount: number;
+}
+
+export interface TripTransaction {
+  id: string;
+  tripId: string;
+  amount: number;
+  tripTransactionType: string;
+  transactionType: string;
+  transactionDate: string;
+  transactionMode: string;
+  transactionDescription: string;
+  partyBalance: number;
 }
 
 export interface VendorDetails {
