@@ -18,6 +18,28 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+
+interface ChartConfiguration {
+  money: {
+    label: string;
+  };
+
+  stateConfig: {
+    label: string;
+    color: string;
+  };
+}
+interface ChartData {
+  state: string;
+  money: number;
+  fill: string;
+}
+interface PieChartComponentProps {
+  title: string;
+  duration: string;
+  chartData: ChartData[];
+}
+
 const chartData = [
   { state: "onTime", shipments: 275, fill: "var(--color-onTime)" },
   { state: "runningAhead", shipments: 200, fill: "var(--color-runningAhead)" },
@@ -65,11 +87,11 @@ export function PieChartComponent() {
         >
           <PieChart>
             <ChartTooltip
-            wrapperStyle={{
+              wrapperStyle={{
                 display: "flex",
                 gap: "0.5rem",
                 width: "100px",
-            }}
+              }}
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />

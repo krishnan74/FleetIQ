@@ -14,7 +14,7 @@ import Link from "next/link";
 import { CiCircleChevRight } from "react-icons/ci";
 import TripProgress from "../components/TripProgress";
 
-const page = () => {
+const Page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
   const pathname = usePathname();
   const id = pathname.split("/")[2];
@@ -155,6 +155,21 @@ const page = () => {
             <p>Freight Amount</p>
             {"₹0"}
           </div>
+
+          <div className="flex justify-between py-3 items-center">
+            <p>(-) Advance</p>
+            {"₹0"}
+          </div>
+
+          <div className="flex justify-between py-3 items-center">
+            <p>(+) Charges</p>
+            {"₹0"}
+          </div>
+
+          <div className="flex justify-between py-3 items-center">
+            <p>(-) Payments</p>
+            {"₹0"}
+          </div>
         </div>
       </div>
       <div className="w-[30%] flex flex-col gap-5">
@@ -201,4 +216,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
