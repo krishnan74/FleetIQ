@@ -23,6 +23,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import prisma from "@/lib/prisma";
 import axios from "axios";
 import {
   PartyDetails,
@@ -32,93 +33,59 @@ import {
 } from "@/lib/interface";
 
 import { locations } from "@/lib/utils";
+import { DatePicker } from "@/components/DatePicker";
+import { TripStatus } from "@prisma/client";
 
-interface Trip {
-  vendorId: string;
-  partyId: string;
-  driverId: string;
-  truckId: string;
-  from: string;
-  to: string;
-}
+import { usePathname } from "next/navigation";
+
+
 
 const CompleteTripDialogComponent = () => {
   const { toast } = useToast();
+  const pathname = usePathname();
+  const id = pathname.split("/")[2];
+
   const [open, setOpen] = useState(false);
 
-  const [vendors, setVendors] = useState<VendorDetails[]>();
-  const [drivers, setDrivers] = useState<DriverDetails[]>();
-  const [parties, setParties] = useState<PartyDetails[]>();
-  const [trucks, setTrucks] = useState<Truck[]>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    undefined
+  );
 
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const fetchData = async () => {
-    try {
-      const [vendorResponse, driverResponse, partyResponse, truckResponse] =
-        await Promise.all([
-          axios.get("/api/vendor/"),
-          axios.get("/api/driver/"),
-          axios.get("/api/party/"),
-          axios.get("/api/truck/"),
-        ]);
-
-      setVendors(vendorResponse.data.data);
-      setDrivers(driverResponse.data.data);
-      setParties(partyResponse.data.data);
-      setTrucks(truckResponse.data.data);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch data.",
-      });
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const [formData, setFormData] = useState<Trip>({
-    from: "",
-    to: "",
-    vendorId: "",
-    driverId: "",
-    partyId: "",
-    truckId: "",
-  });
-
-  const handleChange = (name: string, value: string) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("Form data:", formData);
+    const formattedDate = selectedDate ? selectedDate.toISOString() : "";
+
+    const formData = {
+      status: TripStatus.COMPLETED,
+      completedAt: formattedDate,
+    }
 
     try {
-      const response = await axios.post("/api/trip/", formData);
-      if (response.data.message === "success") {
+
+      const updateResponse = await axios.put(`/api/trip/${id}`, formData);
+      
+      if (updateResponse.data.message === "success") {
         toast({
-          title: "Trip created successfully",
-          description: `From: ${response.data.data.from} | To: ${response.data.data.to}`,
+          title: "Trip updated successfully",
+          description: `Current party balance is ${updateResponse.data.data.partyBalance}`,
         });
         setOpen(false); // Close the dialog on success
       } else {
         toast({
-          title: "Trip creation failed",
+          title: "Trip updation failed",
           description: "Please try again.",
         });
       }
+
     } catch (error) {
       toast({
         title: "Error",
-        description: "An error occurred while creating the trip.",
+        description: "An error occurred while updating the trip.",
       });
-      console.error("Error while creating trip:", error);
+      console.error("Error while updating trip:", error);
     }
   };
 
@@ -137,139 +104,25 @@ const CompleteTripDialogComponent = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="font-bold text-2xl pb-10 border-b mb-5">
-              Add Trip Details
+              Complete Trip
             </DialogTitle>
             <DialogDescription>
               <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-x-5 gap-y-5">
-                  <div className="flex flex-col">
-                    <label htmlFor="party">Select Party</label>
-                    <Select
-                      value={formData.partyId}
-                      onValueChange={(value) => handleChange("partyId", value)}
+              <div className="flex-1">
+                    <label
+                      htmlFor="transactionDate"
+                      className="text-gray-700 font-medium"
                     >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select a party" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {parties?.map((party) => (
-                            <SelectItem key={party.id} value={party.id}>
-                              {party.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="vendor">Select Vendor</label>
-                    <Select
-                      value={formData.vendorId}
-                      onValueChange={(value) => handleChange("vendorId", value)}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select a vendor" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {vendors?.map((vendor) => (
-                            <SelectItem key={vendor.id} value={vendor.id}>
-                              {vendor.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="driver">Select Driver</label>
-                    <Select
-                      value={formData.driverId}
-                      onValueChange={(value) => handleChange("driverId", value)}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select a driver" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {drivers?.map((driver) => (
-                            <SelectItem key={driver.id} value={driver.id}>
-                              {driver.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="truck">
-                      Select Truck Registration Number
+                      Completion Date
                     </label>
-                    <Select
-                      value={formData.truckId}
-                      onValueChange={(value) => handleChange("truckId", value)}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select a Truck Registration Number" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {trucks?.map((truck) => (
-                            <SelectItem key={truck.id} value={truck.id}>
-                              {truck.registrationNumber}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <div className="mt-3">
+                      <DatePicker
+                        date={selectedDate}
+                        setDate={setSelectedDate}
+                      />
+                    </div>
                   </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="from">From</label>
-                    <Select
-                      value={formData.from}
-                      onValueChange={(value) => handleChange("from", value)}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select Origin" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {locations?.map((location) => (
-                            <SelectItem key={location} value={location}>
-                              {location}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="to">To</label>
-                    <Select
-                      value={formData.to}
-                      onValueChange={(value) => handleChange("to", value)}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select Destination" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {locations?.map((location) => (
-                            <SelectItem key={location} value={location}>
-                              {location}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                  
 
                 <DialogFooter className="justify-end border-t pt-10">
                   <DialogClose asChild>
