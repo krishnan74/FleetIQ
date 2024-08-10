@@ -75,13 +75,13 @@ const AddPaymentDialogComponent = () =>
         const tripResponse = await axios.get(`/api/trip/${id}`);
         const partyBalance = tripResponse.data.data.partyBalance;
 
-        const updateResponse = await axios.put(`/api/trip/${id}`, {
+        const updateResponse = await axios.put(`/api/trip/transaction/${id}`, {
           ...formData,
           transactionDate: formattedDate,
           partyBalance: partyBalance,
         });
 
-        const tripTransactionResponse = await axios.post(`/api/trip/${id}`, {
+        const tripTransactionResponse = await axios.post(`/api/trip/transaction/${id}`, {
           ...formData,
           transactionDate: formattedDate,
           partyBalance: partyBalance,

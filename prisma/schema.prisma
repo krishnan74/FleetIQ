@@ -119,6 +119,7 @@ model Trip {
   startKMSReadings Float?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  completedAt DateTime?
 
   //references to other models
   vendor    Vendor     @relation(fields: [vendorId], references: [id])
@@ -158,6 +159,9 @@ model TripTransaction{
 enum TripStatus {
   PLANNED
   COMPLETED
+  POD_RECEIVED
+  POD_SUBMITTED
+  SETTLED
   CANCELLED
 }
 
