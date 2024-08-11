@@ -6,6 +6,7 @@ import { AvatarComponent } from "./Avatar";
 import AddPartyDialogComponent from "@/app/parties/components/AddPartyDialogComponent";
 import AddTripDialogComponent from "@/app/trips/components/AddTripDialogComponent";
 import AddVendorDialogComponent from "@/app/vendors/components/AddVendorDialogComponent";
+import AddDriverDialogComponent from "@/app/drivers/components/AddDriverDialogComponent";
 import { usePathname } from "next/navigation";
 
 const NavBar = () => {
@@ -75,7 +76,7 @@ const NavBar = () => {
           </span>
         </p>
         <div className="flex items-center space-x-4">
-          <AddTripDialogComponent />
+          <AddDriverDialogComponent />
           <FaBell className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
           <PiLineVerticalThin className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
           <AvatarComponent />

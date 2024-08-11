@@ -4,6 +4,8 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import SideBar from "@/components/SideBar";
 import { RiBarChart2Fill } from "react-icons/ri";
+
+import { FaBell } from "react-icons/fa";
 import { BiTrip } from "react-icons/bi";
 import { FaTruck } from "react-icons/fa6";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
@@ -37,8 +39,10 @@ export default function RootLayout({
 
             { name: "Drivers", icon: <BsFillPeopleFill /> },
             { name: "Trucks", icon: <FaTruck /> },
-            { name: "Expenses", icon: <FaMoneyBillTransfer /> },
-            { name: "Invoices", icon: <FaFileInvoice /> },
+            {
+              name: "Remainders",
+              icon: <FaBell />,
+            },
           ]}
         />
 

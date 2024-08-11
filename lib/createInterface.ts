@@ -33,3 +33,18 @@ export interface Expense {
   expenseType: ExpenseType;
   tripId: string;
 }
+
+export interface DriverDetails {
+  name: string;
+  phone: string;
+  balance: number;
+}
+
+export interface DriverTransaction {
+  amount: number;
+  driverBalance: number;
+  transactionType: string;
+  transactionDate: string;
+  transactionMode: string;
+  transactionDescription: string;
+}

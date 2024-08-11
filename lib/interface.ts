@@ -1,3 +1,5 @@
+import { TripStatus } from "@prisma/client";
+
 export interface PartyDetails {
   id: string;
   name: string;
@@ -5,13 +7,16 @@ export interface PartyDetails {
   openingBalance: number;
   gstNumber: string;
   openingBalanceDate: Date;
+  totalBalance: number;
   PANNumber: string;
   companyName: string;
+  trips: Trip[];
+  transactions: TripTransaction[];
 }
 
 export interface Trip {
   id: string;
-  status: string;
+  status: TripStatus;
   vendorId: string;
   partyId: string;
   driverId: string;
@@ -46,6 +51,17 @@ export interface TripTransaction {
   partyBalance: number;
 }
 
+export interface DriverTransaction {
+  id: string;
+  driverId: string;
+  amount: number;
+  driverBalance: number;
+  transactionType: string;
+  transactionDate: string;
+  transactionMode: string;
+  transactionDescription: string;
+}
+
 export interface VendorDetails {
   id: string;
   name: string;
@@ -63,6 +79,7 @@ export interface DriverDetails {
   balance: number;
   trips: Trip[];
   truck: Truck;
+  transactions: DriverTransaction[];
 }
 
 export interface Truck {

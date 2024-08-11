@@ -64,6 +64,9 @@ const AddPartyDialogComponent = () => {
           title: "Party created successfully",
           description: `Name: ${response.data.data.name} | Opening Balance: ${response.data.data.openingBalance}`,
         });
+        setOpen(false);
+
+        window.location.reload();
       } else {
         toast({
           title: "Party creation failed",

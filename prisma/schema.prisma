@@ -88,6 +88,7 @@ model DriverTransaction{
   driver Driver @relation(fields: [driverId], references: [id])
   driverId String @db.ObjectId
   amount Float
+  driverBalance Float
   transactionType TransactionType
   transactionDate DateTime
   transactionMode TransactionMode
