@@ -1,19 +1,20 @@
+import { TripStatus } from "@prisma/client";
 import React from "react";
 
-interface TripStatus {
-  status: string;
+interface TripProgressProps {
+  status: TripStatus;
 }
 
-const TripProgress: React.FC<TripStatus> = ({ status }) => {
+const TripProgress: React.FC<TripProgressProps> = ({ status }) => {
   const steps = [
-    { name: "Started", date: "6 Aug 2024" },
-    { name: "Completed" },
-    { name: "POD Received" },
-    { name: "POD Submitted" },
-    { name: "Settled" },
+    { name: TripStatus.PLANNED, date: "6 Aug 2024" },
+    { name: TripStatus.COMPLETED },
+    { name: TripStatus.POD_RECEIVED },
+    { name: TripStatus.POD_SUBMITTED },
+    { name: TripStatus.SETTLED },
   ];
 
-  const getStatusIndex = (status: string) => {
+  const getStatusIndex = (status: TripStatus) => {
     return steps.findIndex((step) => step.name === status);
   };
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import axios from "axios";
 
 import {
@@ -12,6 +12,7 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { CiSearch } from "react-icons/ci";
 
 interface Truck {
   id: string;
@@ -47,11 +48,33 @@ interface Trip {
 }
 
 const Page = () => {
-  const [trips, setTrips] = useState<Trip[] | null>(null);
+  const [trips, setTrips] = useState<Trip[]>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   const router = useRouter();
+
+  const searchTrips = async (search: string) => {
+    //console.log("Searching parties with", search);
+    try {
+      if (search.trim() === "") {
+        await fetchTrips(); // Fetch all parties if search is empty
+      } else {
+        const filteredTrips = trips?.filter(
+          (trip) =>
+            trip.from.toLowerCase().includes(search.toLowerCase()) ||
+            trip.to.toLowerCase().includes(search.toLowerCase()) ||
+            trip.party.name.toLowerCase().includes(search.toLowerCase())
+        );
+        setTrips(filteredTrips);
+      }
+    } catch (error) {
+      setError("An error occurred while fetching parties");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchTrips = async () => {
     try {
@@ -76,12 +99,28 @@ const Page = () => {
     fetchTrips();
   }, []);
 
+  useEffect(() => {
+    searchTrips(search);
+  }, [search]);
+
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <>
       <div>
+        <div className="relative">
+          <CiSearch className="absolute top-3 left-3" />
+          <input
+            type="text"
+            placeholder="Search trip"
+            className="border py-2 pl-9 rounded-md w-full mb-5"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+          />
+        </div>
         <Table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
           <TableCaption className="text-gray-600">
             A list of your recent trips.

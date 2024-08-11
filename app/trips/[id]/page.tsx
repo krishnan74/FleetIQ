@@ -20,6 +20,7 @@ import { TripTransaction } from "@/lib/interface";
 import AddExpenseDialogComponent from "../components/AddExpenseDialogComponent";
 import { Expense } from "@/lib/createInterface";
 import { set } from "date-fns";
+import { TripStatus } from "@prisma/client";
 
 const Page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
@@ -177,7 +178,11 @@ const Page = () => {
           </div>
         </div>
 
-        <TripProgress status={tripDetails?.status ? tripDetails?.status : ""} />
+        <TripProgress
+          status={
+            tripDetails?.status ? tripDetails?.status : TripStatus.PLANNED
+          }
+        />
 
         <div className="flex gap-5 w-full justify-between">
           <div className="flex-1 ">

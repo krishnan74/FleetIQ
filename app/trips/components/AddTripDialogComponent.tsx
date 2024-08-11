@@ -110,7 +110,8 @@ const AddTripDialogComponent = () => {
           title: "Trip created successfully",
           description: `From: ${response.data.data.from} | To: ${response.data.data.to}`,
         });
-        setOpen(false); // Close the dialog on success
+        setOpen(false);
+        window.location.reload();
       } else {
         toast({
           title: "Trip creation failed",
