@@ -14,7 +14,12 @@ interface PartyDetails {
 
 export async function GET(req: NextRequest) {
   try {
-    const parties = await prisma.party.findMany();
+    const parties = await prisma.party.findMany({
+      include: {
+        trips: true,
+        transactions: true,
+      },
+    });
 
     return NextResponse.json(
       {

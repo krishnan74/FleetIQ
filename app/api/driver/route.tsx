@@ -25,14 +25,22 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const { name, phone } = body;
+    const { name, phone, balance, driverPay } = body;
+
+    let newBalance = 0;
+
+    if (driverPay === "driverPay") {
+      newBalance = balance;
+    } else {
+      newBalance = -balance;
+    }
 
     const driver = await prisma.driver.create({
       data: {
         name,
         phone,
         status: DriverStatus.AVAILABLE,
-        balance: 0,
+        balance: newBalance,
       },
     });
 
