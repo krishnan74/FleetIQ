@@ -1,4 +1,5 @@
 import { TripStatus } from "@prisma/client";
+import { ExpenseType } from "@prisma/client";
 
 export interface PartyDetails {
   id: string;
@@ -91,4 +92,11 @@ export interface Truck {
   vendorId: string;
   trips: Trip[];
   status: string;
+}
+
+export interface Expense {
+  id: string;
+  amount: number;
+  expenseType: ExpenseType;
+  tripId: string;
 }

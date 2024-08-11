@@ -18,8 +18,7 @@ import AddChargeDialogComponent from "../components/AddChargeDialogComponent";
 import AddPaymentDialogComponent from "../components/AddPaymentDialogComponent";
 import { TripTransaction } from "@/lib/interface";
 import AddExpenseDialogComponent from "../components/AddExpenseDialogComponent";
-import { Expense } from "@/lib/createInterface";
-import { set } from "date-fns";
+import { Expense } from "@/lib/interface";
 import { TripStatus } from "@prisma/client";
 
 const Page = () => {
@@ -38,31 +37,31 @@ const Page = () => {
       if (response.data.message === "success") {
         console.log(response.data.data);
         setTripDetails(response.data.data);
+
+        const advanceFilter = response.data.data?.transactions.filter(
+          (transaction: TripTransaction) =>
+            transaction.tripTransactionType === "ADVANCE"
+        );
+
+        setAdvances(advanceFilter);
+
+        const chargeFilter = response.data.data?.transactions.filter(
+          (transaction: TripTransaction) =>
+            transaction.tripTransactionType === "CHARGE"
+        );
+
+        setCharges(chargeFilter);
+
+        const paymentFilter = response.data.data?.transactions.filter(
+          (transaction: TripTransaction) =>
+            transaction.tripTransactionType === "PAYMENT"
+        );
+
+        setPayments(paymentFilter);
+
+        const expenseResponse: Expense[] = response.data.data?.expenses;
+        setExpenses(expenseResponse);
       }
-
-      const advanceFilter = response.data.data?.transactions.filter(
-        (transaction: TripTransaction) =>
-          transaction.tripTransactionType == "ADVANCE"
-      );
-
-      setAdvances(advanceFilter);
-
-      const chargeFilter = response.data.data?.transactions.filter(
-        (transaction: TripTransaction) =>
-          transaction.tripTransactionType == "CHARGE"
-      );
-
-      setCharges(chargeFilter);
-
-      const paymentFilter = response.data.data?.transactions.filter(
-        (transaction: TripTransaction) =>
-          transaction.tripTransactionType == "PAYMENT"
-      );
-
-      setPayments(paymentFilter);
-
-      const expenseResponse: Expense[] = response.data.data?.expenses;
-      setExpenses(expenseResponse);
     } catch (error) {
       console.error("An error occurred while fetching data", error);
     }
@@ -70,7 +69,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchTripDetails();
-  }, []);
+  }, [id]);
 
   return (
     <div className="flex gap-x-5">
@@ -115,7 +114,7 @@ const Page = () => {
 
           <div className="grid grid-cols-4 gap-3 mt-5">
             <div className="flex justify-between col-span-2 p-5 border rounded-md">
-              <div className="">
+              <div>
                 <p className="text-sm font-light">Party Name</p>
                 <p className="text-lg font-bold">{tripDetails?.party.name}</p>
               </div>
@@ -129,21 +128,21 @@ const Page = () => {
             </div>
 
             <div className="flex items-center justify-center p-5 col-span-1 border rounded-md">
-              <div className="">
+              <div>
                 <p className="text-sm font-light">LR Number</p>
                 <p className="text-lg font-bold">{tripDetails?.lrNumber}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-center p-5 col-span-1 border rounded-md">
-              <div className="">
+              <div>
                 <p className="text-sm font-light">Material</p>
                 <p className="text-lg font-bold">{tripDetails?.material}</p>
               </div>
             </div>
 
             <div className="flex justify-between col-span-2 p-5 border rounded-md items-center">
-              <div className="">
+              <div>
                 <p className="text-lg font-bold">{tripDetails?.from}</p>
                 <p className="text-sm font-light">
                   {new Date(
@@ -162,11 +161,11 @@ const Page = () => {
             </div>
 
             <div className="flex justify-between col-span-2 p-5 border rounded-md">
-              <div className="">
+              <div>
                 <p className="text-sm font-light">Start KMs Reading</p>
                 <p className="text-lg font-bold">
                   {tripDetails?.startKMSReadings}{" "}
-                  <span className="text-sm ">kms</span>
+                  <span className="text-sm">kms</span>
                 </p>
               </div>
 
@@ -210,7 +209,10 @@ const Page = () => {
 
             <div className="flex flex-col gap-y-5 w-full">
               {advances?.map((advance) => (
-                <div className="flex justify-between w-full bg-gray-100 rounded-md p-5">
+                <div
+                  key={advance.id}
+                  className="flex justify-between w-full bg-gray-100 rounded-md p-5"
+                >
                   <div className="flex gap-3 justify-center items-center">
                     <p className="font-bold text-sm">
                       {new Date(advance.transactionDate)
@@ -218,7 +220,7 @@ const Page = () => {
                         .substring(3)}
                     </p>
                     <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                    <p className=" capitalize">{advance.transactionMode}</p>
+                    <p className="capitalize">{advance.transactionMode}</p>
                   </div>
                   {advance.amount}
                 </div>
@@ -237,7 +239,10 @@ const Page = () => {
 
             <div className="flex flex-col gap-y-5 w-full">
               {charges?.map((charge) => (
-                <div className="flex justify-between w-full bg-gray-100 rounded-md p-5">
+                <div
+                  key={charge.id}
+                  className="flex justify-between w-full bg-gray-100 rounded-md p-5"
+                >
                   <div className="flex gap-3 justify-center items-center">
                     <p className="font-bold text-sm">
                       {new Date(charge.transactionDate)
@@ -245,7 +250,7 @@ const Page = () => {
                         .substring(3)}
                     </p>
                     <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                    <p className=" capitalize">{charge.transactionMode}</p>
+                    <p className="capitalize">{charge.transactionMode}</p>
                   </div>
                   {charge.amount}
                 </div>
@@ -264,7 +269,10 @@ const Page = () => {
 
             <div className="flex flex-col gap-y-5 w-full">
               {payments?.map((payment) => (
-                <div className="flex justify-between w-full bg-gray-100 rounded-md p-5">
+                <div
+                  key={payment.id}
+                  className="flex justify-between w-full bg-gray-100 rounded-md p-5"
+                >
                   <div className="flex gap-3 justify-center items-center">
                     <p className="font-bold text-sm">
                       {new Date(payment.transactionDate)
@@ -272,7 +280,7 @@ const Page = () => {
                         .substring(3)}
                     </p>
                     <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                    <p className=" capitalize">{payment.transactionMode}</p>
+                    <p className="capitalize">{payment.transactionMode}</p>
                   </div>
                   {payment.amount}
                 </div>
@@ -281,7 +289,7 @@ const Page = () => {
           </div>
         </div>
 
-        <div className="pt-5 border-t ">
+        <div className="pt-5 border-t">
           <div className="flex justify-between py-3 items-center">
             <p>Pending Party Balance</p>₹ {tripDetails?.partyBalance}
           </div>
@@ -294,7 +302,7 @@ const Page = () => {
             <AddExpenseDialogComponent />
           </div>
 
-          <div className="">
+          <div>
             <div className="flex justify-between py-3 items-center">
               <p>(+) Revenue</p>₹ {tripDetails?.partyFreightAmount}
             </div>
@@ -304,9 +312,12 @@ const Page = () => {
               </div>
               <div className="flex flex-col gap-y-2 border rounded-md p-5 mb-2 bg-gray-100">
                 {expenses?.map((expense) => (
-                  <div className="flex justify-between w-full border-b pb-2">
+                  <div
+                    key={expense.id}
+                    className="flex justify-between w-full border-b pb-2"
+                  >
                     <div className="flex gap-3 justify-center items-center">
-                      <p className=" capitalize">{expense.expenseType}</p>
+                      <p className="capitalize">{expense.expenseType}</p>
                     </div>
                     ₹ {expense.amount}
                   </div>
