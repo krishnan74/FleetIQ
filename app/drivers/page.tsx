@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import axios from "axios";
 
 import {
@@ -12,22 +12,42 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { CiSearch } from "react-icons/ci";
 import { DriverDetails } from "@/lib/interface";
 
 const Page = () => {
-  const [drivers, setdrivers] = useState<DriverDetails[] | null>(null);
+  const [drivers, setDrivers] = useState<DriverDetails[]>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   const router = useRouter();
 
-  const fetchdrivers = async () => {
+  const fetchDrivers = async () => {
     try {
       const response = await axios.get("/api/driver");
       if (response.data.message === "success") {
-        setdrivers(response.data.data);
+        setDrivers(response.data.data);
       } else {
         setError("Failed to fetch drivers");
+      }
+    } catch (error) {
+      setError("An error occurred while fetching drivers");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const searchDrivers = async (search: string) => {
+    //console.log("Searching drivers with", search);
+    try {
+      if (search.trim() === "") {
+        await fetchDrivers(); // Fetch all drivers if search is empty
+      } else {
+        const filteredDrivers = drivers?.filter((driver) =>
+          driver.name.toLowerCase().includes(search.toLowerCase())
+        );
+        setDrivers(filteredDrivers);
       }
     } catch (error) {
       setError("An error occurred while fetching drivers");
@@ -41,14 +61,31 @@ const Page = () => {
   };
 
   useEffect(() => {
-    fetchdrivers();
+    fetchDrivers();
   }, []);
+
+  useEffect(() => {
+    searchDrivers(search);
+  }, [search]);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <div>
+      <div className="relative">
+        <CiSearch className="absolute top-3 left-3" />
+        <input
+          type="text"
+          placeholder="Search driver by name"
+          className="border py-2 pl-9 rounded-md w-full mb-5"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
+      </div>
+
       <Table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
         <TableCaption className="text-gray-600">
           A list of your recent drivers.
