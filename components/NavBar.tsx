@@ -8,6 +8,7 @@ import AddTripDialogComponent from "@/app/trips/components/AddTripDialogComponen
 import AddVendorDialogComponent from "@/app/vendors/components/AddVendorDialogComponent";
 import AddDriverDialogComponent from "@/app/drivers/components/AddDriverDialogComponent";
 import { usePathname } from "next/navigation";
+import AddTruckDialogComponent from "@/app/trucks/components/AddTruckDialogComponent";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -94,7 +95,7 @@ const NavBar = () => {
           </span>
         </p>
         <div className="flex items-center space-x-4">
-          <AddTripDialogComponent />
+          <AddTruckDialogComponent />
           <FaBell className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
           <PiLineVerticalThin className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
           <AvatarComponent />

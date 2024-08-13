@@ -1,7 +1,12 @@
-import { TransactionMode } from "@prisma/client";
-import { TransactionType } from "@prisma/client";
-import { TripTransactionType } from "@prisma/client";
-import { ExpenseType } from "@prisma/client";
+import {
+  TransactionMode,
+  TransactionType,
+  TripTransactionType,
+  ExpenseType,
+  TruckOwnership,
+  TruckType,
+  TruckStatus,
+} from "@prisma/client";
 
 export interface Trip {
   from: string;
@@ -47,4 +52,12 @@ export interface DriverTransaction {
   transactionDate: string;
   transactionMode: string;
   transactionDescription: string;
+}
+
+export interface Truck {
+  registrationNumber: string;
+  truckType: TruckType;
+  truckOwnerShip: TruckOwnership;
+  driverId: string;
+  vendorId: string;
 }

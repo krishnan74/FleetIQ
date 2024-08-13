@@ -4,6 +4,11 @@ import prisma from "@/lib/prisma";
 export async function GET(req: NextRequest) {
   try {
     const vendors = await prisma.vendor.findMany({
+      where: {
+        name: {
+          not: "Own Vendor",
+        },
+      },
       include: {
         trips: true,
         trucks: true,
