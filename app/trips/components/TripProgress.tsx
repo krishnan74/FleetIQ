@@ -21,47 +21,49 @@ const TripProgress: React.FC<TripProgressProps> = ({ status }) => {
   const currentStatusIndex = getStatusIndex(status);
 
   return (
-    <div className="flex items-center space-x-4">
-      {steps.map((step, index) => (
-        <div key={index} className="flex flex-col items-center">
-          <div
-            className={`w-6 h-6 flex items-center justify-center rounded-full 
+    <div className="relative flex justify-center my-5 ">
+      <div className="flex items-start space-x-10 z-10">
+        {steps.map((step, index) => (
+          <div key={index} className="flex flex-col items-center ">
+            <div
+              className={`w-6 h-6 flex items-center justify-center rounded-full 
                         ${
                           index <= currentStatusIndex
                             ? "bg-green-500"
                             : "bg-gray-300"
                         }`}
-          >
-            {index <= currentStatusIndex && (
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
+            >
+              {index <= currentStatusIndex && (
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+              )}
+            </div>
+            <div
+              className={`mt-2 text-xs ${
+                index <= currentStatusIndex ? "text-black" : "text-gray-500"
+              }`}
+            >
+              {step.name}
+            </div>
+            {step.date && (
+              <div className="text-xs text-gray-500">{step.date}</div>
             )}
           </div>
-          <div
-            className={`mt-2 text-xs ${
-              index <= currentStatusIndex ? "text-black" : "text-gray-500"
-            }`}
-          >
-            {step.name}
-          </div>
-          {step.date && (
-            <div className="text-xs text-gray-500">{step.date}</div>
-          )}
-        </div>
-      ))}
-      <div className="flex-grow h-px bg-gray-300 mx-2"></div>
+        ))}
+      </div>
+      <div className="absolute w-[100%] h-[2px] z-0 bg-gray-300 mx-2 top-2.5"></div>
     </div>
   );
 };

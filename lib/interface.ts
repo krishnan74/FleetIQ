@@ -25,6 +25,7 @@ export interface Trip {
   createdAt: string;
   from: string;
   to: string;
+  profit: number;
   updatedAt: string;
   truck: Truck;
   party: PartyDetails;
@@ -100,3 +101,9 @@ export interface Expense {
   expenseType: ExpenseType;
   tripId: string;
 }
+
+export interface DataFormProps {
+  setRefresh: SetState<boolean>;
+  refresh: boolean;
+}
+type SetState<T> = React.Dispatch<React.SetStateAction<T>>;

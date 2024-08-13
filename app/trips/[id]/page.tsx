@@ -20,6 +20,7 @@ import { TripTransaction } from "@/lib/interface";
 import AddExpenseDialogComponent from "../components/AddExpenseDialogComponent";
 import { Expense } from "@/lib/interface";
 import { TripStatus } from "@prisma/client";
+import TripBillDialogComponent from "../components/TripBillDialogComponent";
 
 const Page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
@@ -69,7 +70,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchTripDetails();
-  }, [id]);
+  }, [refresh]);
 
   return (
     <div className="flex gap-x-5">
@@ -109,7 +110,6 @@ const Page = () => {
         <div className="flex flex-col p-5 rounded-md border">
           <div className="flex justify-between border-b pb-5">
             <p className="text-2xl font-bold">{tripDetails?.party.name}</p>
-            <AddTripDialogComponent />
           </div>
 
           <div className="grid grid-cols-4 gap-3 mt-5">
@@ -185,16 +185,19 @@ const Page = () => {
 
         <div className="flex gap-5 w-full justify-between">
           <div className="flex-1 ">
-            <CompleteTripDialogComponent />
+            <CompleteTripDialogComponent
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
           </div>
 
           <div className="flex-1">
-            <CompleteTripDialogComponent />
+            <TripBillDialogComponent />
           </div>
         </div>
 
         <div>
-          <div className="flex justify-between py-3 items-center">
+          <div className="flex justify-between py-3 items-center border-b mb-3">
             <p>Freight Amount</p>₹ {tripDetails?.partyFreightAmount}
           </div>
 
@@ -202,9 +205,16 @@ const Page = () => {
             <div className="flex justify-between w-full mb-5">
               <div className="flex gap-1">
                 <p>( - ) Advance</p>
-                <AddAdvanceDialogComponent />
+                <AddAdvanceDialogComponent
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
               </div>
-              {"₹0"}
+              <p className="text-red-500">
+                {" "}
+                - ₹{" "}
+                {advances?.reduce((acc, advance) => acc + advance.amount, 0)}
+              </p>
             </div>
 
             <div className="flex flex-col gap-y-5 w-full">
@@ -222,7 +232,7 @@ const Page = () => {
                     <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
                     <p className="capitalize">{advance.transactionMode}</p>
                   </div>
-                  {advance.amount}
+                  ₹ {advance.amount}
                 </div>
               ))}
             </div>
@@ -232,9 +242,14 @@ const Page = () => {
             <div className="flex justify-between w-full mb-5">
               <div className="flex gap-1">
                 <p>( + ) Charges</p>
-                <AddChargeDialogComponent />
+                <AddChargeDialogComponent
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
               </div>
-              {"₹0"}
+              <p className="text-green-500">
+                + ₹ {charges?.reduce((acc, charge) => acc + charge.amount, 0)}
+              </p>
             </div>
 
             <div className="flex flex-col gap-y-5 w-full">
@@ -252,7 +267,7 @@ const Page = () => {
                     <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
                     <p className="capitalize">{charge.transactionMode}</p>
                   </div>
-                  {charge.amount}
+                  ₹ {charge.amount}
                 </div>
               ))}
             </div>
@@ -262,9 +277,16 @@ const Page = () => {
             <div className="flex justify-between w-full mb-5">
               <div className="flex gap-1">
                 <p>( - ) Payments</p>
-                <AddPaymentDialogComponent />
+                <AddPaymentDialogComponent
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
               </div>
-              {"₹0"}
+              <p className="text-red-500">
+                {" "}
+                - ₹{" "}
+                {payments?.reduce((acc, payment) => acc + payment.amount, 0)}
+              </p>
             </div>
 
             <div className="flex flex-col gap-y-5 w-full">
@@ -282,7 +304,7 @@ const Page = () => {
                     <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
                     <p className="capitalize">{payment.transactionMode}</p>
                   </div>
-                  {payment.amount}
+                  ₹ {payment.amount}
                 </div>
               ))}
             </div>
@@ -299,7 +321,10 @@ const Page = () => {
         <div className="w-full p-5 gap-y-2 border rounded-md">
           <div className="flex justify-between pb-5 border-b items-center">
             <p>Trip Profit</p>
-            <AddExpenseDialogComponent />
+            <AddExpenseDialogComponent
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
           </div>
 
           <div>
@@ -326,7 +351,7 @@ const Page = () => {
             </div>
           </div>
           <div className="flex justify-between py-3 border-t items-center">
-            <p>Profit</p>₹ {tripDetails?.partyFreightAmount}
+            <p>Profit</p>₹ {tripDetails?.profit}
           </div>
         </div>
 
