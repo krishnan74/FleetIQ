@@ -39,9 +39,7 @@ import {
   TripTransactionType,
 } from "@prisma/client";
 
-interface dataFormProps {
-  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { DataFormProps } from "@/lib/interface";
 
 const expenseTypes = [
   { id: "1", name: ExpenseType.Brokerage },
@@ -58,7 +56,10 @@ const expenseTypes = [
   { id: "12", name: ExpenseType.Police_Charges },
 ];
 
-const AddExpenseDialogComponent = () =>
+const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
+  refresh,
+  setRefresh,
+}) =>
   //setRefresh: React.Dispatch<React.SetStateAction<boolean>>
   {
     const pathname = usePathname();
@@ -107,17 +108,14 @@ const AddExpenseDialogComponent = () =>
         const tripResponse = await axios.get(`/api/trip/${id}`);
         const partyBalance = tripResponse.data.data.partyBalance;
 
-        const updateResponse = await axios.put(`/api/trip/transaction/${id}`, {
-          ...formData,
-          transactionDate: formattedDate,
-          partyBalance: partyBalance,
-        });
-
-        const tripTransactionResponse = await axios.post(`/api/trip/transaction/${id}`, {
-          ...formData,
-          transactionDate: formattedDate,
-          partyBalance: partyBalance,
-        });
+        const tripTransactionResponse = await axios.post(
+          `/api/trip/transaction/${id}`,
+          {
+            ...formData,
+            transactionDate: formattedDate,
+            partyBalance: partyBalance,
+          }
+        );
 
         const expenseResponse = await axios.post(`/api/trip/expense/${id}`, {
           amount: formData.amount,
@@ -125,12 +123,13 @@ const AddExpenseDialogComponent = () =>
           tripId: id,
         });
 
-        if (updateResponse.data.message === "success") {
+        if (expenseResponse.data.message === "success") {
           toast({
-            title: "Trip updated successfully",
-            description: `Current party balance is ${updateResponse.data.data.partyBalance}`,
+            title: "Trip Expenses added successfully",
+            description: `Current trip profit is ${tripResponse.data.data.profit}`,
           });
-          setOpen(false); // Close the dialog on success
+          setOpen(false);
+          setRefresh(!true);
         } else {
           toast({
             title: "Trip updation failed",
@@ -140,9 +139,9 @@ const AddExpenseDialogComponent = () =>
       } catch (error) {
         toast({
           title: "Error",
-          description: "An error occurred while creating the trip.",
+          description: "An error occurred while adding expense to the trip.",
         });
-        console.error("Error while creating trip:", error);
+        console.error("Error while adding expense to the trip:", error);
       }
     };
 

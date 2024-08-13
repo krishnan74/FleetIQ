@@ -37,21 +37,19 @@ import { DatePicker } from "@/components/DatePicker";
 import { TripStatus } from "@prisma/client";
 
 import { usePathname } from "next/navigation";
+import { DataFormProps } from "@/lib/interface";
 
-
-
-const CompleteTripDialogComponent = () => {
+const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
+  setRefresh,
+  refresh,
+}) => {
   const { toast } = useToast();
   const pathname = usePathname();
   const id = pathname.split("/")[2];
 
   const [open, setOpen] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    undefined
-  );
-
-
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,25 +59,24 @@ const CompleteTripDialogComponent = () => {
     const formData = {
       status: TripStatus.COMPLETED,
       completedAt: formattedDate,
-    }
+    };
 
     try {
-
       const updateResponse = await axios.put(`/api/trip/${id}`, formData);
-      
+
       if (updateResponse.data.message === "success") {
         toast({
           title: "Trip updated successfully",
           description: `Current party balance is ${updateResponse.data.data.partyBalance}`,
         });
-        setOpen(false); // Close the dialog on success
+        setOpen(false);
+        setRefresh(!refresh);
       } else {
         toast({
           title: "Trip updation failed",
           description: "Please try again.",
         });
       }
-
     } catch (error) {
       toast({
         title: "Error",
@@ -90,13 +87,13 @@ const CompleteTripDialogComponent = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className=" ">
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
+        <DialogTrigger className="w-full">
           <Button
             onClick={() => setOpen(true)}
             variant={"secondary"}
-            className="w-full"
+            className="w-full border"
           >
             Complete Trip
           </Button>
@@ -108,21 +105,17 @@ const CompleteTripDialogComponent = () => {
             </DialogTitle>
             <DialogDescription>
               <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-              <div className="flex-1">
-                    <label
-                      htmlFor="transactionDate"
-                      className="text-gray-700 font-medium"
-                    >
-                      Completion Date
-                    </label>
-                    <div className="mt-3">
-                      <DatePicker
-                        date={selectedDate}
-                        setDate={setSelectedDate}
-                      />
-                    </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="transactionDate"
+                    className="text-gray-700 font-medium"
+                  >
+                    Completion Date
+                  </label>
+                  <div className="mt-3">
+                    <DatePicker date={selectedDate} setDate={setSelectedDate} />
                   </div>
-                  
+                </div>
 
                 <DialogFooter className="justify-end border-t pt-10">
                   <DialogClose asChild>

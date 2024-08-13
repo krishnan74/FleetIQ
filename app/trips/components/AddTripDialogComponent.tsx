@@ -33,6 +33,7 @@ import {
 
 import { locations } from "@/lib/utils";
 import { Trip } from "@/lib/createInterface";
+import { DataFormProps } from "@/lib/interface";
 
 const AddTripDialogComponent = () => {
   const { toast } = useToast();
