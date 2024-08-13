@@ -27,6 +27,21 @@ export async function POST(
       },
     });
 
+    const trip = await prisma.trip.update({
+      where: {
+        id: context.params.id,
+      },
+      data: {
+        totalExpenseAmount: {
+          increment: amount,
+        },
+
+        profit: {
+          decrement: amount,
+        },
+      },
+    });
+
     return NextResponse.json(
       {
         message: "success",
@@ -42,4 +57,3 @@ export async function POST(
     );
   }
 }
-

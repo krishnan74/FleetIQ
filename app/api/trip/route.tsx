@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
         from,
         to,
         status: TripStatus.PLANNED,
+        profit: partyFreightAmount,
         vendor: {
           connect: {
             id: vendorId,
