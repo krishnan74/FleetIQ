@@ -66,7 +66,7 @@ model PartyTransaction{
   party Party @relation(fields: [partyId], references: [id])
   partyId String @db.ObjectId
   amount Float
-  transactionType TransactionType
+  transactionType TripTransactionType
   transactionDate DateTime
   transactionMode TransactionMode
   transactionDescription String
@@ -123,6 +123,7 @@ model Trip {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   completedAt DateTime?
+  startedAt DateTime?
 
   //references to other models
   vendor    Vendor     @relation(fields: [vendorId], references: [id])
@@ -179,6 +180,7 @@ enum TripTransactionType{
   CHARGE
   PAYMENT
   EXPENSE
+  SETTLEMENT
 }
 
 enum ExpenseType{

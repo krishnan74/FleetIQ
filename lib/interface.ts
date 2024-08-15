@@ -7,7 +7,7 @@ export interface PartyDetails {
   phone: string;
   openingBalance: number;
   gstNumber: string;
-  openingBalanceDate: Date;
+  openingBalanceDate: string;
   totalBalance: number;
   PANNumber: string;
   companyName: string;
@@ -23,6 +23,8 @@ export interface Trip {
   driverId: string;
   truckId: string;
   createdAt: string;
+  completedAt: string;
+  startedAt: string;
   from: string;
   to: string;
   profit: number;
@@ -105,5 +107,7 @@ export interface Expense {
 export interface DataFormProps {
   setRefresh: SetState<boolean>;
   refresh: boolean;
+  tripId?: string;
+  partyId?: string;
 }
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
