@@ -146,7 +146,7 @@ const AddPaymentDialogComponent: React.FC<DataFormProps> = ({
                     htmlFor="transactionMode"
                     className="text-gray-700 font-medium mb-3"
                   >
-                    Payment Type
+                    Payment Mode
                   </label>
                   <RadioGroup
                     defaultValue={TransactionMode.CASH}
