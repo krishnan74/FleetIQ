@@ -1,6 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
-import { TripStatus } from "@prisma/client";
+import {
+  TransactionMode,
+  TripStatus,
+  TripTransactionType,
+} from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
@@ -43,9 +47,21 @@ export async function POST(req: NextRequest) {
       lrNumber,
       material,
       notes,
+      startedAt,
     } = body;
 
     const partyBalance = partyFreightAmount;
+
+    const party = await prisma.party.update({
+      where: {
+        id: partyId,
+      },
+      data: {
+        totalBalance: {
+          increment: partyFreightAmount,
+        },
+      },
+    });
 
     // Create the trip with the nested vendor
     const trip = await prisma.trip.create({
@@ -82,6 +98,7 @@ export async function POST(req: NextRequest) {
         lrNumber,
         material,
         notes,
+        startedAt,
       },
       include: {
         vendor: true,
@@ -89,6 +106,18 @@ export async function POST(req: NextRequest) {
         party: true,
         truck: true,
         transactions: true,
+      },
+    });
+
+    const partyTransaction = await prisma.partyTransaction.create({
+      data: {
+        partyId,
+        amount: partyFreightAmount,
+
+        transactionType: TripTransactionType.FREIGHT,
+        transactionDate: new Date().toISOString(),
+        transactionMode: TransactionMode.CASH,
+        transactionDescription: "Party Freight Amount",
       },
     });
 
