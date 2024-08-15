@@ -15,19 +15,38 @@ export async function PUT(
     const { amount, tripTransactionType, partyBalance } = body;
 
     var newPartyBalance: number = 0;
-    var newExpense: number = 0;
+    var newTotalBalance: number = 0;
+
+    const currentTrip = await prisma.trip.findUniqueOrThrow({
+      where: {
+        id: context.params.id,
+      },
+    });
+
+    const partyId = currentTrip.partyId;
+
+    const party = await prisma.party.findUniqueOrThrow({
+      where: {
+        id: partyId,
+      },
+    });
+
+    const totalBalance = party.totalBalance;
 
     switch (tripTransactionType) {
       case "ADVANCE":
         newPartyBalance = partyBalance - amount;
+        newTotalBalance = totalBalance - amount;
         break;
 
       case "CHARGE":
         newPartyBalance = partyBalance + amount;
+        newTotalBalance = totalBalance + amount;
         break;
 
       case "PAYMENT":
         newPartyBalance = partyBalance - amount;
+        newTotalBalance = totalBalance - amount;
         break;
 
       default:
@@ -76,7 +95,6 @@ export async function POST(
       transactionDate,
       transactionMode,
       transactionDescription,
-      partyBalance,
     } = body;
 
     const tripTransaction = await prisma.tripTransaction.create({

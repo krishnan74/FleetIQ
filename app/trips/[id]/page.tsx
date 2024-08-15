@@ -194,6 +194,7 @@ const Page = () => {
                     <CompleteTripDialogComponent
                       refresh={refresh}
                       setRefresh={setRefresh}
+                      tripId={tripDetails?.id}
                     />
                   );
 
@@ -202,6 +203,7 @@ const Page = () => {
                     <PODReceivedDialogComponent
                       refresh={refresh}
                       setRefresh={setRefresh}
+                      tripId={tripDetails?.id}
                     />
                   );
 
@@ -210,6 +212,7 @@ const Page = () => {
                     <PODSubmittedDialogComponent
                       refresh={refresh}
                       setRefresh={setRefresh}
+                      tripId={tripDetails?.id}
                     />
                   );
 
@@ -218,6 +221,7 @@ const Page = () => {
                     <SettleTripDialogComponent
                       refresh={refresh}
                       setRefresh={setRefresh}
+                      tripId={tripDetails?.id}
                     />
                   );
 

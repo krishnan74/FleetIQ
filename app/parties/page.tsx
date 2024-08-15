@@ -59,7 +59,7 @@ const Page = () => {
         const totalTrips = response.data.data.reduce(
           (acc: number, party: PartyDetails) => {
             const activeTrips = party.trips.filter(
-              (trip) => trip.status !== TripStatus.COMPLETED
+              (trip) => trip.status !== TripStatus.SETTLED
             ).length;
             return acc + activeTrips;
           },

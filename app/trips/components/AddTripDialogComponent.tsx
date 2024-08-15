@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/DatePicker";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import {
@@ -43,6 +44,9 @@ const AddTripDialogComponent = () => {
   const [drivers, setDrivers] = useState<DriverDetails[]>();
   const [parties, setParties] = useState<PartyDetails[]>();
   const [trucks, setTrucks] = useState<Truck[]>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -78,6 +82,7 @@ const AddTripDialogComponent = () => {
     driverId: "",
     partyId: "",
     truckId: "",
+    startedAt: "",
     partyFreightAmount: 0,
     startKMSReadings: 0,
     lrNumber: "",
@@ -104,8 +109,13 @@ const AddTripDialogComponent = () => {
 
     console.log("Form data:", formData);
 
+    const formattedDate = selectedDate ? selectedDate.toISOString() : "";
+
     try {
-      const response = await axios.post("/api/trip/", formData);
+      const response = await axios.post("/api/trip/", {
+        ...formData,
+        startedAt: formattedDate,
+      });
       if (response.data.message === "success") {
         toast({
           title: "Trip created successfully",
@@ -328,50 +338,86 @@ const AddTripDialogComponent = () => {
                     />
                   </div>
 
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="lrNumber"
-                      className="text-gray-700 font-medium"
+                  <div className="flex items-center col-span-2">
+                    <div className=" flex-1">
+                      <label
+                        htmlFor="startDate"
+                        className="text-gray-700 font-medium"
+                      >
+                        Start Date
+                      </label>
+                      <div className="mt-3">
+                        <DatePicker
+                          date={selectedDate}
+                          setDate={setSelectedDate}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowMore(true);
+                      }}
                     >
-                      LR Number
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.lrNumber?.toString()}
-                      onChange={(e) => handleChange("lrNumber", e.target.value)}
-                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
-                    />
+                      Add More Details
+                    </Button>
                   </div>
 
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="material"
-                      className="text-gray-700 font-medium"
-                    >
-                      Material
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.material?.toString()}
-                      onChange={(e) => handleChange("material", e.target.value)}
-                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
-                    />
-                  </div>
+                  {showMore && (
+                    <>
+                      <div className="flex flex-col">
+                        <label
+                          htmlFor="lrNumber"
+                          className="text-gray-700 font-medium"
+                        >
+                          LR Number
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.lrNumber?.toString()}
+                          onChange={(e) =>
+                            handleChange("lrNumber", e.target.value)
+                          }
+                          className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                        />
+                      </div>
 
-                  <div className="flex flex-col col-span-2">
-                    <label
-                      htmlFor="notes"
-                      className="text-gray-700 font-medium"
-                    >
-                      Notes
-                    </label>
-                    <textarea
-                      value={formData.notes?.toString()}
-                      onChange={(e) => handleChange("notes", e.target.value)}
-                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
-                      rows={4}
-                    />
-                  </div>
+                      <div className="flex flex-col">
+                        <label
+                          htmlFor="material"
+                          className="text-gray-700 font-medium"
+                        >
+                          Material
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.material?.toString()}
+                          onChange={(e) =>
+                            handleChange("material", e.target.value)
+                          }
+                          className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                        />
+                      </div>
+
+                      <div className="flex flex-col col-span-2">
+                        <label
+                          htmlFor="notes"
+                          className="text-gray-700 font-medium"
+                        >
+                          Notes
+                        </label>
+                        <textarea
+                          value={formData.notes?.toString()}
+                          onChange={(e) =>
+                            handleChange("notes", e.target.value)
+                          }
+                          className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                          rows={4}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <DialogFooter className="flex justify-end mt-6">
