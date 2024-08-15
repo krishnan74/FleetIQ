@@ -19,66 +19,61 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-interface ChartConfiguration {
-  money: {
-    label: string;
-  };
+import { Trip } from "@/lib/interface";
 
-  stateConfig: {
-    label: string;
-    color: string;
-  };
-}
-interface ChartData {
-  state: string;
-  money: number;
-  fill: string;
-}
 interface PieChartComponentProps {
-  title: string;
-  duration: string;
-  chartData: ChartData[];
+  trips: Trip[];
+  type: string;
 }
-
-const chartData = [
-  { state: "onTime", shipments: 275, fill: "var(--color-onTime)" },
-  { state: "runningAhead", shipments: 200, fill: "var(--color-runningAhead)" },
-  { state: "runningLate", shipments: 287, fill: "var(--color-runningLate)" },
-  { state: "inTransit", shipments: 173, fill: "var(--color-inTransit)" },
-];
 
 const chartConfig = {
-  shipments: {
-    label: "Shipments",
+  money: {
+    label: "Profit",
   },
-  onTime: {
-    label: "On Time",
-    color: "hsl(var(--chart-1))",
+  income: {
+    label: "Income",
+    color: "#3B82F6",
   },
-  runningAhead: {
-    label: "Running Ahead",
-    color: "hsl(var(--chart-2))",
-  },
-  runningLate: {
-    label: "Running Late",
-    color: "hsl(var(--chart-3))",
-  },
-  inTransit: {
-    label: "In-Transit",
-    color: "hsl(var(--chart-4))",
+
+  expense: {
+    label: "Expense",
+    color: "#EF4444",
   },
 } satisfies ChartConfig;
 
-export function PieChartComponent() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.shipments, 0);
-  }, []);
+export const PieChartComponent: React.FC<PieChartComponentProps> = ({
+  trips,
+  type,
+}) => {
+  const totalIncome = trips?.reduce(
+    (acc, curr) => acc + curr.partyFreightAmount,
+    0
+  );
+
+  const totalExpense = trips?.reduce(
+    (acc, curr) => acc + curr.totalExpenseAmount,
+    0
+  );
+
+  console.log(totalIncome, totalExpense);
+
+  const chartData = [
+    { state: "income", money: totalIncome, fill: "var(--color-income)" },
+
+    { state: "expense", money: totalExpense, fill: "var(--color-expense)" },
+  ];
+
+  const profit = totalIncome - totalExpense;
 
   return (
     <Card className="flex flex-col h-full">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Active Shipments</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Active Profit</CardTitle>
+        <CardDescription>{
+                    type === "monthlyTrips"
+            ? "Profit for this month"
+            : "Profit till now"
+          }</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -97,7 +92,7 @@ export function PieChartComponent() {
             />
             <Pie
               data={chartData}
-              dataKey="shipments"
+              dataKey="money"
               nameKey="state"
               innerRadius={60}
               strokeWidth={5}
@@ -115,16 +110,16 @@ export function PieChartComponent() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="fill-foreground text-2xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          ₹ {profit.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Shipments
+                          Profit
                         </tspan>
                       </text>
                     );
@@ -140,9 +135,9 @@ export function PieChartComponent() {
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing shipments for the last 6 months
+          Showing money for the last 6 months
         </div>
       </CardFooter>
     </Card>
   );
-}
+};
