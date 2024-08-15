@@ -19,48 +19,27 @@ import {
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { TripStatus } from "@prisma/client";
+import TripBillDialogComponent from "@/app/trips/components/TripBillDialogComponent";
+import PODReceivedDialogComponent from "@/app/trips/components/PODReceivedDialogComponent";
+import PODSubmittedDialogComponent from "@/app/trips/components/PODSubmittedDialogComponent";
+import SettleTripDialogComponent from "@/app/trips/components/SettleTripDialogComponent";
+import CompleteTripDialogComponent from "@/app/trips/components/CompleteTripDialogComponent";
 
-interface Truck {
-  id: string;
-  registrationNumber: string;
-  truckType: string;
-  truckOwnerShip: string;
-  driverId: string;
-  vendorId: string;
-  status: string;
-}
-
-interface Trip {
-  id: string;
-  status: string;
-  vendorId: string;
-  partyId: string;
-  driverId: string;
-  truckId: string;
-  createdAt: string;
-  from: string;
-  to: string;
-  updatedAt: string;
-  truck: Truck | null; // Ensure truck can be null or undefined
-}
-
-interface PartyDetails {
-  id: string;
-  name: string;
-  phone: string;
-  openingBalance: number;
-  openingBalanceDate: string;
-  gstNumber: string;
-  PANNumber: string;
-  companyName: string;
-  trips: Trip[];
-}
+import { PartyDetails, Trip, TripTransaction } from "@/lib/interface";
 
 const Page = () => {
   const [party, setParty] = useState<PartyDetails | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
+  const [partyTransactions, setPartyTransactions] = useState<TripTransaction[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refresh, setRefresh] = useState(false);
+
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [tripPayments, setTripPayments] = useState(0);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -82,6 +61,35 @@ const Page = () => {
       // Extract trip data
       const fetchedTrips = tripResponses.map((response) => response.data.data);
       setTrips(fetchedTrips);
+
+      // Fetch all transactions concurrently
+      const partyTransactions = fetchedTrips.map(
+        (trip: Trip) => trip.transactions
+      );
+
+      const tripPayments = partyTransactions.reduce(
+        (acc: number, transactions: TripTransaction[]) =>
+          acc +
+          transactions.reduce(
+            (acc: number, transaction: TripTransaction) =>
+              transaction.tripTransactionType == "PAYMENT" || "ADVANCE"
+                ? acc + transaction.amount
+                : acc,
+            0
+          ),
+        0
+      );
+
+      setTripPayments(tripPayments);
+
+      console.log("Party transactions:", partyTransactions);
+
+      const totalRevenue = fetchedTrips.reduce(
+        (acc: number, trip: Trip) => acc + trip.partyFreightAmount,
+        0
+      );
+
+      setTotalRevenue(totalRevenue);
     } catch (error) {
       setError("An error occurred while fetching data");
       console.error("Fetch error:", error);
@@ -96,92 +104,161 @@ const Page = () => {
 
   useEffect(() => {
     fetchPartyAndTrips();
-  }, [id]);
+  }, [refresh]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="flex flex-col p-8 bg-white w-full rounded-3xl">
-      <div className="flex justify-between items-center mb-8">
-        <p className="text-2xl font-bold">
-          Parties <br />
-          <span className="text-base font-normal text-[#666]">
-            10th July 2024
-          </span>
-        </p>
-        <div className="flex items-center">
-          <AppPartyDialogComponent />
-          <FaBell className="text-2xl ml-8" />
-          <PiLineVerticalThin className="text-2xl ml-4 mr-3" />
-          <AvatarComponent />
-          <p className="font-bold text-lg ml-4">Rajesh Kumar</p>
-        </div>
+    <div>
+      <div className="flex gap-5 mb-5">
+        <Link
+          href={`/parties/trips/${id}`}
+          className={`px-4 py-2 ${currentTab == "trips" ? "border-b" : " "}`}
+        >
+          Trips
+        </Link>
+        <Link
+          href={`/parties/passbook/${id}`}
+          className={`px-4 py-2 ${currentTab == "passbook" ? "border-b" : " "}`}
+        >
+          Passbook
+        </Link>
+
+        <Link
+          href={`/parties/partyDetails/${id}`}
+          className={`px-4 py-2 ${
+            currentTab == "partyDetails" ? "border-b" : " "
+          }`}
+        >
+          Party Details
+        </Link>
       </div>
 
-      <div>
-        <div className="flex gap-5 mb-5">
-          <Link
-            href={`/parties/trips/${id}`}
-            className={`px-4 py-2 ${currentTab == "trips" ? "border-b" : " "}`}
-          >
-            Trips
-          </Link>
-          <Link
-            href={`/parties/passbook/${id}`}
-            className={`px-4 py-2 ${
-              currentTab == "passbook" ? "border-b" : " "
-            }`}
-          >
-            Passbook
-          </Link>
-          <Link
-            href={`/parties/monthlyBalances/${id}`}
-            className={`px-4 py-2 ${
-              currentTab == "monthlyBalances" ? "border-b" : " "
-            }`}
-          >
-            Monthly Balances
-          </Link>
-          <Link
-            href={`/parties/partyDetails/${id}`}
-            className={`px-4 py-2 ${
-              currentTab == "partyDetails" ? "border-b" : " "
-            }`}
-          >
-            Party Details
-          </Link>
+      <div className=" flex gap-5 mb-5">
+        <div className="border rounded-md p-5">
+          <p>
+            Total Revenue:{" "}
+            <span className="text-blue-500 font-bold ml-3 ">
+              ₹ {totalRevenue}
+            </span>
+          </p>
         </div>
-        <Table>
-          <TableCaption>A list of recent trips.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Start Date</TableHead>
-              <TableHead>Truck No</TableHead>
-              <TableHead>Route</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {trips.map((trip) => (
+
+        <div className="border rounded-md p-5">
+          <p>
+            Trip Payments:{" "}
+            <span className="text-blue-500 font-bold ml-3 ">
+              ₹ {tripPayments}
+            </span>
+          </p>
+        </div>
+      </div>
+      <Table>
+        <TableCaption>A list of recent transactions.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Trip Details</TableHead>
+            <TableHead>Payment</TableHead>
+            <TableHead>Revenue</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {trips.map((trip) => (
+            <>
+              {trip.transactions
+                .slice() // Create a copy to avoid mutating the original array
+                .sort(
+                  (a, b) =>
+                    Number(new Date(b.transactionDate)) -
+                    Number(new Date(a.transactionDate))
+                )
+                .map((transaction) => (
+                  <TableRow
+                    key={transaction.id}
+                    className="cursor-pointer"
+                    // onClick={redirectToDetails(transaction.id)}
+                  >
+                    <TableCell className="font-medium">
+                      {new Date(transaction.transactionDate)
+                        .toDateString()
+                        .substring(4)}
+                    </TableCell>
+
+                    <TableCell className="font-medium">
+                      {(() => {
+                        let transactionTypeLabel;
+
+                        switch (transaction.tripTransactionType) {
+                          case "ADVANCE":
+                            transactionTypeLabel = <span>Trip Advance</span>;
+                            break;
+                          case "PAYMENT":
+                            transactionTypeLabel = <span>Trip Payment</span>;
+                            break;
+                          case "SETTLEMENT":
+                            transactionTypeLabel = (
+                              <span>Opening Balance Settlement</span>
+                            );
+                            break;
+                          default:
+                            transactionTypeLabel = (
+                              <span>Unknown Transaction</span>
+                            );
+                        }
+
+                        return transactionTypeLabel;
+                      })()}
+                    </TableCell>
+
+                    <TableCell>₹ {transaction.amount}</TableCell>
+                    <TableCell>{"-"}</TableCell>
+                  </TableRow>
+                ))}
+
               <TableRow
                 key={trip.id}
-                onClick={redirectToDetails(trip.id)}
-                className=" cursor-pointer"
+                className="cursor-pointer"
+                // onClick={redirectToDetails(trip.id)}
               >
                 <TableCell className="font-medium">
-                  {new Date(trip.createdAt).toDateString()}
+                  {new Date(trip.createdAt).toDateString().substring(4)}
                 </TableCell>
                 <TableCell className="font-medium">
-                  {trip.truck?.registrationNumber || "N/A"}
+                  <p>
+                    {trip.truck?.registrationNumber || "N/A"}
+                    <span className="ml-5">{`${trip.from} --> ${trip.to}`}</span>
+                  </p>
                 </TableCell>
-                <TableCell>{`${trip.from} ==> ${trip.to}`}</TableCell>
-                <TableCell>{trip.status}</TableCell>
+                <TableCell>{"-"}</TableCell>
+                <TableCell>₹ {trip.partyFreightAmount}</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </>
+          ))}
+
+          <TableRow
+            className="cursor-pointer"
+            // onClick={redirectToDetails(trip.id)}
+          >
+            <TableCell className="font-medium">
+              {new Date(party?.openingBalanceDate ?? "")
+                .toDateString()
+                .substring(4)}
+            </TableCell>
+            <TableCell className="font-medium">
+              {
+                <span>
+                  Opening Balance
+                  <span className="ml-5">₹ {party?.openingBalance}</span>
+                </span>
+              }
+            </TableCell>
+            <TableCell>{"-"}</TableCell>
+            <TableCell>{"-"}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   );
 };

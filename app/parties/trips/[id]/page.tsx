@@ -19,48 +19,24 @@ import {
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { TripStatus } from "@prisma/client";
+import TripBillDialogComponent from "@/app/trips/components/TripBillDialogComponent";
+import PODReceivedDialogComponent from "@/app/trips/components/PODReceivedDialogComponent";
+import PODSubmittedDialogComponent from "@/app/trips/components/PODSubmittedDialogComponent";
+import SettleTripDialogComponent from "@/app/trips/components/SettleTripDialogComponent";
+import CompleteTripDialogComponent from "@/app/trips/components/CompleteTripDialogComponent";
 
-interface Truck {
-  id: string;
-  registrationNumber: string;
-  truckType: string;
-  truckOwnerShip: string;
-  driverId: string;
-  vendorId: string;
-  status: string;
-}
-
-interface Trip {
-  id: string;
-  status: string;
-  vendorId: string;
-  partyId: string;
-  driverId: string;
-  truckId: string;
-  createdAt: string;
-  from: string;
-  to: string;
-  updatedAt: string;
-  truck: Truck | null; // Ensure truck can be null or undefined
-}
-
-interface PartyDetails {
-  id: string;
-  name: string;
-  phone: string;
-  openingBalance: number;
-  openingBalanceDate: string;
-  gstNumber: string;
-  PANNumber: string;
-  companyName: string;
-  trips: Trip[];
-}
+import { PartyDetails, Trip } from "@/lib/interface";
+import SettleOpeningBalance from "../../components/SettleOpeningBalance";
 
 const Page = () => {
   const [party, setParty] = useState<PartyDetails | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refresh, setRefresh] = useState(false);
+
+  const [totalTrips, setTotalTrips] = useState(0);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -82,6 +58,12 @@ const Page = () => {
       // Extract trip data
       const fetchedTrips = tripResponses.map((response) => response.data.data);
       setTrips(fetchedTrips);
+
+      const activeTrips = partyResponse.data.data.trips.filter(
+        (trip: Trip) => trip.status !== TripStatus.SETTLED
+      ).length;
+
+      setTotalTrips(activeTrips);
     } catch (error) {
       setError("An error occurred while fetching data");
       console.error("Fetch error:", error);
@@ -96,7 +78,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchPartyAndTrips();
-  }, [id]);
+  }, [refresh]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -116,14 +98,7 @@ const Page = () => {
         >
           Passbook
         </Link>
-        <Link
-          href={`/parties/monthlyBalances/${id}`}
-          className={`px-4 py-2 ${
-            currentTab == "monthlyBalances" ? "border-b" : " "
-          }`}
-        >
-          Monthly Balances
-        </Link>
+
         <Link
           href={`/parties/partyDetails/${id}`}
           className={`px-4 py-2 ${
@@ -133,6 +108,24 @@ const Page = () => {
           Party Details
         </Link>
       </div>
+
+      <div className=" flex gap-5 mb-5">
+        <div className="border rounded-md p-5">
+          <p>
+            Total Party Balance:{" "}
+            <span className="text-blue-500 font-bold ml-3 ">
+              ₹ {party?.totalBalance}
+            </span>
+          </p>
+        </div>
+
+        <div className="border rounded-md p-5">
+          <p>
+            Total Active Trips:{" "}
+            <span className="text-blue-500 font-bold ml-3 ">{totalTrips}</span>
+          </p>
+        </div>
+      </div>
       <Table>
         <TableCaption>A list of recent trips.</TableCaption>
         <TableHeader>
@@ -141,13 +134,15 @@ const Page = () => {
             <TableHead>Truck No</TableHead>
             <TableHead>Route</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Party Balance</TableHead>
+            <TableHead> Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {trips.map((trip) => (
             <TableRow
               key={trip.id}
-              onClick={redirectToDetails(trip.id)}
+              //onClick={redirectToDetails(trip.id)}
               className=" cursor-pointer"
             >
               <TableCell className="font-medium">
@@ -158,8 +153,90 @@ const Page = () => {
               </TableCell>
               <TableCell>{`${trip.from} ==> ${trip.to}`}</TableCell>
               <TableCell>{trip.status}</TableCell>
+              <TableCell>₹ {trip.partyBalance}</TableCell>
+              <TableCell>
+                {(() => {
+                  switch (trip.status) {
+                    case TripStatus.PLANNED:
+                      return (
+                        <CompleteTripDialogComponent
+                          refresh={refresh}
+                          setRefresh={setRefresh}
+                          tripId={trip.id}
+                        />
+                      );
+
+                    case TripStatus.COMPLETED:
+                      return (
+                        <PODReceivedDialogComponent
+                          refresh={refresh}
+                          setRefresh={setRefresh}
+                          tripId={trip.id}
+                        />
+                      );
+
+                    case TripStatus.POD_RECEIVED:
+                      return (
+                        <PODSubmittedDialogComponent
+                          refresh={refresh}
+                          setRefresh={setRefresh}
+                          tripId={trip.id}
+                        />
+                      );
+
+                    case TripStatus.POD_SUBMITTED:
+                      return (
+                        <SettleTripDialogComponent
+                          refresh={refresh}
+                          setRefresh={setRefresh}
+                          tripId={trip.id}
+                        />
+                      );
+
+                    case TripStatus.SETTLED:
+                      return (
+                        <Button
+                          disabled={true}
+                          variant={"secondary"}
+                          className="w-full border"
+                        >
+                          Amount Settled
+                        </Button>
+                      );
+                  }
+                })()}
+              </TableCell>
             </TableRow>
           ))}
+
+          <TableRow>
+            <TableCell className="font-medium">
+              {party?.openingBalanceDate
+                ? new Date(party.openingBalanceDate).toDateString()
+                : ""}
+            </TableCell>
+            <TableCell className="font-medium">Opening Balance</TableCell>
+            <TableCell>{"-"}</TableCell>
+            <TableCell>{"-"}</TableCell>
+            <TableCell>₹ {party?.openingBalance}</TableCell>
+            <TableCell>
+              {party?.openingBalance == 0 ? (
+                <Button
+                  disabled={true}
+                  variant={"secondary"}
+                  className="w-full border"
+                >
+                  Opening Balance Settled
+                </Button>
+              ) : (
+                <SettleOpeningBalance
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                  partyId={party?.id}
+                />
+              )}
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </div>
