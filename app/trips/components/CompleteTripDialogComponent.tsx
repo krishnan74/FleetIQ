@@ -42,6 +42,7 @@ import { DataFormProps } from "@/lib/interface";
 const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
   setRefresh,
   refresh,
+  tripId
 }) => {
   const { toast } = useToast();
   const pathname = usePathname();
@@ -64,7 +65,7 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
     };
 
     try {
-      const updateResponse = await axios.put(`/api/trip/${id}`, formData);
+      const updateResponse = await axios.put(`/api/trip/${tripId}`, formData);
 
       if (updateResponse.data.message === "success") {
         toast({

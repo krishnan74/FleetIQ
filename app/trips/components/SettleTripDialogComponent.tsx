@@ -29,16 +29,12 @@ import {
   TripTransactionType,
 } from "@prisma/client";
 
-type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
-
-interface DataFormProps {
-  setRefresh: SetState<boolean>;
-  refresh: boolean;
-}
+import { DataFormProps } from "@/lib/interface";
 
 const SettleTripDialogComponent: React.FC<DataFormProps> = ({
   setRefresh,
   refresh,
+  tripId,
 }) => {
   const pathname = usePathname();
   const id = pathname.split("/")[2];
@@ -69,7 +65,7 @@ const SettleTripDialogComponent: React.FC<DataFormProps> = ({
 
   const fetchPartyBalance = async () => {
     try {
-      const tripResponse = await axios.get(`/api/trip/${id}`);
+      const tripResponse = await axios.get(`/api/trip/${tripId}`);
       console.log("Party balance:", tripResponse.data.data.partyBalance);
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -92,17 +88,11 @@ const SettleTripDialogComponent: React.FC<DataFormProps> = ({
     console.log("Form data:", formData);
 
     try {
-      const tripResponse = await axios.get(`/api/trip/${id}`);
+      const tripResponse = await axios.get(`/api/trip/${tripId}`);
       const partyBalance = tripResponse.data.data.partyBalance;
 
-      const updateResponse = await axios.put(`/api/trip/transaction/${id}`, {
-        ...formData,
-        transactionDate: formattedDate,
-        partyBalance: partyBalance,
-      });
-
-      const tripTransactionResponse = await axios.post(
-        `/api/trip/transaction/${id}`,
+      const updateResponse = await axios.put(
+        `/api/trip/transaction/${tripId}`,
         {
           ...formData,
           transactionDate: formattedDate,
@@ -110,7 +100,16 @@ const SettleTripDialogComponent: React.FC<DataFormProps> = ({
         }
       );
 
-      const statusUpdateResponse = await axios.put(`/api/trip/${id}`, {
+      const tripTransactionResponse = await axios.post(
+        `/api/trip/transaction/${tripId}`,
+        {
+          ...formData,
+          transactionDate: formattedDate,
+          partyBalance: partyBalance,
+        }
+      );
+
+      const statusUpdateResponse = await axios.put(`/api/trip/${tripId}`, {
         status: TripStatus.SETTLED,
       });
 
