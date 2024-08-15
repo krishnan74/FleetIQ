@@ -62,7 +62,7 @@ const TripBillDialogComponent = () => {
 
   useEffect(() => {
     fetchData();
-  }, [id]);
+  }, [open]);
 
   const data = [
     [

@@ -16,7 +16,12 @@ export async function GET(
         id: context.params.id,
       },
       include: {
-        trips: true,
+        trips: {
+          include: {
+            transactions: true,
+          },
+        },
+
         transactions: true,
       },
     });

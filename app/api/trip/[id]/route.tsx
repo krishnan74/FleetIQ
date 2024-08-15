@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { TripTransaction } from "@/lib/createInterface";
+import { TripStatus } from "@prisma/client";
 
 export async function GET(
   req: NextRequest,
@@ -41,34 +42,61 @@ export async function GET(
   }
 }
 
-
 export async function PUT(
-  req: NextRequest, 
+  req: NextRequest,
   context: {
     params: {
-      id: string
-    }
+      id: string;
+    };
   }
-)
-{
+) {
   try {
-
     const body = await req.json();
-    const { 
-status, completedAt
-    } = body
-    
-    const trip = await prisma.trip.update({
-      where: {
-        id: context.params.id,
-      },
-      data: {
-        status, 
-        completedAt,
-      },
+    const { status, completedAt, endKMSReadings } = body;
+    let trip;
+    switch (status) {
+      case TripStatus.COMPLETED:
+        trip = await prisma.trip.update({
+          where: {
+            id: context.params.id,
+          },
+          data: {
+            status,
+            completedAt,
+            endKMSReadings,
+          },
+        });
 
-    
-    });
+      case TripStatus.POD_RECEIVED:
+        trip = await prisma.trip.update({
+          where: {
+            id: context.params.id,
+          },
+          data: {
+            status,
+          },
+        });
+
+      case TripStatus.POD_SUBMITTED:
+        trip = await prisma.trip.update({
+          where: {
+            id: context.params.id,
+          },
+          data: {
+            status,
+          },
+        });
+
+      case TripStatus.SETTLED:
+        trip = await prisma.trip.update({
+          where: {
+            id: context.params.id,
+          },
+          data: {
+            status,
+          },
+        });
+    }
 
     return NextResponse.json(
       {

@@ -39,7 +39,7 @@ import { TripStatus } from "@prisma/client";
 import { usePathname } from "next/navigation";
 import { DataFormProps } from "@/lib/interface";
 
-const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
+const PODReceivedDialogComponent: React.FC<DataFormProps> = ({
   setRefresh,
   refresh,
 }) => {
@@ -50,7 +50,6 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
   const [open, setOpen] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [endKMSReadings, setEndKMSReadings] = useState(0);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,9 +57,9 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
     const formattedDate = selectedDate ? selectedDate.toISOString() : "";
 
     const formData = {
-      status: TripStatus.COMPLETED,
+      status: TripStatus.POD_RECEIVED,
       completedAt: formattedDate,
-      endKMSReadings: endKMSReadings,
+      endKMSReadings: "",
     };
 
     try {
@@ -68,23 +67,23 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
 
       if (updateResponse.data.message === "success") {
         toast({
-          title: "Trip completed successfully",
-          description: `With end KMS readings: ${endKMSReadings}`,
+          title: "POD Received successfully",
+          description: `POD received on ${formattedDate}`,
         });
         setOpen(false);
         setRefresh(!refresh);
       } else {
         toast({
-          title: "Trip completion failed",
+          title: "POD receiving failed",
           description: "Please try again.",
         });
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: "An error occurred while completing the trip.",
+        description: "An error occurred while receiving POD.",
       });
-      console.error("Error while completing trip:", error);
+      console.error("Error while receiving POD:", error);
     }
   };
 
@@ -97,13 +96,13 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
             variant={"secondary"}
             className="w-full border"
           >
-            Complete Trip
+            POD Received
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="font-bold text-2xl pb-10 border-b mb-5">
-              Complete Trip
+              Mark POD Received
             </DialogTitle>
             <DialogDescription>
               <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
@@ -113,7 +112,7 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="transactionDate"
                       className="text-gray-700 font-medium"
                     >
-                      Completion Date
+                      POD Received On
                     </label>
                     <div className="mt-3">
                       <DatePicker
@@ -121,25 +120,6 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
                         setDate={setSelectedDate}
                       />
                     </div>
-                  </div>
-                  <div className="">
-                    <label
-                      htmlFor="endKMSReadings"
-                      className="text-gray-700 font-medium"
-                    >
-                      End KMS Readings
-                    </label>
-                    <input
-                      type="number"
-                      id="endKMSReadings"
-                      name="endKMSReadings"
-                      value={endKMSReadings}
-                      onChange={(e) =>
-                        setEndKMSReadings(Number(e.target.value))
-                      }
-                      required
-                      className="mt-2 p-2 border border-gray-300 rounded-md w-full"
-                    />
                   </div>
                 </div>
 
@@ -164,4 +144,4 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
   );
 };
 
-export default CompleteTripDialogComponent;
+export default PODReceivedDialogComponent;

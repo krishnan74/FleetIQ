@@ -21,6 +21,9 @@ import AddExpenseDialogComponent from "../components/AddExpenseDialogComponent";
 import { Expense } from "@/lib/interface";
 import { TripStatus } from "@prisma/client";
 import TripBillDialogComponent from "../components/TripBillDialogComponent";
+import PODReceivedDialogComponent from "../components/PODReceivedDialogComponent";
+import PODSubmittedDialogComponent from "../components/PODSubmittedDialogComponent";
+import SettleTripDialogComponent from "../components/SettleTripDialogComponent";
 
 const Page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
@@ -36,7 +39,6 @@ const Page = () => {
     try {
       const response = await axios.get(`/api/trip/${id}`);
       if (response.data.message === "success") {
-        console.log(response.data.data);
         setTripDetails(response.data.data);
 
         const advanceFilter = response.data.data?.transactions.filter(
@@ -184,11 +186,53 @@ const Page = () => {
         />
 
         <div className="flex gap-5 w-full justify-between">
-          <div className="flex-1 ">
-            <CompleteTripDialogComponent
-              refresh={refresh}
-              setRefresh={setRefresh}
-            />
+          <div className="flex-1">
+            {(() => {
+              switch (tripDetails?.status) {
+                case TripStatus.PLANNED:
+                  return (
+                    <CompleteTripDialogComponent
+                      refresh={refresh}
+                      setRefresh={setRefresh}
+                    />
+                  );
+
+                case TripStatus.COMPLETED:
+                  return (
+                    <PODReceivedDialogComponent
+                      refresh={refresh}
+                      setRefresh={setRefresh}
+                    />
+                  );
+
+                case TripStatus.POD_RECEIVED:
+                  return (
+                    <PODSubmittedDialogComponent
+                      refresh={refresh}
+                      setRefresh={setRefresh}
+                    />
+                  );
+
+                case TripStatus.POD_SUBMITTED:
+                  return (
+                    <SettleTripDialogComponent
+                      refresh={refresh}
+                      setRefresh={setRefresh}
+                    />
+                  );
+
+                case TripStatus.SETTLED:
+                  return (
+                    <Button
+                      disabled={true}
+                      variant={"secondary"}
+                      className="w-full border"
+                    >
+                      Amount Settled
+                    </Button>
+                  );
+              }
+            })()}
           </div>
 
           <div className="flex-1">
