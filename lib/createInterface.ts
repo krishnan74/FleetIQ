@@ -16,6 +16,7 @@ export interface Trip {
   driverId: string;
   truckId: string;
   partyFreightAmount: number;
+  vendorBalance: number;
   startedAt: string;
   startKMSReadings: number;
   lrNumber: String | null;

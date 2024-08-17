@@ -72,6 +72,7 @@ export interface VendorDetails {
   email: string;
   phone: string;
   trips: Trip[];
+  totalBalance: number;
   trucks: Truck[];
 }
 

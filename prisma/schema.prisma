@@ -28,6 +28,7 @@ model Vendor {
   name    String
   email   String
   phone   String
+  totalBalance Float
   trips   Trip[]
   trucks  Truck[]
   transactions VendorTransaction[]
@@ -77,7 +78,7 @@ model VendorTransaction{
   vendor Vendor @relation(fields: [vendorId], references: [id])
   vendorId String @db.ObjectId
   amount Float
-  transactionType TransactionType
+  transactionType ExpenseType
   transactionDate DateTime
   transactionMode TransactionMode
   transactionDescription String
@@ -112,6 +113,7 @@ model Trip {
   to        String
   partyFreightAmount Float
   partyBalance Float
+  vendorBalance Float?
   totalExpenseAmount Float
   profit Float
   
@@ -196,6 +198,7 @@ enum ExpenseType{
   Repair_Expense
   Weight_Charges
   Police_Charges
+  Truck_Hire_Cost
 }
 
 enum TransactionMode{
