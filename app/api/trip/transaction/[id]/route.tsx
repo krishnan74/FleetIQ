@@ -32,6 +32,7 @@ export async function PUT(
     });
 
     const totalBalance = party.totalBalance;
+    let addRevenue = 0;
 
     switch (tripTransactionType) {
       case "ADVANCE":
@@ -42,6 +43,7 @@ export async function PUT(
       case "CHARGE":
         newPartyBalance = partyBalance + amount;
         newTotalBalance = totalBalance + amount;
+        addRevenue = amount;
         break;
 
       case "PAYMENT":
@@ -59,6 +61,9 @@ export async function PUT(
       },
       data: {
         partyBalance: newPartyBalance,
+        revenue: {
+          increment: addRevenue,
+        },
       },
     });
 

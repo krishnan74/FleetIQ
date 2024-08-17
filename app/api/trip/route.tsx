@@ -96,6 +96,7 @@ export async function POST(req: NextRequest) {
 
         totalExpenseAmount: 0,
         partyFreightAmount,
+        revenue: partyFreightAmount,
         startKMSReadings,
         partyBalance,
         vendorBalance,

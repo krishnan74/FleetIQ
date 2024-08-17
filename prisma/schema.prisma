@@ -112,6 +112,7 @@ model Trip {
   from      String
   to        String
   partyFreightAmount Float
+  revenue Float
   partyBalance Float
   vendorBalance Float?
   totalExpenseAmount Float
