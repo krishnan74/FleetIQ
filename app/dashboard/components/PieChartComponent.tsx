@@ -45,14 +45,13 @@ export const PieChartComponent: React.FC<PieChartComponentProps> = ({
   trips,
   type,
 }) => {
-  const totalIncome = trips?.reduce(
-    (acc, curr) => acc + curr.partyFreightAmount,
-    0
-  );
-
-  const totalExpense = trips?.reduce(
-    (acc, curr) => acc + curr.totalExpenseAmount,
-    0
+  const { totalIncome, totalExpense } = trips?.reduce(
+    (acc, curr) => {
+      acc.totalIncome += curr.partyFreightAmount;
+      acc.totalExpense += curr.totalExpenseAmount;
+      return acc;
+    },
+    { totalIncome: 0, totalExpense: 0 }
   );
 
   console.log(totalIncome, totalExpense);
@@ -69,11 +68,11 @@ export const PieChartComponent: React.FC<PieChartComponentProps> = ({
     <Card className="flex flex-col h-full">
       <CardHeader className="items-center pb-0">
         <CardTitle>Active Profit</CardTitle>
-        <CardDescription>{
-                    type === "monthlyTrips"
+        <CardDescription>
+          {type === "monthlyTrips"
             ? "Profit for this month"
-            : "Profit till now"
-          }</CardDescription>
+            : "Profit till now"}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

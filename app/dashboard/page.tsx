@@ -5,7 +5,7 @@ import { FaBell } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { PiLineVerticalThin } from "react-icons/pi";
 import { RxAvatar } from "react-icons/rx";
-import { AreaChartComponent } from "./components/AreaChartComponent";
+import { BarChartComponent } from "./components/BarChartComponent";
 import { PieChartComponent } from "./components/PieChartComponent";
 import { TransactionComponent } from "./components/TransactionComponent";
 import { AvatarComponent } from "@/components/Avatar";
@@ -24,16 +24,21 @@ const Page = () => {
   const fetchData = async () => {
     try {
       const tripResponse = await axios.get("/api/trip");
-      setAllTrips(tripResponse.data.data);
 
-      console.log(tripResponse.data.data);
+      const orderedTrips: Trip[] = tripResponse.data.data
+        .slice() // Create a copy to avoid mutating the original array
+        .sort(
+          (a: Trip, b: Trip) =>
+            Number(new Date(a.startedAt)) - Number(new Date(b.startedAt))
+        );
+
+      setAllTrips(orderedTrips);
 
       const trips = tripResponse.data.data.filter(
         (trip: Trip) =>
           new Date(trip.startedAt).getMonth() == new Date().getMonth()
       );
 
-      console.log(trips);
       setMonthlyTrips(trips);
       const driverResponse = await axios.get("/api/driver");
       const truckResponse = await axios.get("/api/truck");
@@ -51,8 +56,8 @@ const Page = () => {
   }, []);
   return (
     <div className="grid grid-cols-4 gap-10 ">
-      <div className="col-span-2 row-span-2">
-        <AreaChartComponent />
+      <div className="col-span-2 row-span-2 ">
+        <BarChartComponent trips={allTrips} />
       </div>
       <div className="col-span-1 row-span-2">
         <PieChartComponent trips={monthlyTrips} type={"monthlyTrips"} />

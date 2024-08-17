@@ -172,10 +172,12 @@ export function TransactionComponent() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("/api/tripTransactions/");
+        const response = await axios.get("/api/trip/");
+
+        console.log(response.data.data);
 
         // Ensure response structure matches what you're expecting
-        const tripRequests = response.data.data.trips.map((trip: Trip) =>
+        const tripRequests = response.data.data.map((trip: Trip) =>
           axios.get(`/api/trip/${trip.id}`)
         );
 
@@ -215,10 +217,6 @@ export function TransactionComponent() {
       rowSelection,
     },
   });
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Card className="px-5">
@@ -308,7 +306,7 @@ export function TransactionComponent() {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {loading ? "Loading..." : "No transactions"}
                   </TableCell>
                 </TableRow>
               )}
