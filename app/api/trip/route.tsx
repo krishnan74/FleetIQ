@@ -1,10 +1,12 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import {
+  ExpenseType,
   TransactionMode,
   TripStatus,
   TripTransactionType,
 } from "@prisma/client";
+import axios from "axios";
 
 export async function GET(req: NextRequest) {
   try {
@@ -43,6 +45,7 @@ export async function POST(req: NextRequest) {
       partyId,
       truckId,
       partyFreightAmount,
+      vendorBalance,
       startKMSReadings,
       lrNumber,
       material,
@@ -95,6 +98,7 @@ export async function POST(req: NextRequest) {
         partyFreightAmount,
         startKMSReadings,
         partyBalance,
+        vendorBalance,
         lrNumber,
         material,
         notes,
@@ -118,6 +122,55 @@ export async function POST(req: NextRequest) {
         transactionDate: new Date().toISOString(),
         transactionMode: TransactionMode.CASH,
         transactionDescription: "Party Freight Amount",
+      },
+    });
+
+    const vendorTransaction = await prisma.vendorTransaction.create({
+      data: {
+        vendorId,
+        amount: vendorBalance,
+        transactionType: ExpenseType.Truck_Hire_Cost,
+        transactionDate: new Date().toISOString(),
+        transactionMode: TransactionMode.CASH,
+        transactionDescription: "Vendor Truck Hire Cost",
+      },
+    });
+
+    const expense = await prisma.expense.create({
+      data: {
+        amount: vendorBalance,
+        expenseType: ExpenseType.Truck_Hire_Cost,
+
+        trip: {
+          connect: {
+            id: trip.id,
+          },
+        },
+      },
+    });
+
+    const updateTrip = await prisma.trip.update({
+      where: {
+        id: trip.id,
+      },
+      data: {
+        totalExpenseAmount: {
+          increment: vendorBalance,
+        },
+
+        profit: {
+          decrement: vendorBalance,
+        },
+      },
+    });
+
+    const vendor = await prisma.vendor.update({
+      where: {
+        id: vendorId,
+      },
+
+      data: {
+        totalBalance: vendorBalance,
       },
     });
 

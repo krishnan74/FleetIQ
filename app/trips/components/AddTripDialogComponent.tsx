@@ -35,15 +35,19 @@ import {
 import { locations } from "@/lib/utils";
 import { Trip } from "@/lib/createInterface";
 import { DataFormProps } from "@/lib/interface";
+import { TruckOwnership } from "@prisma/client";
 
 const AddTripDialogComponent = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
-  const [vendors, setVendors] = useState<VendorDetails[]>();
+  const [vendor, setVendor] = useState<VendorDetails>();
   const [drivers, setDrivers] = useState<DriverDetails[]>();
+
   const [parties, setParties] = useState<PartyDetails[]>();
   const [trucks, setTrucks] = useState<Truck[]>();
+  const [selectedTruckOwnership, setSelectedTruckOwnership] =
+    useState<String>();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const [showMore, setShowMore] = useState(false);
@@ -62,7 +66,6 @@ const AddTripDialogComponent = () => {
           axios.get("/api/truck/"),
         ]);
 
-      setVendors(vendorResponse.data.data);
       setDrivers(driverResponse.data.data);
       setParties(partyResponse.data.data);
       setTrucks(truckResponse.data.data);
@@ -85,12 +88,24 @@ const AddTripDialogComponent = () => {
     startedAt: "",
     partyFreightAmount: 0,
     startKMSReadings: 0,
+    vendorBalance: 0,
     lrNumber: "",
     material: "",
     notes: "",
   });
 
-  const handleChange = (name: string, value: any) => {
+  const handleChange = async (name: string, value: any) => {
+    if (name == "truckId") {
+      const truckResponse = await axios.get(`/api/truck/${value}`);
+      const vendor: VendorDetails = truckResponse.data.data.vendor;
+      setVendor(vendor);
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        vendorId: vendor.id,
+      }));
+    }
+
     if (name == "partyFreightAmount" || name == "startKMSReadings") {
       value = Number(value);
     }
@@ -98,7 +113,9 @@ const AddTripDialogComponent = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]:
-        name == "partyFreightAmount" || name == "startKMSReadings"
+        name == "partyFreightAmount" ||
+        name == "startKMSReadings" ||
+        name == "vendorBalance"
           ? Number(value)
           : value,
     }));
@@ -181,29 +198,28 @@ const AddTripDialogComponent = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label
-                      htmlFor="vendor"
-                      className="text-gray-700 font-medium"
-                    >
-                      Select Vendor
-                    </label>
-                    <Select
-                      value={formData.vendorId}
-                      onValueChange={(value) => handleChange("vendorId", value)}
-                    >
-                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
-                        <SelectValue placeholder="Select a vendor" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {vendors?.map((vendor) => (
-                            <SelectItem key={vendor.id} value={vendor.id}>
-                              {vendor.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    {vendor && (
+                      <>
+                        <label
+                          htmlFor="vendor"
+                          className="text-gray-700 font-medium"
+                        >
+                          Select Vendor
+                        </label>
+                        <Select value={formData.vendorId} disabled={true}>
+                          <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
+                            <SelectValue placeholder="Select a vendor" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value={formData.vendorId}>
+                                {vendor?.name}
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </>
+                    )}
                   </div>
 
                   <div className="flex flex-col">
@@ -249,8 +265,25 @@ const AddTripDialogComponent = () => {
                       <SelectContent>
                         <SelectGroup>
                           {trucks?.map((truck) => (
-                            <SelectItem key={truck.id} value={truck.id}>
-                              {truck.registrationNumber}
+                            <SelectItem
+                              key={truck.id}
+                              value={truck.id}
+                              onClick={() =>
+                                setSelectedTruckOwnership(truck.truckOwnerShip)
+                              }
+                            >
+                              <div className="border p-3 flex gap-5">
+                                {truck.registrationNumber}
+                                <div
+                                  className={`px-3 py-1 ${
+                                    truck.truckOwnerShip == "MY_TRUCK"
+                                      ? "bg-blue-500"
+                                      : "bg-orange-500"
+                                  }`}
+                                >
+                                  {truck.truckOwnerShip}
+                                </div>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -320,6 +353,25 @@ const AddTripDialogComponent = () => {
                       className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
                     />
                   </div>
+
+                  {vendor?.name != "Own Vendor" && (
+                    <div className="flex flex-col">
+                      <label
+                        htmlFor="vendorBalance"
+                        className="text-gray-700 font-medium"
+                      >
+                        Truck Hire Cost
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.vendorBalance}
+                        onChange={(e) =>
+                          handleChange("vendorBalance", e.target.value)
+                        }
+                        className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                      />
+                    </div>
+                  )}
 
                   <div className="flex flex-col">
                     <label
