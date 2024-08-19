@@ -62,7 +62,9 @@ const AddVendorDialogComponent = () => {
     <div>
       <Dialog>
         <DialogTrigger>
-          <Button>Add Vendor</Button>
+          <Button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700">
+            Add Vendor
+          </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

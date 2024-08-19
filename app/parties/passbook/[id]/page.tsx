@@ -154,14 +154,22 @@ const Page = () => {
           </p>
         </div>
       </div>
-      <Table>
+      <Table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
         <TableCaption>A list of recent transactions.</TableCaption>
         <TableHeader>
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Trip Details</TableHead>
-            <TableHead>Payment</TableHead>
-            <TableHead>Revenue</TableHead>
+          <TableRow className="bg-blue-500 border-b border-blue-300 hover:bg-blue-500">
+            <TableHead className="py-3 px-4 text-white  text-left">
+              Date
+            </TableHead>
+            <TableHead className="py-3 px-4 text-white  text-left">
+              Trip Details
+            </TableHead>
+            <TableHead className="py-3 px-4 text-white  text-left">
+              Payment
+            </TableHead>
+            <TableHead className="py-3 px-4 text-white  text-left">
+              Revenue
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

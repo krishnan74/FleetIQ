@@ -91,11 +91,19 @@ const Page = () => {
           A list of your recent drivers.
         </TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-100 text-gray-600 border-b border-gray-300">
-            <TableHead className="py-3 px-4 text-left">Driver Name</TableHead>
-            <TableHead className="py-3 px-4 text-left">Phone</TableHead>
-            <TableHead className="py-3 px-4 text-left">Status</TableHead>
-            <TableHead className="py-3 px-4 text-left">Balance</TableHead>
+          <TableRow className="bg-blue-500 border-b border-blue-300 hover:bg-blue-500">
+            <TableHead className="py-3 px-4 text-left text-white ">
+              Driver Name
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white ">
+              Phone
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white ">
+              Status
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white ">
+              Balance
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

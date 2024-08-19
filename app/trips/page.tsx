@@ -122,16 +122,24 @@ const Page = () => {
           />
         </div>
         <Table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
-          <TableCaption className="text-gray-600">
-            A list of your recent trips.
-          </TableCaption>
+          <TableCaption className="">A list of your recent trips.</TableCaption>
           <TableHeader>
-            <TableRow className="bg-gray-100 text-gray-600 border-b border-gray-300">
-              <TableHead className="py-3 px-4 text-left">Start Date</TableHead>
-              <TableHead className="py-3 px-4 text-left">Party Name</TableHead>
-              <TableHead className="py-3 px-4 text-left">Truck No</TableHead>
-              <TableHead className="py-3 px-4 text-left">Route</TableHead>
-              <TableHead className="py-3 px-4 text-left">Trip Status</TableHead>
+            <TableRow className="bg-blue-500 border-b border-blue-300 hover:bg-blue-500">
+              <TableHead className="py-3 px-4 text-white  text-left">
+                Start Date
+              </TableHead>
+              <TableHead className="py-3 px-4 text-left text-white ">
+                Party Name
+              </TableHead>
+              <TableHead className="py-3 px-4 text-left text-white ">
+                Truck No
+              </TableHead>
+              <TableHead className="py-3 px-4 text-left text-white ">
+                Route
+              </TableHead>
+              <TableHead className="py-3 px-4 text-left text-white ">
+                Trip Status
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

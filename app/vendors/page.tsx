@@ -127,14 +127,18 @@ const Page = () => {
           A list of your recent vendors.
         </TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-100 text-gray-600 border-b border-gray-300">
-            <TableHead className="py-3 px-4 text-left">Name</TableHead>
-            <TableHead className="py-3 px-4 text-left">Phone</TableHead>
+          <TableRow className="bg-blue-500 border-b border-blue-300 hover:bg-blue-500">
+            <TableHead className="py-3 px-4 text-left text-white">
+              Name
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white">
+              Phone
+            </TableHead>
 
-            <TableHead className="py-3 px-4 text-left">
+            <TableHead className="py-3 px-4 text-left text-white">
               Active Trip Count
             </TableHead>
-            <TableHead className="py-3 px-4 text-right">
+            <TableHead className="py-3 px-4 text-right text-white">
               Vendor Balance
             </TableHead>
           </TableRow>

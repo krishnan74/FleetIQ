@@ -54,15 +54,19 @@ const Page = () => {
           A list of your recent trucks.
         </TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-100 text-gray-600 border-b border-gray-300">
-            <TableHead className="py-3 px-4 text-left">
+          <TableRow className="bg-blue-500 border-b border-blue-300 hover:bg-blue-500">
+            <TableHead className="py-3 px-4 text-left text-white ">
               Registration Number
             </TableHead>
-            <TableHead className="py-3 px-4 text-left">Truck Type</TableHead>
-            <TableHead className="py-3 px-4 text-left">
+            <TableHead className="py-3 px-4 text-left text-white">
+              Truck Type
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white">
               Truck OwnerShip
             </TableHead>
-            <TableHead className="py-3 px-4 text-left">Status</TableHead>
+            <TableHead className="py-3 px-4 text-left text-white">
+              Status
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
