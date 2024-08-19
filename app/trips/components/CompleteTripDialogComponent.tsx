@@ -114,7 +114,7 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="transactionDate"
                       className="text-gray-700 font-medium"
                     >
-                      Completion Date
+                      Completion Date *
                     </label>
                     <div className="mt-3">
                       <DatePicker
@@ -128,7 +128,7 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="endKMSReadings"
                       className="text-gray-700 font-medium"
                     >
-                      End KMS Readings
+                      End KMS Readings *
                     </label>
                     <input
                       type="number"

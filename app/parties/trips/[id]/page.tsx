@@ -164,7 +164,7 @@ const Page = () => {
               <TableCell className="font-medium">
                 {trip.truck?.registrationNumber || "N/A"}
               </TableCell>
-              <TableCell>{`${trip.from} ==> ${trip.to}`}</TableCell>
+              <TableCell>{`${trip.from} To ${trip.to}`}</TableCell>
               <TableCell>{trip.status}</TableCell>
               <TableCell>₹ {trip.partyBalance}</TableCell>
               <TableCell>

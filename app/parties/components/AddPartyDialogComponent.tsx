@@ -102,7 +102,7 @@ const AddPartyDialogComponent = () => {
             <DialogDescription>
               <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
                 <div className="flex flex-col">
-                  <label htmlFor="name">Enter Name</label>
+                  <label htmlFor="name">Enter Name *</label>
                   <input
                     type="text"
                     id="name"
@@ -111,12 +111,13 @@ const AddPartyDialogComponent = () => {
                     onChange={handleChange}
                     placeholder="Enter party name"
                     className="border border-gray-300 rounded-md p-2 mt-3"
+                    required
                   />
                 </div>
 
                 <div className="flex gap-5">
                   <div className="flex-1">
-                    <label htmlFor="openingBalance">Opening Balance</label>
+                    <label htmlFor="openingBalance">Opening Balance *</label>
                     <input
                       type="number"
                       id="openingBalance"
@@ -125,11 +126,12 @@ const AddPartyDialogComponent = () => {
                       onChange={handleChange}
                       placeholder="0"
                       className="border border-gray-300 rounded-md p-2 mt-3"
+                      required
                     />
                   </div>
 
                   <div className="flex-1">
-                    <label htmlFor="date">Opening Balance Date</label>
+                    <label htmlFor="date">Opening Balance Date *</label>
                     <div className="mt-3">
                       <DatePicker
                         date={selectedDate}
@@ -142,7 +144,7 @@ const AddPartyDialogComponent = () => {
                 <div className="flex flex-start">
                   {open ? (
                     <div className="flex flex-col">
-                      <label htmlFor="phone">Enter Mobile Number</label>
+                      <label htmlFor="phone">Enter Mobile Number *</label>
                       <div className="flex items-center mt-3">
                         <input
                           type="text"
@@ -152,6 +154,7 @@ const AddPartyDialogComponent = () => {
                           onChange={handleChange}
                           placeholder="Enter mobile number"
                           className="border border-gray-300 rounded-md p-2"
+                          required
                         />
                         <button
                           type="button"

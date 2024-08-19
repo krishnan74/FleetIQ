@@ -157,7 +157,7 @@ const Page = () => {
                   {trip.truck.registrationNumber}
                 </TableCell>
                 <TableCell className="py-3 px-4 font-medium">
-                  {`${trip.from} ==> ${trip.to}`}
+                  {`${trip.from} To ${trip.to}`}
                 </TableCell>
                 <TableCell className="py-3 px-4 font-medium">
                   {trip.status}

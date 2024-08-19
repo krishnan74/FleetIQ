@@ -136,7 +136,7 @@ const SettleOpeningBalance: React.FC<DataFormProps> = ({
               <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
                 <div className="flex flex-col">
                   <label htmlFor="amount" className="text-gray-700 font-medium">
-                    Settle Amount
+                    Settle Amount *
                   </label>
                   <input
                     type="number"
@@ -157,9 +157,10 @@ const SettleOpeningBalance: React.FC<DataFormProps> = ({
                     htmlFor="transactionMode"
                     className="text-gray-700 font-medium mb-3"
                   >
-                    Payment Mode
+                    Payment Mode *
                   </label>
                   <RadioGroup
+                  required
                     defaultValue={TransactionMode.CASH}
                     className="flex flex-wrap gap-x-10"
                     onValueChange={(value) =>
@@ -210,7 +211,7 @@ const SettleOpeningBalance: React.FC<DataFormProps> = ({
                     htmlFor="transactionDate"
                     className="text-gray-700 font-medium"
                   >
-                    Settlement Date
+                    Settlement Date *
                   </label>
                   <div className="mt-3">
                     <DatePicker date={selectedDate} setDate={setSelectedDate} />
@@ -222,7 +223,7 @@ const SettleOpeningBalance: React.FC<DataFormProps> = ({
                     htmlFor="transactionDescription"
                     className="text-gray-700 font-medium"
                   >
-                    Description
+                    Description *
                   </label>
                   <textarea
                     id="transactionDescription"
@@ -233,6 +234,7 @@ const SettleOpeningBalance: React.FC<DataFormProps> = ({
                     }
                     className="border border-gray-300 rounded-md p-2"
                     rows={3}
+                    required
                   />
                 </div>
 

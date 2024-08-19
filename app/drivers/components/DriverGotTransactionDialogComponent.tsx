@@ -144,7 +144,7 @@ const DriverGotTransactionDialogComponent = () =>
                       htmlFor="amount"
                       className="text-gray-700 font-medium"
                     >
-                      Amount
+                      Amount *
                     </label>
                     <input
                       type="text"
@@ -164,7 +164,7 @@ const DriverGotTransactionDialogComponent = () =>
                       htmlFor="transactionDescription"
                       className="text-gray-700 font-medium"
                     >
-                      Reason
+                      Reason *
                     </label>
                     <input
                       type="text"

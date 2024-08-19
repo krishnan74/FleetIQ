@@ -111,7 +111,7 @@ const AddDriverDialogComponent = () =>
                 <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
                   <div className="flex flex-col">
                     <label htmlFor="name" className="text-gray-700 font-medium">
-                      Driver Name
+                      Driver Name *
                     </label>
                     <input
                       type="text"
@@ -129,7 +129,7 @@ const AddDriverDialogComponent = () =>
                       htmlFor="phone"
                       className="text-gray-700 font-medium"
                     >
-                      Mobile Number
+                      Mobile Number *
                     </label>
                     <input
                       type="text"
@@ -150,7 +150,7 @@ const AddDriverDialogComponent = () =>
                           htmlFor="openingBalanceType"
                           className="text-gray-700 font-medium mb-3"
                         >
-                          Opening Balance
+                          Opening Balance 
                         </label>
                         <RadioGroup
                           defaultValue={"driverPay"}
@@ -181,7 +181,7 @@ const AddDriverDialogComponent = () =>
                           htmlFor="amount"
                           className="text-gray-700 font-medium"
                         >
-                          Amount
+                          Amount *
                         </label>
                         <input
                           type="number"

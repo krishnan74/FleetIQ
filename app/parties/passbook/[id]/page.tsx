@@ -236,7 +236,7 @@ const Page = () => {
                 <TableCell className="font-medium">
                   <p>
                     {trip.truck?.registrationNumber || "N/A"}
-                    <span className="ml-5">{`${trip.from} --> ${trip.to}`}</span>
+                    <span className="ml-5">{`${trip.from} To ${trip.to}`}</span>
                   </p>
                 </TableCell>
                 <TableCell>{"-"}</TableCell>

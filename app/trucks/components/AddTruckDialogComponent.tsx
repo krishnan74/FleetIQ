@@ -124,7 +124,7 @@ const AddTruckDialogComponent = () => {
                       htmlFor="truckRegistrationNumber"
                       className="text-gray-700 font-medium"
                     >
-                      Truck Registration Number
+                      Truck Registration Number *
                     </label>
                     <input
                       type="text"
@@ -134,6 +134,7 @@ const AddTruckDialogComponent = () => {
                         handleChange("registrationNumber", e.target.value)
                       }
                       className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                      required
                     />
                   </div>
 
@@ -142,9 +143,10 @@ const AddTruckDialogComponent = () => {
                       htmlFor="truckOwnerShip"
                       className="text-gray-700 font-medium mb-3"
                     >
-                      Ownership
+                      Ownership *
                     </label>
                     <RadioGroup
+                      required
                       value={formData.truckOwnerShip}
                       onValueChange={(value) =>
                         handleChange("truckOwnerShip", value)
@@ -191,9 +193,10 @@ const AddTruckDialogComponent = () => {
                       htmlFor="driver"
                       className="text-gray-700 font-medium"
                     >
-                      Select Driver
+                      Select Driver *
                     </label>
                     <Select
+                      required
                       value={formData.driverId}
                       onValueChange={(value) => handleChange("driverId", value)}
                     >
@@ -217,9 +220,10 @@ const AddTruckDialogComponent = () => {
                       htmlFor="vendor"
                       className="text-gray-700 font-medium"
                     >
-                      Select a Vendor
+                      Select a Vendor *
                     </label>
                     <Select
+                      required
                       value={formData.vendorId}
                       onValueChange={(value) => handleChange("vendorId", value)}
                       disabled={

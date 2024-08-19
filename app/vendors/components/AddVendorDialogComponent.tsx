@@ -76,7 +76,7 @@ const AddVendorDialogComponent = () => {
                 <div className=" mb-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Vendor Name
+                      Vendor Name *
                     </label>
                     <input
                       type="text"
@@ -85,11 +85,12 @@ const AddVendorDialogComponent = () => {
                       placeholder="Enter vendor name"
                       value={formData.name}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Email
+                      Email *
                     </label>
                     <input
                       type="email"
@@ -98,11 +99,12 @@ const AddVendorDialogComponent = () => {
                       placeholder="Enter email"
                       value={formData.email}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      Phone Number
+                      Phone Number *
                     </label>
                     <input
                       type="tel"
@@ -111,6 +113,7 @@ const AddVendorDialogComponent = () => {
                       placeholder="Enter phone number"
                       value={formData.phone}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>

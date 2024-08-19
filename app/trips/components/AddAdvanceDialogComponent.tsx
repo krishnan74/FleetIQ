@@ -131,7 +131,7 @@ const AddAdvanceDialogComponent: React.FC<DataFormProps> = ({
               <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
                 <div className="flex flex-col">
                   <label htmlFor="amount" className="text-gray-700 font-medium">
-                    Advance Amount
+                    Advance Amount *
                   </label>
                   <input
                     type="number"
@@ -151,9 +151,10 @@ const AddAdvanceDialogComponent: React.FC<DataFormProps> = ({
                     htmlFor="transactionMode"
                     className="text-gray-700 font-medium mb-3"
                   >
-                    Payment Mode
+                    Payment Mode *
                   </label>
                   <RadioGroup
+                    required
                     defaultValue={TransactionMode.CASH}
                     className="flex flex-wrap gap-x-10"
                     onValueChange={(value) =>
@@ -204,7 +205,7 @@ const AddAdvanceDialogComponent: React.FC<DataFormProps> = ({
                     htmlFor="transactionDate"
                     className="text-gray-700 font-medium"
                   >
-                    Payment Date
+                    Payment Date *
                   </label>
                   <div className="mt-3">
                     <DatePicker date={selectedDate} setDate={setSelectedDate} />
@@ -216,7 +217,7 @@ const AddAdvanceDialogComponent: React.FC<DataFormProps> = ({
                     htmlFor="transactionDescription"
                     className="text-gray-700 font-medium"
                   >
-                    Description
+                    Description *
                   </label>
                   <textarea
                     id="transactionDescription"
@@ -227,6 +228,7 @@ const AddAdvanceDialogComponent: React.FC<DataFormProps> = ({
                     }
                     className="border border-gray-300 rounded-md p-2"
                     rows={3}
+                    required
                   />
                 </div>
 

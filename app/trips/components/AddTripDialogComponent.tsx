@@ -176,10 +176,11 @@ const AddTripDialogComponent = () => {
                       htmlFor="party"
                       className="text-gray-700 font-medium"
                     >
-                      Select Party
+                      Select Party *
                     </label>
                     <Select
                       value={formData.partyId}
+                      required
                       onValueChange={(value) => handleChange("partyId", value)}
                     >
                       <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
@@ -204,7 +205,7 @@ const AddTripDialogComponent = () => {
                           htmlFor="vendor"
                           className="text-gray-700 font-medium"
                         >
-                          Select Vendor
+                          Select Vendor *
                         </label>
                         <Select value={formData.vendorId} disabled={true}>
                           <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
@@ -227,10 +228,11 @@ const AddTripDialogComponent = () => {
                       htmlFor="driver"
                       className="text-gray-700 font-medium"
                     >
-                      Select Driver
+                      Select Driver *
                     </label>
                     <Select
                       value={formData.driverId}
+                      required
                       onValueChange={(value) => handleChange("driverId", value)}
                     >
                       <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
@@ -253,9 +255,10 @@ const AddTripDialogComponent = () => {
                       htmlFor="truck"
                       className="text-gray-700 font-medium"
                     >
-                      Select Truck Registration Number
+                      Select Truck Registration Number *
                     </label>
                     <Select
+                      required
                       value={formData.truckId}
                       onValueChange={(value) => handleChange("truckId", value)}
                     >
@@ -293,9 +296,10 @@ const AddTripDialogComponent = () => {
 
                   <div className="flex flex-col">
                     <label htmlFor="from" className="text-gray-700 font-medium">
-                      From
+                      From *
                     </label>
                     <Select
+                      required
                       value={formData.from}
                       onValueChange={(value) => handleChange("from", value)}
                     >
@@ -316,9 +320,10 @@ const AddTripDialogComponent = () => {
 
                   <div className="flex flex-col">
                     <label htmlFor="to" className="text-gray-700 font-medium">
-                      To
+                      To *
                     </label>
                     <Select
+                      required
                       value={formData.to}
                       onValueChange={(value) => handleChange("to", value)}
                     >
@@ -342,7 +347,7 @@ const AddTripDialogComponent = () => {
                       htmlFor="partyFreightAmount"
                       className="text-gray-700 font-medium"
                     >
-                      Party Freight Amount
+                      Party Freight Amount *
                     </label>
                     <input
                       type="number"
@@ -351,6 +356,7 @@ const AddTripDialogComponent = () => {
                         handleChange("partyFreightAmount", e.target.value)
                       }
                       className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                      required
                     />
                   </div>
 
@@ -360,7 +366,7 @@ const AddTripDialogComponent = () => {
                         htmlFor="vendorBalance"
                         className="text-gray-700 font-medium"
                       >
-                        Truck Hire Cost
+                        Truck Hire Cost *
                       </label>
                       <input
                         type="number"
@@ -369,6 +375,7 @@ const AddTripDialogComponent = () => {
                           handleChange("vendorBalance", e.target.value)
                         }
                         className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                        required
                       />
                     </div>
                   )}
@@ -378,7 +385,7 @@ const AddTripDialogComponent = () => {
                       htmlFor="startKMSReadings"
                       className="text-gray-700 font-medium"
                     >
-                      Start KMS Readings
+                      Start KMS Readings *
                     </label>
                     <input
                       type="number"
@@ -387,6 +394,7 @@ const AddTripDialogComponent = () => {
                         handleChange("startKMSReadings", e.target.value)
                       }
                       className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                      required
                     />
                   </div>
 
@@ -396,7 +404,7 @@ const AddTripDialogComponent = () => {
                         htmlFor="startDate"
                         className="text-gray-700 font-medium"
                       >
-                        Start Date
+                        Start Date *
                       </label>
                       <div className="mt-3">
                         <DatePicker

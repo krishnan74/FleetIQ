@@ -168,13 +168,14 @@ const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="expenseType"
                       className="text-gray-700 font-medium"
                     >
-                      Select Expense Type
+                      Select Expense Type *
                     </label>
                     <Select
                       value={expenseType}
                       onValueChange={(value) =>
                         handleChange("expenseType", value)
                       }
+                      required
                     >
                       <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
                         <SelectValue placeholder="Select Expense Type" />
@@ -196,7 +197,7 @@ const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="amount"
                       className="text-gray-700 font-medium"
                     >
-                      Expense Amount
+                      Expense Amount *
                     </label>
                     <input
                       type="number"
@@ -216,9 +217,10 @@ const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="transactionMode"
                       className="text-gray-700 font-medium mb-3"
                     >
-                      Payment Mode
+                      Payment Mode *
                     </label>
                     <RadioGroup
+                      required
                       defaultValue={TransactionMode.CASH}
                       className="flex flex-wrap gap-x-10"
                       onValueChange={(value) =>
@@ -275,7 +277,7 @@ const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="transactionDate"
                       className="text-gray-700 font-medium"
                     >
-                      Payment Date
+                      Payment Date *
                     </label>
                     <div className="mt-3">
                       <DatePicker
@@ -290,7 +292,7 @@ const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="transactionDescription"
                       className="text-gray-700 font-medium"
                     >
-                      Description
+                      Description *
                     </label>
                     <textarea
                       id="transactionDescription"
@@ -301,6 +303,7 @@ const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
                       }
                       className="border border-gray-300 rounded-md p-2"
                       rows={3}
+                      required
                     />
                   </div>
 

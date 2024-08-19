@@ -113,7 +113,7 @@ const PODReceivedDialogComponent: React.FC<DataFormProps> = ({
                       htmlFor="transactionDate"
                       className="text-gray-700 font-medium"
                     >
-                      POD Received On
+                      POD Received On *
                     </label>
                     <div className="mt-3">
                       <DatePicker
