@@ -5,6 +5,7 @@ import axios from "axios";
 
 import { CiSearch } from "react-icons/ci";
 
+import { Button } from "react-day-picker";
 import {
   Table,
   TableBody,
@@ -139,8 +140,11 @@ const Page = () => {
             <TableHead className="py-3 px-4 text-left  text-white">
               Active Trip Count
             </TableHead>
-            <TableHead className="py-3 px-4 text-right  text-white">
+            <TableHead className="py-3 px-4 text-left  text-white">
               Party Balance
+            </TableHead>
+            <TableHead className="py-3 px-4 text-right  text-white">
+              Actions
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -148,7 +152,6 @@ const Page = () => {
           {parties?.map((party) => (
             <TableRow
               key={party.id}
-              onClick={redirectToDetails(party.id)}
               className="cursor-pointer hover:bg-gray-50 transition-colors"
             >
               <TableCell className="py-3 px-4 font-medium">
@@ -167,6 +170,14 @@ const Page = () => {
               </TableCell>
               <TableCell className="py-3 px-4 text-right font-medium">
                 {party.totalBalance.toFixed(2)}
+              </TableCell>
+              <TableCell className="py-3 px-4 text-right">
+                <Button
+                  onClick={redirectToDetails(party.id)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700"
+                >
+                  View Details
+                </Button>
               </TableCell>
             </TableRow>
           ))}

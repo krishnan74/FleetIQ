@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import { CiSearch } from "react-icons/ci";
+import { Button } from "@/components/ui/button";
 
 interface Truck {
   id: string;
@@ -140,6 +141,9 @@ const Page = () => {
               <TableHead className="py-3 px-4 text-left text-white ">
                 Trip Status
               </TableHead>
+              <TableHead className="py-3 px-4 text-right text-white ">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -161,6 +165,14 @@ const Page = () => {
                 </TableCell>
                 <TableCell className="py-3 px-4 font-medium">
                   {trip.status}
+                </TableCell>
+                <TableCell className="py-3 px-4 text-right">
+                  <Button
+                    onClick={redirectToDetails(trip.id)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700"
+                  >
+                    View Details
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
