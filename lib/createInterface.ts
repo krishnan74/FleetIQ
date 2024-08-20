@@ -8,6 +8,13 @@ import {
   TruckStatus,
 } from "@prisma/client";
 
+export interface User {
+  userName: string;
+  email: string;
+  password: string;
+  phone: string;
+}
+
 export interface Trip {
   from: string;
   to: string;
