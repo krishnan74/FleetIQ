@@ -11,9 +11,20 @@ export async function GET(
 ) {
   console.log("Fetching party with id :: ", context.params.id);
   try {
+    const url = new URL(req.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const party = await prisma.party.findUnique({
       where: {
         id: context.params.id,
+        userId,
       },
       include: {
         trips: {

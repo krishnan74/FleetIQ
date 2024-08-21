@@ -19,16 +19,11 @@ import {
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { TripStatus } from "@prisma/client";
-import TripBillDialogComponent from "@/app/trips/components/TripBillDialogComponent";
-import PODReceivedDialogComponent from "@/app/trips/components/PODReceivedDialogComponent";
-import PODSubmittedDialogComponent from "@/app/trips/components/PODSubmittedDialogComponent";
-import SettleTripDialogComponent from "@/app/trips/components/SettleTripDialogComponent";
-import CompleteTripDialogComponent from "@/app/trips/components/CompleteTripDialogComponent";
-
+import { useSession } from "next-auth/react";
 import { PartyDetails, Trip, TripTransaction } from "@/lib/interface";
 
 const Page = () => {
+  const { data: session } = useSession();
   const [party, setParty] = useState<PartyDetails | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [partyTransactions, setPartyTransactions] = useState<TripTransaction[]>(
@@ -49,12 +44,18 @@ const Page = () => {
 
   const fetchPartyAndTrips = async () => {
     try {
-      const partyResponse = await axios.get(`/api/party/${id}`);
+      const partyResponse = await axios.get(
+        `/api/party/${id}/?userId=${session?.user.id ? session?.user.id : ""}`
+      );
       setParty(partyResponse.data.data);
 
       // Fetch all trips concurrently
       const tripRequests = partyResponse.data.data.trips.map((trip: Trip) =>
-        axios.get(`/api/trip/${trip.id}`)
+        axios.get(
+          `/api/trip/${trip.id}/?userId=${
+            session?.user.id ? session?.user.id : ""
+          }`
+        )
       );
       const tripResponses = await Promise.all(tripRequests);
 
