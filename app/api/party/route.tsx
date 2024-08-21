@@ -1,20 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { error } from "console";
-
-interface PartyDetails {
-  name: string;
-  phone: string;
-  openingBalance: number;
-  gstNumber: string;
-  openingBalanceDate: string;
-  PANNumber: string;
-  companyName: string;
-}
+import { PartyDetails } from "@/lib/createInterface";
 
 export async function GET(req: NextRequest) {
   try {
+    const url = new URL(req.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const parties = await prisma.party.findMany({
+      where: {
+        userId: userId,
+      },
       include: {
         trips: true,
         transactions: true,
@@ -50,6 +53,7 @@ export async function POST(req: NextRequest) {
       gstNumber,
       PANNumber,
       companyName,
+      userId,
     } = body;
 
     const totalBalance = openingBalance;
@@ -61,6 +65,11 @@ export async function POST(req: NextRequest) {
         openingBalance,
         openingBalanceDate,
         totalBalance,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
       },
     });
 

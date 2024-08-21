@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, phone } = body;
+    const { name, email, phone, userId } = body;
 
     const vendor = await prisma.vendor.create({
       data: {
@@ -41,6 +41,11 @@ export async function POST(req: NextRequest) {
         email,
         phone,
         totalBalance: 0,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
       },
     });
 

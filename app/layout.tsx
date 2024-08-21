@@ -8,6 +8,7 @@ import { RiBarChart2Fill } from "react-icons/ri";
 import { FaBell } from "react-icons/fa";
 import { BiTrip } from "react-icons/bi";
 import { FaTruck } from "react-icons/fa6";
+import { Providers } from "./providers";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FaFileInvoice } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -29,31 +30,33 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.className} `}>
-        <SideBar
-          links={[
-            { name: "Dashboard", icon: <RiBarChart2Fill /> },
-            { name: "Parties", icon: <BsFillPeopleFill /> },
-            { name: "Vendors", icon: <BsFillPeopleFill /> },
-            { name: "Trips", icon: <BiTrip /> },
+      <Providers>
+        <body className={`${outfit.className} `}>
+          <SideBar
+            links={[
+              { name: "Dashboard", icon: <RiBarChart2Fill /> },
+              { name: "Parties", icon: <BsFillPeopleFill /> },
+              { name: "Vendors", icon: <BsFillPeopleFill /> },
+              { name: "Trips", icon: <BiTrip /> },
 
-            { name: "Drivers", icon: <BsFillPeopleFill /> },
-            { name: "Trucks", icon: <FaTruck /> },
-            {
-              name: "Remainders",
-              icon: <FaBell />,
-            },
-          ]}
-        />
+              { name: "Drivers", icon: <BsFillPeopleFill /> },
+              { name: "Trucks", icon: <FaTruck /> },
+              {
+                name: "Remainders",
+                icon: <FaBell />,
+              },
+            ]}
+          />
 
-        <div className="bg-[#F6F6F6] p-5  w-[87vw] h-[100vh] right-0 absolute">
-          <div className="flex flex-col p-8 bg-white  w-full rounded-lg shadow-lg">
-            <NavBar />
-            {children}
+          <div className="bg-[#F6F6F6] p-5  w-[87vw] h-[100vh] right-0 absolute">
+            <div className="flex flex-col p-8 bg-white  w-full rounded-lg shadow-lg">
+              <NavBar />
+              {children}
+            </div>
           </div>
-        </div>
-        <Toaster />
-      </body>
+          <Toaster />
+        </body>
+      </Providers>
     </html>
   );
 }

@@ -15,6 +15,18 @@ export interface User {
   phone: string;
 }
 
+export interface PartyDetails {
+  userId: string;
+  name: string;
+  phone: string;
+  openingBalance: number;
+  gstNumber?: string;
+  openingBalanceDate: string;
+
+  PANNumber?: string;
+  companyName?: string;
+}
+
 export interface Trip {
   from: string;
   to: string;

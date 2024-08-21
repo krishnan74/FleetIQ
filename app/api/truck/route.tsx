@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
       truckOwnerShip,
       driverId,
       vendorId,
+      userId,
     } = body;
 
     const truck = await prisma.truck.create({
@@ -43,6 +44,11 @@ export async function POST(req: NextRequest) {
         registrationNumber,
         truckType,
         truckOwnerShip,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
         driver: {
           connect: {
             id: driverId,

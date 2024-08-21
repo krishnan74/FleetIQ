@@ -14,23 +14,21 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { DatePicker } from "@/components/DatePicker";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
-interface PartyDetails {
-  name: string;
-  phone: string;
-  openingBalance: number; // Should be a number
-  openingBalanceDate: string;
-}
+import { PartyDetails } from "@/lib/createInterface";
 
-const AddPartyDialogComponent = () => {
+const AddPartyDialogComponent: React.FC<{ userId: string }> = ({ userId }) => {
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [open, setOpen] = useState(false);
+
   const [formData, setFormData] = useState<PartyDetails>({
     name: "",
-    openingBalance: 0, // Initialize as number
+    openingBalance: 0,
     openingBalanceDate: "",
     phone: "",
+    userId: userId || "", // Assign the user ID here
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
       material,
       notes,
       startedAt,
+      userId,
     } = body;
 
     const partyBalance = partyFreightAmount;
@@ -73,6 +74,13 @@ export async function POST(req: NextRequest) {
         to,
         status: TripStatus.PLANNED,
         profit: partyFreightAmount,
+
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+
         vendor: {
           connect: {
             id: vendorId,
