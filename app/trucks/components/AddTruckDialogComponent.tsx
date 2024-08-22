@@ -29,23 +29,25 @@ import { TruckType, TruckOwnership } from "@prisma/client";
 
 import { DriverDetails, VendorDetails } from "@/lib/interface";
 import { Truck } from "@/lib/createInterface";
+import { useSession } from "next-auth/react";
 
 const AddTruckDialogComponent = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
 
   const [drivers, setDrivers] = useState<DriverDetails[]>([]);
   const [vendors, setVendors] = useState<VendorDetails[]>([]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (session?.user.id) fetchData();
+  }, [session?.user.id]);
 
   const fetchData = async () => {
     try {
       const [vendorResponse, driverResponse] = await Promise.all([
-        axios.get("/api/vendor/"),
-        axios.get("/api/driver/"),
+        axios.get(`api/vendor/?userId=${session?.user.id}`),
+        axios.get(`api/driver/?userId=${session?.user.id}`),
       ]);
 
       setVendors(vendorResponse.data.data || []);
@@ -65,6 +67,7 @@ const AddTruckDialogComponent = () => {
     truckOwnerShip: TruckOwnership.MARKET_TRUCK,
     driverId: "",
     vendorId: "66bb0206785fb2b819768411",
+    userId: "",
   });
 
   const handleChange = (name: string, value: any) => {
@@ -80,7 +83,10 @@ const AddTruckDialogComponent = () => {
     console.log("formData", formData);
 
     try {
-      const response = await axios.post("/api/truck/", formData);
+      const response = await axios.post("/api/truck/", {
+        ...formData,
+        userId: session?.user.id,
+      });
       if (response.data.message === "success") {
         toast({
           title: "Truck created successfully",

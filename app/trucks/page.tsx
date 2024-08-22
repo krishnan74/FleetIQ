@@ -12,9 +12,11 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Truck } from "@/lib/interface";
 
 const Page = () => {
+  const { data: session } = useSession();
   const [trucks, settrucks] = useState<Truck[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +25,9 @@ const Page = () => {
 
   const fetchtrucks = async () => {
     try {
-      const response = await axios.get("/api/truck");
+      const response = await axios.get(
+        `/api/truck/?userId=${session?.user.id ? session?.user.id : ""}`
+      );
       if (response.data.message === "success") {
         settrucks(response.data.data);
       } else {
@@ -41,8 +45,10 @@ const Page = () => {
   };
 
   useEffect(() => {
-    fetchtrucks();
-  }, []);
+    if (session?.user.id) {
+      fetchtrucks();
+    }
+  }, [session?.user.id]);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;

@@ -4,7 +4,20 @@ import { TruckStatus } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
+    const url = new URL(req.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const trucks = await prisma.truck.findMany({
+      where: {
+        userId,
+      },
       include: {
         trips: true,
         vendor: true,
