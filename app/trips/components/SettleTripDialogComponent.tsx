@@ -17,10 +17,8 @@ import { DatePicker } from "@/components/DatePicker";
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { usePathname } from "next/navigation";
 import axios from "axios";
 
-import { locations } from "@/lib/utils";
 import { TripTransaction } from "@/lib/createInterface";
 import {
   TransactionMode,
@@ -36,9 +34,6 @@ const SettleTripDialogComponent: React.FC<DataFormProps> = ({
   refresh,
   tripId,
 }) => {
-  const pathname = usePathname();
-  const id = pathname.split("/")[2];
-
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);

@@ -16,7 +16,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -34,8 +33,6 @@ import {
 
 import { locations } from "@/lib/utils";
 import { Trip } from "@/lib/createInterface";
-import { DataFormProps } from "@/lib/interface";
-import { TruckOwnership } from "@prisma/client";
 
 const AddTripDialogComponent = () => {
   const { toast } = useToast();
@@ -52,18 +49,14 @@ const AddTripDialogComponent = () => {
 
   const [showMore, setShowMore] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
     try {
       const [vendorResponse, driverResponse, partyResponse, truckResponse] =
         await Promise.all([
-          axios.get("/api/vendor/"),
-          axios.get("/api/driver/"),
-          axios.get("/api/party/"),
-          axios.get("/api/truck/"),
+          axios.get(`/api/vendor/`),
+          axios.get(`/api/driver/`),
+          axios.get(`/api/party/`),
+          axios.get(`/api/truck/`),
         ]);
 
       setDrivers(driverResponse.data.data);
@@ -154,6 +147,10 @@ const AddTripDialogComponent = () => {
       console.error("Error while creating trip:", error);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>

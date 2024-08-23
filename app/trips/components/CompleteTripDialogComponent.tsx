@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,42 +11,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import prisma from "@/lib/prisma";
 import axios from "axios";
-import {
-  PartyDetails,
-  DriverDetails,
-  VendorDetails,
-  Truck,
-} from "@/lib/interface";
 
-import { locations } from "@/lib/utils";
 import { DatePicker } from "@/components/DatePicker";
 import { TripStatus } from "@prisma/client";
 
-import { usePathname } from "next/navigation";
 import { DataFormProps } from "@/lib/interface";
 
 const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
   setRefresh,
   refresh,
-  tripId
+  tripId,
 }) => {
   const { toast } = useToast();
-  const pathname = usePathname();
-  const id = pathname.split("/")[2];
 
   const [open, setOpen] = useState(false);
 

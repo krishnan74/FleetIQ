@@ -14,7 +14,6 @@ import Spreadsheet from "react-spreadsheet";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import { Trip, TripTransaction } from "@/lib/interface";
@@ -143,7 +142,6 @@ const TripBillDialogComponent = () => {
             .substring(4)}` || "",
       },
 
-     
       {
         value: "",
       },
@@ -179,7 +177,6 @@ const TripBillDialogComponent = () => {
             .substring(4)}` || "",
       },
 
-      
       {
         value: "",
       },
@@ -218,7 +215,6 @@ const TripBillDialogComponent = () => {
       {
         value: "",
       },
-      
 
       {
         value: `- ₹ ${transaction.amount}` || "",

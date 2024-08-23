@@ -8,7 +8,6 @@ import { FaTruck } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { GiSteeringWheel } from "react-icons/gi";
 import { FaChevronRight } from "react-icons/fa";
-import AddTripDialogComponent from "../components/AddTripDialogComponent";
 import AddAdvanceDialogComponent from "../components/AddAdvanceDialogComponent";
 import CompleteTripDialogComponent from "../components/CompleteTripDialogComponent";
 import Link from "next/link";

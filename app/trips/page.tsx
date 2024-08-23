@@ -14,39 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import { CiSearch } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
-
-interface Truck {
-  id: string;
-  registrationNumber: string;
-  truckType: string;
-  truckOwnerShip: string;
-  driverId: string;
-  vendorId: string;
-  status: string;
-}
-
-interface PartyDetails {
-  id: string;
-  name: string;
-  phone: string;
-  openingBalance: number;
-  openingBalanceDate: string;
-}
-
-interface Trip {
-  id: string;
-  status: string;
-  vendorId: string;
-  partyId: string;
-  driverId: string;
-  truckId: string;
-  createdAt: string;
-  from: string;
-  to: string;
-  updatedAt: string;
-  party: PartyDetails;
-  truck: Truck; // Ensure truck can be null or undefined
-}
+import { Trip } from "@/lib/interface";
 
 const Page = () => {
   const [trips, setTrips] = useState<Trip[]>();
@@ -79,7 +47,7 @@ const Page = () => {
 
   const fetchTrips = async () => {
     try {
-      const response = await axios.get("/api/trip");
+      const response = await axios.get(`/api/party/`);
       if (response.data.message === "success") {
         setTrips(response.data.data);
       } else {
@@ -95,10 +63,6 @@ const Page = () => {
   const redirectToDetails = (id: string) => () => {
     router.push(`/trips/${id}`);
   };
-
-  useEffect(() => {
-    fetchTrips();
-  }, []);
 
   useEffect(() => {
     searchTrips(search);

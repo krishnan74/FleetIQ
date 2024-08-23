@@ -16,7 +16,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -30,7 +29,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 
-import { locations } from "@/lib/utils";
 import { TripTransaction } from "@/lib/createInterface";
 import {
   ExpenseType,
