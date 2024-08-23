@@ -17,10 +17,8 @@ import { DatePicker } from "@/components/DatePicker";
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { usePathname } from "next/navigation";
 import axios from "axios";
 
-import { locations } from "@/lib/utils";
 import { TripTransaction } from "@/lib/createInterface";
 import {
   TransactionMode,
@@ -160,7 +158,7 @@ const SettleOpeningBalance: React.FC<DataFormProps> = ({
                     Payment Mode *
                   </label>
                   <RadioGroup
-                  required
+                    required
                     defaultValue={TransactionMode.CASH}
                     className="flex flex-wrap gap-x-10"
                     onValueChange={(value) =>

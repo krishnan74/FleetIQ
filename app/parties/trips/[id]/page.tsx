@@ -1,12 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaBell } from "react-icons/fa";
 
-import { PiLineVerticalThin } from "react-icons/pi";
 import axios from "axios";
-import { AvatarComponent } from "@/components/Avatar";
 import { Button } from "@/components/ui/button";
-import AppPartyDialogComponent from "../../components/AddPartyDialogComponent";
 import {
   Table,
   TableBody,
@@ -20,17 +16,14 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { TripStatus } from "@prisma/client";
-import TripBillDialogComponent from "@/app/trips/components/TripBillDialogComponent";
 import PODReceivedDialogComponent from "@/app/trips/components/PODReceivedDialogComponent";
 import PODSubmittedDialogComponent from "@/app/trips/components/PODSubmittedDialogComponent";
 import SettleTripDialogComponent from "@/app/trips/components/SettleTripDialogComponent";
 import CompleteTripDialogComponent from "@/app/trips/components/CompleteTripDialogComponent";
-import { useSession } from "next-auth/react";
 import { PartyDetails, Trip } from "@/lib/interface";
 import SettleOpeningBalance from "../../components/SettleOpeningBalance";
 
 const Page = () => {
-  const { data: session } = useSession();
   const [party, setParty] = useState<PartyDetails | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,18 +40,12 @@ const Page = () => {
 
   const fetchPartyAndTrips = async () => {
     try {
-      const partyResponse = await axios.get(
-        `/api/party/${id}/?userId=${session?.user.id ? session?.user.id : ""}`
-      );
+      const partyResponse = await axios.get(`/api/party/${id}/`);
       setParty(partyResponse.data.data);
 
       // Fetch all trips concurrently
       const tripRequests = partyResponse.data.data.trips.map((trip: Trip) =>
-        axios.get(
-          `/api/trip/${trip.id}/?userId=${
-            session?.user.id ? session?.user.id : ""
-          }`
-        )
+        axios.get(`/api/trip/${trip.id}/`)
       );
       const tripResponses = await Promise.all(tripRequests);
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 
@@ -18,10 +18,8 @@ import {
 import { useRouter } from "next/navigation";
 import { PartyDetails } from "@/lib/interface";
 import { TripStatus } from "@prisma/client";
-import { useSession } from "next-auth/react";
 
 const Page = () => {
-  const { data: session } = useSession();
   const [parties, setParties] = useState<PartyDetails[]>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,9 +49,7 @@ const Page = () => {
 
   const fetchParties = async () => {
     try {
-      const response = await axios.get(
-        `/api/party/?userId=${session?.user.id ? session?.user.id : ""}`
-      );
+      const response = await axios.get(`/api/party/`);
       if (response.data.message === "success") {
         setParties(response.data.data);
         const totalBalance = response.data.data.reduce(
