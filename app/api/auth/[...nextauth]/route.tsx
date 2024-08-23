@@ -54,7 +54,7 @@ const authOptions: NextAuthOptions = {
 
   callbacks: {
     session: ({ session, token }) => {
-      console.log("Session Callback", { session, token });
+      //console.log("Session Callback", { session, token });
       // Extend session.user with id, name, and email
       if (token && session.user) {
         session.user.id = token.id as string;
@@ -64,7 +64,7 @@ const authOptions: NextAuthOptions = {
       return session;
     },
     jwt: ({ token, user }) => {
-      console.log("JWT Callback", { token, user });
+      //console.log("JWT Callback", { token, user });
       if (user) {
         // Add user id, name, and email to the token
         token.id = user.id;
