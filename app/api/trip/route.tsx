@@ -6,11 +6,24 @@ import {
   TripStatus,
   TripTransactionType,
 } from "@prisma/client";
-import axios from "axios";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
     const trips = await prisma.trip.findMany({
+      where: {
+        userId,
+      },
       include: {
         vendor: true,
         driver: true,
@@ -36,6 +49,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
     const body = await req.json();
     const {
       from,
@@ -51,7 +67,6 @@ export async function POST(req: NextRequest) {
       material,
       notes,
       startedAt,
-      userId,
     } = body;
 
     const partyBalance = partyFreightAmount;
@@ -124,7 +139,12 @@ export async function POST(req: NextRequest) {
 
     const partyTransaction = await prisma.partyTransaction.create({
       data: {
-        partyId,
+        party: {
+          connect: {
+            id: partyId,
+          },
+        },
+
         amount: partyFreightAmount,
 
         transactionType: TripTransactionType.FREIGHT,
@@ -136,7 +156,11 @@ export async function POST(req: NextRequest) {
 
     const vendorTransaction = await prisma.vendorTransaction.create({
       data: {
-        vendorId,
+        vendor: {
+          connect: {
+            id: vendorId,
+          },
+        },
         amount: vendorBalance,
         transactionType: ExpenseType.Truck_Hire_Cost,
         transactionDate: new Date().toISOString(),

@@ -1,13 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const vendors = await prisma.vendor.findMany({
       where: {
         name: {
           not: "Own Vendor",
         },
+        userId,
       },
       include: {
         trips: true,
@@ -32,8 +45,18 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
-    const { name, email, phone, userId } = body;
+    const { name, email, phone } = body;
 
     const vendor = await prisma.vendor.create({
       data: {

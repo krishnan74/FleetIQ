@@ -1,11 +1,52 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { ReminderCreate } from "@/lib/createInterface";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+
+export async function GET(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "userId parameter is required." },
+        { status: 400 }
+      );
+    }
+
+    //console.log("Fetching reminders for user ID:", userId);
+
+    const reminders = await prisma.reminder.findMany({
+      where: {
+        userId: userId, // Ensure userId is a string
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "success",
+        data: reminders,
+      },
+      { status: 200 }
+    );
+  } catch (e: any) {
+    console.log("Error while fetching reminders:", e);
+    return NextResponse.json(
+      { message: "Failed", error: e.message },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
     const body: ReminderCreate = await req.json();
-    const { type, details, date, userId } = body;
+    const { type, details, date } = body;
+
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     // Validate input data (this is optional but recommended)
     if (!type || !details || !date) {
@@ -41,44 +82,6 @@ export async function POST(req: NextRequest) {
     );
   } catch (e: any) {
     console.log("Error while creating reminder :: ", e);
-    return NextResponse.json(
-      { message: "Failed", error: e.message },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(req: NextRequest) {
-  try {
-    const url = new URL(req.url);
-
-    //console.log("Fetching reminders for user ID:", url);
-    const userId = url.searchParams.get("userId");
-
-    if (!userId) {
-      return NextResponse.json(
-        { message: "userId parameter is required." },
-        { status: 400 }
-      );
-    }
-
-    //console.log("Fetching reminders for user ID:", userId);
-
-    const reminders = await prisma.reminder.findMany({
-      where: {
-        userId: userId, // Ensure userId is a string
-      },
-    });
-
-    return NextResponse.json(
-      {
-        message: "success",
-        data: reminders,
-      },
-      { status: 200 }
-    );
-  } catch (e: any) {
-    console.log("Error while fetching reminders:", e);
     return NextResponse.json(
       { message: "Failed", error: e.message },
       { status: 500 }

@@ -1,5 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(
   req: NextRequest,
@@ -11,8 +13,8 @@ export async function GET(
 ) {
   console.log("Fetching party with id :: ", context.params.id);
   try {
-    const url = new URL(req.url);
-    const userId = url.searchParams.get("userId");
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
     if (!userId) {
       return NextResponse.json(
@@ -60,16 +62,21 @@ export async function PUT(
     };
   }
 ) {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+
   try {
     const party = await prisma.party.findUnique({
       where: {
         id: context.params.id,
+        userId,
       },
     });
 
     const updatedParty = await prisma.party.update({
       where: {
         id: context.params.id,
+        userId,
       },
       data: {
         totalBalance: {
@@ -81,6 +88,7 @@ export async function PUT(
     const finalParty = await prisma.party.update({
       where: {
         id: context.params.id,
+        userId,
       },
       data: {
         openingBalance: 0,
