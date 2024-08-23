@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
 
-    console.log("Fetching reminders for user ID:", url);
+    //console.log("Fetching reminders for user ID:", url);
     const userId = url.searchParams.get("userId");
 
     if (!userId) {
@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    console.log("Fetching reminders for user ID:", userId);
+    //console.log("Fetching reminders for user ID:", userId);
 
     const reminders = await prisma.reminder.findMany({
       where: {
