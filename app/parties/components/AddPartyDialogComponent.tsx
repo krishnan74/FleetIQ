@@ -17,7 +17,7 @@ import axios from "axios";
 
 import { PartyDetails } from "@/lib/createInterface";
 
-const AddPartyDialogComponent: React.FC<{ userId: string }> = ({ userId }) => {
+const AddPartyDialogComponent = () => {
   const { toast } = useToast();
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);

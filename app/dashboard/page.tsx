@@ -1,19 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { CiSearch } from "react-icons/ci";
-import { FaBell } from "react-icons/fa";
-import { IoMdSettings } from "react-icons/io";
-import { PiLineVerticalThin } from "react-icons/pi";
-import { RxAvatar } from "react-icons/rx";
+
 import { BarChartComponent } from "./components/BarChartComponent";
 import { PieChartComponent } from "./components/PieChartComponent";
 import { TransactionComponent } from "./components/TransactionComponent";
-import { AvatarComponent } from "@/components/Avatar";
 
 import DummyCard from "./components/DummyCard";
 import { Trip } from "@/lib/interface";
 import axios from "axios";
-import { set } from "date-fns";
 const Page = () => {
   const [allTrips, setAllTrips] = useState<Trip[]>([]);
   const [monthlyTrips, setMonthlyTrips] = useState<Trip[]>([]);
