@@ -1,13 +1,20 @@
 import React from "react";
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
 
-interface DummyCardProps {
+interface TripCardProps {
   count: number;
   title: string;
   percentage: string;
+  completedTripCount: number;
+  onGoingTripCount: number;
 }
 
-const DummyCard: React.FC<DummyCardProps> = ({ count, title, percentage }) => {
+const TripCard: React.FC<TripCardProps> = ({
+  count,
+  title,
+  completedTripCount,
+  onGoingTripCount,
+}) => {
   return (
     <div className="relative flex-col justify-between flex p-5 h-full rounded-xl border bg-card text-card-foreground shadow">
       <div className="flex justify-end">
@@ -18,15 +25,16 @@ const DummyCard: React.FC<DummyCardProps> = ({ count, title, percentage }) => {
 
       <div className="flex justify-between">
         <p className="text-[#666] text-sm">
-          CRS/Total:{" "}
-          <span className="text-black font-bold">{percentage} %</span>
+          Completed:{" "}
+          <span className="text-black font-bold">{completedTripCount}</span>
         </p>
         <p className="text-[#666] text-sm">
-          Trending: <span className="text-black font-bold">N/A</span> %
+          On Going:{" "}
+          <span className="text-black font-bold">{onGoingTripCount}</span>
         </p>
       </div>
     </div>
   );
 };
 
-export default DummyCard;
+export default TripCard;

@@ -1,13 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { BarChartComponent } from "./components/BarChartComponent";
-import { PieChartComponent } from "./components/PieChartComponent";
-import { TransactionComponent } from "./components/TransactionComponent";
+import { BarChartComponent } from "@/app/dashboard/components/BarChartComponent";
+import { PieChartComponent } from "@/app/dashboard/components/PieChartComponent";
+import { TransactionComponent } from "@/app/dashboard/components/TransactionComponent";
 
-import DummyCard from "./components/DummyCard";
-import { Trip } from "@/lib/interface";
+import DriverCard from "@/app/dashboard/components/DriverCard";
+import { DriverDetails, Trip, VendorDetails } from "@/lib/interface";
 import axios from "axios";
+import { TripStatus, TruckStatus } from "@prisma/client";
+import TripCard from "@/app/dashboard/components/TripCard";
+import VendorCard from "@/app/dashboard/components/VendorCard";
+import TruckCard from "@/app/dashboard/components/TruckCard";
 const Page = () => {
   const [allTrips, setAllTrips] = useState<Trip[]>([]);
   const [monthlyTrips, setMonthlyTrips] = useState<Trip[]>([]);
@@ -15,6 +19,13 @@ const Page = () => {
   const [driverCount, setDriverCount] = useState(0);
   const [truckCount, setTruckCount] = useState(0);
   const [vendorCount, setVendorCount] = useState(0);
+  const [totalVendorBalance, setTotalVendorBalance] = useState(0);
+  const [totalDriverBalance, setTotalDriverBalance] = useState(0);
+  const [onTripTruckCount, setOnTripTruckCount] = useState(0);
+  const [availableTruckCount, setAvailableTruckCount] = useState(0);
+  const [completedTripCount, setCompletedTripCount] = useState(0);
+  const [onGoingTripCount, setOnGoingTripCount] = useState(0);
+
   const fetchData = async () => {
     try {
       const tripResponse = await axios.get("/api/trip");
@@ -41,6 +52,42 @@ const Page = () => {
       setDriverCount(driverResponse.data.data.length);
       setTruckCount(truckResponse.data.data.length);
       setVendorCount(vendorResponse.data.data.length);
+
+      const vendorBalance = vendorResponse.data.data.reduce(
+        (acc: number, vendor: VendorDetails) => acc + vendor.totalBalance,
+        0
+      );
+      setTotalVendorBalance(vendorBalance);
+
+      const driverBalance = driverResponse.data.data.reduce(
+        (acc: number, driver: DriverDetails) => acc + driver.balance,
+        0
+      );
+      setTotalDriverBalance(driverBalance);
+
+      const TripComplete = tripResponse.data.data.filter(
+        (trip: Trip) => trip.status === TripStatus.COMPLETED
+      ).length;
+
+      setCompletedTripCount(TripComplete);
+
+      const TripOnGoing = tripResponse.data.data.filter(
+        (trip: Trip) => trip.status === TripStatus.PLANNED
+      ).length;
+
+      setOnGoingTripCount(TripOnGoing);
+
+      const onTripTruck = truckResponse.data.data.filter(
+        (truck: any) => truck.status === TruckStatus.ONTRIP
+      ).length;
+
+      setOnTripTruckCount(onTripTruck);
+
+      const availableTruck = truckResponse.data.data.filter(
+        (truck: any) => truck.status === TruckStatus.AVAILABLE
+      ).length;
+
+      setAvailableTruckCount(availableTruck);
     } catch (error) {
       console.log("An error occurred while fetching data");
     }
@@ -57,20 +104,26 @@ const Page = () => {
         <PieChartComponent trips={monthlyTrips} type={"monthlyTrips"} />
       </div>
       <div className="row-span-1">
-        <DummyCard
+        <TripCard
           count={tripCount}
           title="Trips in travel"
           percentage="30.00"
+          completedTripCount={completedTripCount}
+          onGoingTripCount={onGoingTripCount}
         />
       </div>
       <div className="row-span-1">
-        <DummyCard count={vendorCount} title="Vendors" percentage="30.00" />
+        <VendorCard
+          count={vendorCount}
+          title="Vendors"
+          vendorBalance={totalVendorBalance}
+        />
       </div>
       <div className="row-span-1">
-        <DummyCard
+        <DriverCard
           count={driverCount}
           title="Drivers in service"
-          percentage="30.00"
+          driverBalance={totalDriverBalance}
         />
       </div>
       <div className="col-span-1 row-span-2">
@@ -80,10 +133,11 @@ const Page = () => {
         <TransactionComponent />
       </div>
       <div className="row-span-1">
-        <DummyCard
+        <TruckCard
           count={truckCount}
           title="Trucks in service"
-          percentage="30.00"
+          onTripTruckCount={onTripTruckCount}
+          availableTruckCount={availableTruckCount}
         />
       </div>
     </div>

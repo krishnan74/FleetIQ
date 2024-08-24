@@ -71,22 +71,16 @@ const years = Array.from({ length: 10 }, (_, i) => presentYear - i).map(
   })
 );
 
-const ProfitReportDialogComponent = () => {
+const PartyBalanceReportDialogComponent = () => {
   const [open, setOpen] = useState(false);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>(presentMonth);
   const [currentYear, setCurrentYear] = useState<string>(
     presentYear.toString()
   );
-  const [overallProfit, setOverallProfit] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [noOfTrips, setNoOfTrips] = useState(0);
-  const [advances, setAdvances] = useState(0);
-  const [charges, setCharges] = useState(0);
-  const [payments, setPayments] = useState(0);
+  const [partyData, setPartyData] = useState<{ [key: string]: any }>({});
 
-  const fileName = "Profit & Loss Report";
+  const fileName = "Party Balance Report";
 
   const fetchData = async () => {
     console.log(
@@ -112,69 +106,27 @@ const ProfitReportDialogComponent = () => {
           currentMonthTrips
         );
 
-        const totalProfit = currentMonthTrips.reduce(
-          (acc: number, curr: Trip) => acc + (curr.profit || 0),
-          0
-        );
-        const totalExpenses = currentMonthTrips.reduce(
-          (acc: number, curr: Trip) => acc + (curr.totalExpenseAmount || 0),
-          0
-        );
-        const totalIncome = currentMonthTrips.reduce(
-          (acc: number, curr: Trip) => acc + (curr.partyFreightAmount || 0),
-          0
-        );
+        // Separate trips by Party ownership type
+        const partyDetails: {
+          [key: string]: { trips: number; balance: number };
+        } = {};
 
-        const advances = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "ADVANCE"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
+        currentMonthTrips.forEach((trip: Trip) => {
+          const partyName = trip.party.name;
 
-        const charges = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "CHARGE"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
+          if (!partyDetails[partyName]) {
+            partyDetails[partyName] = { trips: 0, balance: 0 };
+          }
 
-        const payments = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "PAYMENT"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
-
-        console.log("Calculated values:", {
-          totalProfit,
-          totalExpenses,
-          totalIncome,
-          advances,
-          charges,
-          payments,
+          partyDetails[partyName].balance = trip.party.totalBalance;
+          partyDetails[partyName].trips += 1; // Increment trip count
         });
 
+        console.log("Party details with cumulative data:", partyDetails);
+
+        setPartyData(partyDetails);
+
         setTrips(currentMonthTrips);
-        setOverallProfit(totalProfit);
-        setTotalExpenses(totalExpenses);
-        setTotalIncome(totalIncome);
-        setNoOfTrips(currentMonthTrips.length);
-        setAdvances(advances);
-        setCharges(charges);
-        setPayments(payments);
       }
     } catch (error) {
       console.error("An error occurred while fetching data", error);
@@ -187,41 +139,51 @@ const ProfitReportDialogComponent = () => {
     }
   }, [currentMonth, currentYear]);
 
+  const createDataArray = (
+    partyData: { [key: string]: any },
+    title: string
+  ) => {
+    const rows = [
+      [
+        { value: "Party Name" },
+        { value: "Number of Trips" },
+        { value: "Balance" },
+      ],
+      ...Object.keys(partyData).map((partyName) => [
+        { value: partyName },
+        { value: partyData[partyName].trips.toString() },
+        { value: `₹ ${partyData[partyName].balance.toString()}` },
+      ]),
+      [
+        {
+          value: "Total",
+        },
+        {
+          value: Object.values(partyData)
+            .reduce((acc, curr) => acc + curr.trips, 0)
+            .toString(),
+        },
+        {
+          value: `₹ ${Object.values(partyData).reduce(
+            (acc, curr) => acc + curr.balance,
+            0
+          )}`,
+        },
+      ],
+    ];
+    return rows;
+  };
+
   const data = [
     [
-      { value: "Profit & Loss Report" },
+      { value: "Party Balance Report" },
       { value: months[parseInt(currentMonth)].label },
       { value: currentYear },
       { value: "" },
     ],
     [],
-    [
-      { value: "Overall Profit" },
-      { value: `₹ ${overallProfit}` },
-      { value: "" },
-      { value: "" },
-    ],
-    [{ value: "Total Income" }, { value: `₹ ${totalIncome}` }],
-    [{ value: "Total Expenses" }, { value: `₹ ${totalExpenses}` }],
-    [{ value: "Advances" }, { value: `₹ ${advances}` }],
-    [{ value: "Charges" }, { value: `₹ ${charges}` }],
-    [{ value: "Payments" }, { value: `₹ ${payments}` }],
-    [{ value: "Number of Trips" }, { value: noOfTrips }],
+    ...createDataArray(partyData, "Parties"),
     [],
-    [
-      { value: "Trips" },
-
-      { value: "Income" },
-      { value: "Expenses" },
-      { value: "Profit" },
-    ],
-    ...trips.map((trip, index) => [
-      { value: ` ${trip.from} to ${trip.to}` },
-      { value: `₹ ${trip.partyFreightAmount}` },
-
-      { value: `₹ ${trip.totalExpenseAmount}` },
-      { value: `₹ ${trip.profit}` },
-    ]),
   ];
 
   const exportToExcel = () => {
@@ -240,41 +202,13 @@ const ProfitReportDialogComponent = () => {
   };
 
   const chartData = {
-    labels: [
-      "Overall Profit",
-      "Total Income",
-      "Total Expenses",
-      "Advances",
-      "Charges",
-      "Payments",
-    ],
+    labels: Object.keys(partyData),
     datasets: [
       {
-        label: "Financial Overview",
-        data: [
-          overallProfit,
-          totalIncome,
-          totalExpenses,
-          advances,
-          charges,
-          payments,
-        ],
-        backgroundColor: [
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
-        borderColor: [
-          "rgba(75, 192, 192, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(255, 99, 132, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
+        label: "Balance",
+        data: Object.values(partyData).map((party) => party.balance),
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
     ],
@@ -288,14 +222,14 @@ const ProfitReportDialogComponent = () => {
             onClick={() => setOpen(true)}
             className="flex gap-5 p-5 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
           >
-            <img src={"/profit-loss.png"} height={50} width={50} alt="" />
-            <p className="font-semibold text-lg">Profit & Loss Report</p>
+            <img src={"/party-balance.png"} height={50} width={50} alt="" />
+            <p className="font-semibold text-lg">Party Balance Report</p>
           </div>
         </DialogTrigger>
         <DialogContent className="w-full max-w-3xl bg-gray-50 p-8 rounded-lg shadow-xl ">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold pb-5 border-b mb-5 text-center text-gray-700">
-              Profit & Loss Report
+              Party Balance Report
             </DialogTitle>
             <DialogDescription className="w-full h-[80vh] overflow-y-auto space-y-6">
               <div className="flex gap-5">
@@ -373,4 +307,4 @@ const ProfitReportDialogComponent = () => {
   );
 };
 
-export default ProfitReportDialogComponent;
+export default PartyBalanceReportDialogComponent;

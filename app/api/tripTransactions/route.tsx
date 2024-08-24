@@ -13,7 +13,10 @@ export async function GET(req: NextRequest) {
         userId: userId,
       },
       include: {
+        truck: true,
         transactions: true,
+        party: true,
+        vendor: true,
       },
     });
 
