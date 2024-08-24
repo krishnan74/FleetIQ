@@ -15,7 +15,6 @@ import { Metadata } from "next";
 import { LoginButton } from "./auth";
 import SideBar from "@/components/SideBar";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 const inter = Inter({ subsets: ["latin"] });
 const outfit = Outfit({ subsets: ["latin"] });
@@ -35,30 +34,11 @@ export default async function RootLayout({
   const userId = session?.user?.id;
 
   if (!userId) {
-    // Render a landing page for non-authenticated users
     return (
       <html lang="en">
-        <body
-          className={`${outfit.className} bg-gradient-to-r from-blue-400 to-purple-600 text-white`}
-        >
-          <div className="flex flex-col items-center justify-center h-screen text-center px-6 py-12">
-            <h1 className="text-5xl font-extrabold mb-6">Welcome to FleetIQ</h1>
-            <p className="text-lg mb-8 max-w-lg mx-auto">
-              FleetIQ is your ultimate fleet management solution. Optimize,
-              track, and manage your fleet with ease.
-            </p>
-            <div className="flex gap-5">
-              <LoginButton />
-              <Link href="/register">
-                <Button>Sign up</Button>
-              </Link>
-            </div>
-
-            <div className="mt-8 text-sm">
-              <p>© 2024 FleetIQ. All rights reserved.</p>
-            </div>
-          </div>
-        </body>
+        <Providers>
+          <body className={`${outfit.className}`}>{children}</body>
+        </Providers>
       </html>
     );
   }
