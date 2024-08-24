@@ -23,7 +23,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Trip } from "@/lib/interface";
+import { Trip, TripTransaction } from "@/lib/interface";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -71,22 +71,15 @@ const years = Array.from({ length: 10 }, (_, i) => presentYear - i).map(
   })
 );
 
-const ProfitReportDialogComponent = () => {
+const TransactionReportDialogComponent = () => {
   const [open, setOpen] = useState(false);
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [transactions, setTransactions] = useState<TripTransaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>(presentMonth);
   const [currentYear, setCurrentYear] = useState<string>(
     presentYear.toString()
   );
-  const [overallProfit, setOverallProfit] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [noOfTrips, setNoOfTrips] = useState(0);
-  const [advances, setAdvances] = useState(0);
-  const [charges, setCharges] = useState(0);
-  const [payments, setPayments] = useState(0);
 
-  const fileName = "Profit & Loss Report";
+  const fileName = "Transaction Report";
 
   const fetchData = async () => {
     console.log(
@@ -101,80 +94,20 @@ const ProfitReportDialogComponent = () => {
       console.log("API response:", response.data);
 
       if (response.data.message === "success") {
-        const currentMonthTrips = response.data.data.filter(
-          (trip: Trip) =>
-            new Date(trip.startedAt).getMonth().toString() === currentMonth &&
-            new Date(trip.startedAt).getFullYear().toString() === currentYear
-        );
+        const currentMonthTransactions = response.data.data
+          .filter(
+            (trip: Trip) =>
+              new Date(trip.startedAt).getMonth().toString() === currentMonth &&
+              new Date(trip.startedAt).getFullYear().toString() === currentYear
+          )
+          .flatMap((trip: Trip) => trip.transactions);
 
         console.log(
-          "Filtered trips for the selected month and year:",
-          currentMonthTrips
+          "Filtered transactions for the selected month and year:",
+          currentMonthTransactions
         );
 
-        const totalProfit = currentMonthTrips.reduce(
-          (acc: number, curr: Trip) => acc + (curr.profit || 0),
-          0
-        );
-        const totalExpenses = currentMonthTrips.reduce(
-          (acc: number, curr: Trip) => acc + (curr.totalExpenseAmount || 0),
-          0
-        );
-        const totalIncome = currentMonthTrips.reduce(
-          (acc: number, curr: Trip) => acc + (curr.partyFreightAmount || 0),
-          0
-        );
-
-        const advances = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "ADVANCE"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
-
-        const charges = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "CHARGE"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
-
-        const payments = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "PAYMENT"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
-
-        console.log("Calculated values:", {
-          totalProfit,
-          totalExpenses,
-          totalIncome,
-          advances,
-          charges,
-          payments,
-        });
-
-        setTrips(currentMonthTrips);
-        setOverallProfit(totalProfit);
-        setTotalExpenses(totalExpenses);
-        setTotalIncome(totalIncome);
-        setNoOfTrips(currentMonthTrips.length);
-        setAdvances(advances);
-        setCharges(charges);
-        setPayments(payments);
+        setTransactions(currentMonthTransactions);
       }
     } catch (error) {
       console.error("An error occurred while fetching data", error);
@@ -187,41 +120,40 @@ const ProfitReportDialogComponent = () => {
     }
   }, [currentMonth, currentYear]);
 
+  const createDataArray = (transactions: TripTransaction[]) => {
+    const rows = [
+      [
+        { value: "Transaction ID" },
+        { value: "Transaction Type" },
+        { value: "Amount" },
+        { value: "Date" },
+        { value: "Mode" },
+        { value: "Description" },
+      ],
+      ...transactions.map((transaction) => [
+        { value: transaction.id },
+        { value: transaction.transactionType },
+        { value: `₹ ${transaction.amount}` },
+        { value: new Date(transaction.transactionDate).toLocaleDateString() },
+        { value: transaction.transactionMode },
+        { value: transaction.transactionDescription },
+      ]),
+    ];
+    return rows;
+  };
+
   const data = [
     [
-      { value: "Profit & Loss Report" },
+      { value: "Transaction Report" },
       { value: months[parseInt(currentMonth)].label },
       { value: currentYear },
       { value: "" },
-    ],
-    [],
-    [
-      { value: "Overall Profit" },
-      { value: `₹ ${overallProfit}` },
       { value: "" },
       { value: "" },
     ],
-    [{ value: "Total Income" }, { value: `₹ ${totalIncome}` }],
-    [{ value: "Total Expenses" }, { value: `₹ ${totalExpenses}` }],
-    [{ value: "Advances" }, { value: `₹ ${advances}` }],
-    [{ value: "Charges" }, { value: `₹ ${charges}` }],
-    [{ value: "Payments" }, { value: `₹ ${payments}` }],
-    [{ value: "Number of Trips" }, { value: noOfTrips }],
     [],
-    [
-      { value: "Trips" },
-
-      { value: "Income" },
-      { value: "Expenses" },
-      { value: "Profit" },
-    ],
-    ...trips.map((trip, index) => [
-      { value: ` ${trip.from} to ${trip.to}` },
-      { value: `₹ ${trip.partyFreightAmount}` },
-
-      { value: `₹ ${trip.totalExpenseAmount}` },
-      { value: `₹ ${trip.profit}` },
-    ]),
+    ...createDataArray(transactions),
+    [],
   ];
 
   const exportToExcel = () => {
@@ -240,41 +172,13 @@ const ProfitReportDialogComponent = () => {
   };
 
   const chartData = {
-    labels: [
-      "Overall Profit",
-      "Total Income",
-      "Total Expenses",
-      "Advances",
-      "Charges",
-      "Payments",
-    ],
+    labels: transactions.map((transaction) => transaction.transactionType),
     datasets: [
       {
-        label: "Financial Overview",
-        data: [
-          overallProfit,
-          totalIncome,
-          totalExpenses,
-          advances,
-          charges,
-          payments,
-        ],
-        backgroundColor: [
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
-        borderColor: [
-          "rgba(75, 192, 192, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(255, 99, 132, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
+        label: "Amount",
+        data: transactions.map((transaction) => transaction.amount),
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
     ],
@@ -288,16 +192,16 @@ const ProfitReportDialogComponent = () => {
             onClick={() => setOpen(true)}
             className="flex gap-5 p-5 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
           >
-            <img src={"/profit-loss.png"} height={50} width={50} alt="" />
-            <p className="font-semibold text-lg">Profit & Loss Report</p>
+            <img src={"/transaction.png"} height={50} width={50} alt="" />
+            <p className="font-semibold text-lg">Transaction Report</p>
           </div>
         </DialogTrigger>
         <DialogContent className="w-full max-w-3xl bg-gray-50 p-8 rounded-lg shadow-xl ">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold pb-5 border-b mb-5 text-center text-gray-700">
-              Profit & Loss Report
+              Transaction Report
             </DialogTitle>
-            <DialogDescription className="w-full h-[80vh] overflow-y-auto space-y-6">
+            <DialogDescription className="w-full h-[80vh] overflow-y-auto space-y-6 ">
               <div className="flex gap-5">
                 <Select
                   value={currentMonth}
@@ -340,8 +244,8 @@ const ProfitReportDialogComponent = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col items-center gap-5 mt-5">
-                <div className="w-fit overflow-x-auto">
+              <div className="flex flex-col w-[90%]  items-center gap-5 mt-5">
+                <div className="w-full overflow-x-auto">
                   <Spreadsheet data={data} />
                 </div>
 
@@ -373,4 +277,4 @@ const ProfitReportDialogComponent = () => {
   );
 };
 
-export default ProfitReportDialogComponent;
+export default TransactionReportDialogComponent;

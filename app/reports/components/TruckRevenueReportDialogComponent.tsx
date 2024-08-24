@@ -34,6 +34,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { TruckOwnership } from "@prisma/client";
 
 // Register required components
 ChartJS.register(
@@ -71,7 +72,7 @@ const years = Array.from({ length: 10 }, (_, i) => presentYear - i).map(
   })
 );
 
-const ProfitReportDialogComponent = () => {
+const TruckRevenueReportDialogComponent = () => {
   const [open, setOpen] = useState(false);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [currentMonth, setCurrentMonth] = useState<string>(presentMonth);
@@ -81,12 +82,12 @@ const ProfitReportDialogComponent = () => {
   const [overallProfit, setOverallProfit] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
-  const [noOfTrips, setNoOfTrips] = useState(0);
-  const [advances, setAdvances] = useState(0);
-  const [charges, setCharges] = useState(0);
-  const [payments, setPayments] = useState(0);
+  const [myTruckData, setMyTruckData] = useState<{ [key: string]: any }>({});
+  const [marketTruckData, setMarketTruckData] = useState<{
+    [key: string]: any;
+  }>({});
 
-  const fileName = "Profit & Loss Report";
+  const fileName = "Truck Revenue Report";
 
   const fetchData = async () => {
     console.log(
@@ -125,56 +126,42 @@ const ProfitReportDialogComponent = () => {
           0
         );
 
-        const advances = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "ADVANCE"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
+        // Separate trips by truck ownership type
+        const myTruckDetails: {
+          [key: string]: { revenue: number; expenses: number; profit: number };
+        } = {};
+        const marketTruckDetails: {
+          [key: string]: { revenue: number; expenses: number; profit: number };
+        } = {};
 
-        const charges = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "CHARGE"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
+        currentMonthTrips.forEach((trip: Trip) => {
+          const truckNumber = trip.truck.registrationNumber;
+          const truckDetails =
+            trip.truck.truckOwnerShip === TruckOwnership.MY_TRUCK
+              ? myTruckDetails
+              : marketTruckDetails;
 
-        const payments = currentMonthTrips.reduce((acc: number, trip: Trip) => {
-          return (
-            acc +
-            (trip.transactions || []).reduce((accTx, tx) => {
-              return tx.tripTransactionType === "PAYMENT"
-                ? accTx + tx.amount
-                : accTx;
-            }, 0)
-          );
-        }, 0);
+          if (!truckDetails[truckNumber]) {
+            truckDetails[truckNumber] = { revenue: 0, expenses: 0, profit: 0 };
+          }
 
-        console.log("Calculated values:", {
-          totalProfit,
-          totalExpenses,
-          totalIncome,
-          advances,
-          charges,
-          payments,
+          truckDetails[truckNumber].revenue += trip.partyFreightAmount || 0;
+          truckDetails[truckNumber].expenses += trip.totalExpenseAmount || 0;
+          truckDetails[truckNumber].profit += trip.profit || 0;
         });
 
+        console.log("My truck details with cumulative data:", myTruckDetails);
+        console.log(
+          "Market truck details with cumulative data:",
+          marketTruckDetails
+        );
+
+        setMyTruckData(myTruckDetails);
+        setMarketTruckData(marketTruckDetails);
         setTrips(currentMonthTrips);
         setOverallProfit(totalProfit);
         setTotalExpenses(totalExpenses);
         setTotalIncome(totalIncome);
-        setNoOfTrips(currentMonthTrips.length);
-        setAdvances(advances);
-        setCharges(charges);
-        setPayments(payments);
       }
     } catch (error) {
       console.error("An error occurred while fetching data", error);
@@ -187,41 +174,73 @@ const ProfitReportDialogComponent = () => {
     }
   }, [currentMonth, currentYear]);
 
+  const createDataArray = (
+    truckData: { [key: string]: any },
+    title: string
+  ) => {
+    const rows = [
+      [{ value: title }],
+      [
+        { value: "Truck No" },
+        { value: "Revenue" },
+        { value: "Expenses" },
+        { value: "Profit" },
+      ],
+      ...Object.keys(truckData).map((truckNumber) => [
+        { value: truckNumber },
+        { value: `₹ ${truckData[truckNumber].revenue.toString()}` },
+        { value: `₹ ${truckData[truckNumber].expenses.toString()}` },
+        { value: `₹ ${truckData[truckNumber].profit.toString()}` },
+      ]),
+      [
+        {
+          value: "Total",
+        },
+        {
+          value: `₹ ${Object.values(truckData).reduce(
+            (acc, curr) => acc + curr.revenue,
+            0
+          )}`,
+        },
+        {
+          value: `₹ ${Object.values(truckData).reduce(
+            (acc, curr) => acc + curr.expenses,
+            0
+          )}`,
+        },
+        {
+          value: `₹ ${Object.values(truckData).reduce(
+            (acc, curr) => acc + curr.profit,
+            0
+          )}`,
+        },
+      ],
+    ];
+    return rows;
+  };
+
   const data = [
     [
-      { value: "Profit & Loss Report" },
+      { value: "Truck Revenue Report" },
       { value: months[parseInt(currentMonth)].label },
       { value: currentYear },
       { value: "" },
     ],
     [],
     [
-      { value: "Overall Profit" },
-      { value: `₹ ${overallProfit}` },
-      { value: "" },
-      { value: "" },
+      { value: "Total Income" },
+      { value: "Total Expenses" },
+      { value: "Total Profit" },
     ],
-    [{ value: "Total Income" }, { value: `₹ ${totalIncome}` }],
-    [{ value: "Total Expenses" }, { value: `₹ ${totalExpenses}` }],
-    [{ value: "Advances" }, { value: `₹ ${advances}` }],
-    [{ value: "Charges" }, { value: `₹ ${charges}` }],
-    [{ value: "Payments" }, { value: `₹ ${payments}` }],
-    [{ value: "Number of Trips" }, { value: noOfTrips }],
-    [],
     [
-      { value: "Trips" },
-
-      { value: "Income" },
-      { value: "Expenses" },
-      { value: "Profit" },
+      { value: `₹ ${totalIncome.toString()}` },
+      { value: `₹ ${totalExpenses.toString()}` },
+      { value: `₹ ${overallProfit.toString()}` },
     ],
-    ...trips.map((trip, index) => [
-      { value: ` ${trip.from} to ${trip.to}` },
-      { value: `₹ ${trip.partyFreightAmount}` },
-
-      { value: `₹ ${trip.totalExpenseAmount}` },
-      { value: `₹ ${trip.profit}` },
-    ]),
+    [],
+    ...createDataArray(myTruckData, "My Trucks"),
+    [],
+    ...createDataArray(marketTruckData, "Market Trucks"),
   ];
 
   const exportToExcel = () => {
@@ -240,25 +259,11 @@ const ProfitReportDialogComponent = () => {
   };
 
   const chartData = {
-    labels: [
-      "Overall Profit",
-      "Total Income",
-      "Total Expenses",
-      "Advances",
-      "Charges",
-      "Payments",
-    ],
+    labels: ["Total Profit", "Total Income", "Total Expenses"],
     datasets: [
       {
-        label: "Financial Overview",
-        data: [
-          overallProfit,
-          totalIncome,
-          totalExpenses,
-          advances,
-          charges,
-          payments,
-        ],
+        label: "Truck Revenue Report",
+        data: [overallProfit, totalIncome, totalExpenses],
         backgroundColor: [
           "rgba(75, 192, 192, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -288,14 +293,14 @@ const ProfitReportDialogComponent = () => {
             onClick={() => setOpen(true)}
             className="flex gap-5 p-5 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
           >
-            <img src={"/profit-loss.png"} height={50} width={50} alt="" />
-            <p className="font-semibold text-lg">Profit & Loss Report</p>
+            <img src={"/truck.png"} height={50} width={50} alt="" />
+            <p className="font-semibold text-lg">Truck Revenue Report</p>
           </div>
         </DialogTrigger>
         <DialogContent className="w-full max-w-3xl bg-gray-50 p-8 rounded-lg shadow-xl ">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold pb-5 border-b mb-5 text-center text-gray-700">
-              Profit & Loss Report
+              Truck Revenue Report
             </DialogTitle>
             <DialogDescription className="w-full h-[80vh] overflow-y-auto space-y-6">
               <div className="flex gap-5">
@@ -373,4 +378,4 @@ const ProfitReportDialogComponent = () => {
   );
 };
 
-export default ProfitReportDialogComponent;
+export default TruckRevenueReportDialogComponent;
