@@ -16,7 +16,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -34,8 +33,6 @@ import {
 
 import { locations } from "@/lib/utils";
 import { Trip } from "@/lib/createInterface";
-import { DataFormProps } from "@/lib/interface";
-import { TruckOwnership } from "@prisma/client";
 
 const AddTripDialogComponent = () => {
   const { toast } = useToast();
@@ -52,18 +49,14 @@ const AddTripDialogComponent = () => {
 
   const [showMore, setShowMore] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
     try {
       const [vendorResponse, driverResponse, partyResponse, truckResponse] =
         await Promise.all([
-          axios.get("/api/vendor/"),
-          axios.get("/api/driver/"),
-          axios.get("/api/party/"),
-          axios.get("/api/truck/"),
+          axios.get(`/api/vendor/`),
+          axios.get(`/api/driver/`),
+          axios.get(`/api/party/`),
+          axios.get(`/api/truck/`),
         ]);
 
       setDrivers(driverResponse.data.data);
@@ -154,6 +147,10 @@ const AddTripDialogComponent = () => {
       console.error("Error while creating trip:", error);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -275,10 +272,10 @@ const AddTripDialogComponent = () => {
                                 setSelectedTruckOwnership(truck.truckOwnerShip)
                               }
                             >
-                              <div className="border p-3 flex gap-5">
+                              <div className=" p-3 flex gap-5">
                                 {truck.registrationNumber}
                                 <div
-                                  className={`px-3 py-1 ${
+                                  className={`px-2 text-white  rounded-md ${
                                     truck.truckOwnerShip == "MY_TRUCK"
                                       ? "bg-blue-500"
                                       : "bg-orange-500"
@@ -298,48 +295,27 @@ const AddTripDialogComponent = () => {
                     <label htmlFor="from" className="text-gray-700 font-medium">
                       From *
                     </label>
-                    <Select
-                      required
+
+                    <input
+                      type="text"
                       value={formData.from}
-                      onValueChange={(value) => handleChange("from", value)}
-                    >
-                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
-                        <SelectValue placeholder="Select Origin" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {locations?.map((location) => (
-                            <SelectItem key={location} value={location}>
-                              {location}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                      onChange={(e) => handleChange("from", e.target.value)}
+                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                      required
+                    />
                   </div>
 
                   <div className="flex flex-col">
                     <label htmlFor="to" className="text-gray-700 font-medium">
                       To *
                     </label>
-                    <Select
-                      required
+                    <input
+                      type="text"
                       value={formData.to}
-                      onValueChange={(value) => handleChange("to", value)}
-                    >
-                      <SelectTrigger className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2">
-                        <SelectValue placeholder="Select Destination" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {locations?.map((location) => (
-                            <SelectItem key={location} value={location}>
-                              {location}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                      onChange={(e) => handleChange("to", e.target.value)}
+                      className="w-full mt-2 bg-gray-100 border border-gray-300 rounded-md px-3 py-2"
+                      required
+                    />
                   </div>
 
                   <div className="flex flex-col">

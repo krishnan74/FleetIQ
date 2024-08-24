@@ -6,6 +6,7 @@ import {
   TruckOwnership,
   TruckType,
   TruckStatus,
+  ReminderStatus,
 } from "@prisma/client";
 
 export interface User {
@@ -15,8 +16,15 @@ export interface User {
   phone: string;
 }
 
-export interface PartyDetails {
+export interface ReminderCreate {
+  type: string;
+  details: string;
+  date: string;
+
   userId: string;
+}
+
+export interface PartyDetails {
   name: string;
   phone: string;
   openingBalance: number;

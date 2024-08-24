@@ -1,11 +1,11 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 
 import { CiSearch } from "react-icons/ci";
 
-import { Button } from "@/components/ui/button";  
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -49,7 +49,7 @@ const Page = () => {
 
   const fetchParties = async () => {
     try {
-      const response = await axios.get("/api/party");
+      const response = await axios.get(`/api/party/`);
       if (response.data.message === "success") {
         setParties(response.data.data);
         const totalBalance = response.data.data.reduce(

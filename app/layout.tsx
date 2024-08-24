@@ -1,19 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Outfit } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import SideBar from "@/components/SideBar";
 import { RiBarChart2Fill } from "react-icons/ri";
-
 import { FaBell } from "react-icons/fa";
 import { BiTrip } from "react-icons/bi";
 import { FaTruck } from "react-icons/fa6";
 import { Providers } from "./providers";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FaFileInvoice } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { Toaster } from "@/components/ui/toaster";
 import NavBar from "@/components/NavBar";
+
+import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 const outfit = Outfit({ subsets: ["latin"] });
@@ -38,16 +36,15 @@ export default function RootLayout({
               { name: "Parties", icon: <BsFillPeopleFill /> },
               { name: "Vendors", icon: <BsFillPeopleFill /> },
               { name: "Trips", icon: <BiTrip /> },
-
               { name: "Drivers", icon: <BsFillPeopleFill /> },
               { name: "Trucks", icon: <FaTruck /> },
               {
                 name: "Remainders",
                 icon: <FaBell />,
               },
+              { name: "Reports", icon: <FaFileInvoice /> },
             ]}
           />
-
           <div className="bg-[#F6F6F6] p-5  w-[87vw] h-[100vh] right-0 absolute">
             <div className="flex flex-col p-8 bg-white  w-full rounded-lg shadow-lg">
               <NavBar />

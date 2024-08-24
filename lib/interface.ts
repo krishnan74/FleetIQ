@@ -15,6 +15,14 @@ export interface PartyDetails {
   transactions: TripTransaction[];
 }
 
+export interface Reminder {
+  id: string;
+  type: string;
+  details: string;
+  date: string;
+  status: string;
+}
+
 export interface Trip {
   id: string;
   status: TripStatus;

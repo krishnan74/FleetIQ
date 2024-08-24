@@ -44,7 +44,16 @@ const Page = () => {
         <div className="flex gap-5 items-center">
           <div className="p-5 border rounded-md">
             <p>
-              Total Balance{" "}
+              Driver Name:
+              <span className="text-blue-500 font-bold ml-5">
+                {driverDetails.name}
+              </span>
+            </p>
+          </div>
+
+          <div className="p-5 border rounded-md">
+            <p>
+              Total Balance:
               <span className="text-blue-500 font-bold ml-5">
                 ₹ {driverDetails.balance}
               </span>
@@ -63,12 +72,20 @@ const Page = () => {
           A list of recent driver transactions.
         </TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-100 text-gray-600 border-b border-gray-300">
-            <TableHead className="py-3 px-4 text-left">Date</TableHead>
-            <TableHead className="py-3 px-4 text-left">Reason</TableHead>
-            <TableHead className="py-3 px-4 text-left">Driver Gave</TableHead>
-            <TableHead className="py-3 px-4 text-left">Driver Got</TableHead>
-            <TableHead className="py-3 px-4 text-left">
+          <TableRow className="bg-blue-500 border-b border-blue-300 hover:bg-blue-500">
+            <TableHead className="py-3 px-4 text-left text-white">
+              Date
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white">
+              Reason
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white">
+              Driver Gave
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white">
+              Driver Got
+            </TableHead>
+            <TableHead className="py-3 px-4 text-left text-white">
               Driver Balance
             </TableHead>
           </TableRow>

@@ -14,42 +14,10 @@ import {
 import { useRouter } from "next/navigation";
 import { CiSearch } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
-
-interface Truck {
-  id: string;
-  registrationNumber: string;
-  truckType: string;
-  truckOwnerShip: string;
-  driverId: string;
-  vendorId: string;
-  status: string;
-}
-
-interface PartyDetails {
-  id: string;
-  name: string;
-  phone: string;
-  openingBalance: number;
-  openingBalanceDate: string;
-}
-
-interface Trip {
-  id: string;
-  status: string;
-  vendorId: string;
-  partyId: string;
-  driverId: string;
-  truckId: string;
-  createdAt: string;
-  from: string;
-  to: string;
-  updatedAt: string;
-  party: PartyDetails;
-  truck: Truck; // Ensure truck can be null or undefined
-}
+import { Trip } from "@/lib/interface";
 
 const Page = () => {
-  const [trips, setTrips] = useState<Trip[]>();
+  const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -79,7 +47,7 @@ const Page = () => {
 
   const fetchTrips = async () => {
     try {
-      const response = await axios.get("/api/trip");
+      const response = await axios.get(`/api/trip/`);
       if (response.data.message === "success") {
         setTrips(response.data.data);
       } else {
@@ -97,12 +65,12 @@ const Page = () => {
   };
 
   useEffect(() => {
-    fetchTrips();
-  }, []);
-
-  useEffect(() => {
     searchTrips(search);
   }, [search]);
+
+  useEffect(() => {
+    fetchTrips();
+  }, []);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
@@ -156,15 +124,15 @@ const Page = () => {
                 <TableCell className="py-3 px-4 font-medium">
                   {new Date(trip.createdAt).toDateString()}
                 </TableCell>
-                <TableCell className="py-3 px-4">{trip.party.name}</TableCell>
+                <TableCell className="py-3 px-4">{trip?.party?.name}</TableCell>
                 <TableCell className="py-3 px-4">
-                  {trip.truck.registrationNumber}
+                  {trip?.truck?.registrationNumber}
                 </TableCell>
                 <TableCell className="py-3 px-4 font-medium">
-                  {`${trip.from} To ${trip.to}`}
+                  {`${trip?.from} To ${trip?.to}`}
                 </TableCell>
                 <TableCell className="py-3 px-4 font-medium">
-                  {trip.status}
+                  {trip?.status}
                 </TableCell>
                 <TableCell className="py-3 px-4 text-right">
                   <Button

@@ -39,60 +39,82 @@ const months = [
   { value: "10", label: "November" },
   { value: "11", label: "December" },
 ];
-
 const ProfitReportDialogComponent = () => {
   const [open, setOpen] = useState(false);
-  const [trip, setTrip] = useState<Trip[] | undefined>(undefined);
+  const [trips, setTrips] = useState<Trip[]>([]);
   const [currentMonth, setCurrentMonth] = useState("");
-  const [overAllProfit, setOverAllProfit] = useState(0);
+  const [overallProfit, setOverallProfit] = useState(0);
+  const [totalExpenses, setTotalExpenses] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
   const [noOfTrips, setNoOfTrips] = useState(0);
-  const [advances, setAdvances] = useState<TripTransaction[]>([]);
-  const [charges, setCharges] = useState<TripTransaction[]>([]);
-  const [payments, setPayments] = useState<TripTransaction[]>([]);
+  const [advances, setAdvances] = useState(0);
+  const [charges, setCharges] = useState(0);
+  const [payments, setPayments] = useState(0);
 
-  const fileName = "Profit & Loss Bill";
+  const fileName = "Profit & Loss Report";
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("/api/trip");
-
+      const response = await axios.get(`/api/trip/`);
       if (response.data.message === "success") {
-        console.log(response.data.data);
-
         const currentMonthTrips = response.data.data.filter(
           (trip: Trip) =>
             new Date(trip.startedAt).getMonth().toString() === currentMonth
         );
 
-        const profit = currentMonthTrips.reduce((acc: number, curr: Trip) => {
-          acc += curr.profit;
-          return acc;
+        const totalProfit = currentMonthTrips.reduce(
+          (acc: number, curr: Trip) => acc + curr.profit,
+          0
+        );
+        const totalExpenses = currentMonthTrips.reduce(
+          (acc: number, curr: Trip) => acc + curr.totalExpenseAmount,
+          0
+        );
+        const totalIncome = currentMonthTrips.reduce(
+          (acc: number, curr: Trip) => acc + curr.partyFreightAmount,
+          0
+        );
+
+        const advances = currentMonthTrips.reduce((acc: number, trip: Trip) => {
+          return (
+            acc +
+            trip.transactions.reduce((accTx, tx) => {
+              return tx.tripTransactionType === "ADVANCE"
+                ? accTx + tx.amount
+                : accTx;
+            }, 0)
+          );
         }, 0);
 
-        setOverAllProfit(profit);
+        const charges = currentMonthTrips.reduce((acc: number, trip: Trip) => {
+          return (
+            acc +
+            trip.transactions.reduce((accTx, tx) => {
+              return tx.tripTransactionType === "CHARGE"
+                ? accTx + tx.amount
+                : accTx;
+            }, 0)
+          );
+        }, 0);
 
-        const noOfTrips = currentMonthTrips.length;
+        const payments = currentMonthTrips.reduce((acc: number, trip: Trip) => {
+          return (
+            acc +
+            trip.transactions.reduce((accTx, tx) => {
+              return tx.tripTransactionType === "PAYMENT"
+                ? accTx + tx.amount
+                : accTx;
+            }, 0)
+          );
+        }, 0);
 
-        setNoOfTrips(noOfTrips);
-        setTrip(response.data.data);
-        const advances = response.data.data.transactions.filter(
-          (transaction: TripTransaction) =>
-            transaction.tripTransactionType === "ADVANCE"
-        );
-
+        setTrips(currentMonthTrips);
+        setOverallProfit(totalProfit);
+        setTotalExpenses(totalExpenses);
+        setTotalIncome(totalIncome);
+        setNoOfTrips(currentMonthTrips.length);
         setAdvances(advances);
-        const charges = response.data.data.transactions.filter(
-          (transaction: TripTransaction) =>
-            transaction.tripTransactionType === "CHARGE"
-        );
-
         setCharges(charges);
-
-        const payments = response.data.data.transactions.filter(
-          (transaction: TripTransaction) =>
-            transaction.tripTransactionType === "PAYMENT"
-        );
-
         setPayments(payments);
       }
     } catch (error) {
@@ -100,37 +122,20 @@ const ProfitReportDialogComponent = () => {
     }
   };
 
-  useEffect(() => {
-    if (open) fetchData();
-  }, [open, currentMonth]);
-
   const data = [
-    [
-      {
-        value: `Overall Profit for ${
-          months.find((month) => month.value === currentMonth)?.label
-        }`,
-      },
-      {
-        value: "",
-      },
-      {
-        value: overAllProfit,
-      },
-    ],
-    [
-      {
-        value: `No of Trips started in ${
-          months.find((month) => month.value === currentMonth)?.label
-        }`,
-      },
-      {
-        value: "",
-      },
-      {
-        value: noOfTrips,
-      },
-    ],
+    [{ value: "Overall Profit" }, { value: overallProfit }],
+    [{ value: "Total Income" }, { value: totalIncome }],
+    [{ value: "Total Expenses" }, { value: totalExpenses }],
+    [{ value: "Advances" }, { value: advances }],
+    [{ value: "Charges" }, { value: charges }],
+    [{ value: "Payments" }, { value: payments }],
+    [{ value: "Number of Trips" }, { value: noOfTrips }],
+    ...trips.map((trip, index) => [
+      { value: `Trip ${index + 1} - ${trip.from} to ${trip.to}` },
+      { value: `Profit: ${trip.profit}` },
+      { value: `Expenses: ${trip.totalExpenseAmount}` },
+      { value: `Income: ${trip.partyFreightAmount}` },
+    ]),
   ];
 
   const exportToExcel = () => {

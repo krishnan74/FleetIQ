@@ -1,12 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaBell } from "react-icons/fa";
 
-import { PiLineVerticalThin } from "react-icons/pi";
 import axios from "axios";
-import { AvatarComponent } from "@/components/Avatar";
-import { Button } from "@/components/ui/button";
-import AppPartyDialogComponent from "../../components/AddPartyDialogComponent";
+
 import {
   Table,
   TableBody,
@@ -19,24 +15,14 @@ import {
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { TripStatus } from "@prisma/client";
-import TripBillDialogComponent from "@/app/trips/components/TripBillDialogComponent";
-import PODReceivedDialogComponent from "@/app/trips/components/PODReceivedDialogComponent";
-import PODSubmittedDialogComponent from "@/app/trips/components/PODSubmittedDialogComponent";
-import SettleTripDialogComponent from "@/app/trips/components/SettleTripDialogComponent";
-import CompleteTripDialogComponent from "@/app/trips/components/CompleteTripDialogComponent";
-
 import { PartyDetails, Trip, TripTransaction } from "@/lib/interface";
 
 const Page = () => {
   const [party, setParty] = useState<PartyDetails | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
-  const [partyTransactions, setPartyTransactions] = useState<TripTransaction[]>(
-    []
-  );
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [refresh, setRefresh] = useState(false);
 
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [tripPayments, setTripPayments] = useState(0);
@@ -49,12 +35,12 @@ const Page = () => {
 
   const fetchPartyAndTrips = async () => {
     try {
-      const partyResponse = await axios.get(`/api/party/${id}`);
+      const partyResponse = await axios.get(`/api/party/${id}/`);
       setParty(partyResponse.data.data);
 
       // Fetch all trips concurrently
       const tripRequests = partyResponse.data.data.trips.map((trip: Trip) =>
-        axios.get(`/api/trip/${trip.id}`)
+        axios.get(`/api/trip/${trip.id}/`)
       );
       const tripResponses = await Promise.all(tripRequests);
 
@@ -104,7 +90,7 @@ const Page = () => {
 
   useEffect(() => {
     fetchPartyAndTrips();
-  }, [refresh]);
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;

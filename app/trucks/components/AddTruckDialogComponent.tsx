@@ -44,8 +44,8 @@ const AddTruckDialogComponent = () => {
   const fetchData = async () => {
     try {
       const [vendorResponse, driverResponse] = await Promise.all([
-        axios.get("/api/vendor/"),
-        axios.get("/api/driver/"),
+        axios.get(`api/vendor/`),
+        axios.get(`api/driver/`),
       ]);
 
       setVendors(vendorResponse.data.data || []);

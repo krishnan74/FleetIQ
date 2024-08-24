@@ -1,10 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { TruckStatus } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/authOptions";
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const trucks = await prisma.truck.findMany({
+      where: {
+        userId,
+      },
       include: {
         trips: true,
         vendor: true,
@@ -29,6 +44,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
     const body = await req.json();
     const {
       registrationNumber,
@@ -36,7 +54,6 @@ export async function POST(req: NextRequest) {
       truckOwnerShip,
       driverId,
       vendorId,
-      userId,
     } = body;
 
     const truck = await prisma.truck.create({

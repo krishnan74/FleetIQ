@@ -12,18 +12,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { DatePicker } from "@/components/DatePicker";
 import axios from "axios";
-
-interface PartyDetails {
-  name: string;
-  phone: string;
-  openingBalance: number; // Should be a number
-  openingBalanceDate: string;
-}
 
 const AddVendorDialogComponent = () => {
   const { toast } = useToast();
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
 
@@ -53,6 +46,8 @@ const AddVendorDialogComponent = () => {
           description: `Name: ${response.data.data.name} | Email: ${response.data.data.email}`,
         });
       }
+
+      setOpen(false);
     } catch (e: any) {
       console.log("Error while creating vendor :: ", e);
     }

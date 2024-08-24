@@ -1,16 +1,17 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
-import {
-  ExpenseType,
-  TransactionMode,
-  TripStatus,
-  TripTransactionType,
-} from "@prisma/client";
-import axios from "axios";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/authOptions";
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
     const trip = await prisma.trip.findMany({
+      where: {
+        userId: userId,
+      },
       include: {
         transactions: true,
       },
