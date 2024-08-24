@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { PiLineVerticalThin } from "react-icons/pi";
 import { AvatarComponent } from "./Avatar";
@@ -12,6 +12,7 @@ import AddTruckDialogComponent from "@/app/trucks/components/AddTruckDialogCompo
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useToast } from "./ui/use-toast";
+import Link from "next/link";
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -20,12 +21,12 @@ const NavBar = () => {
   const { toast } = useToast();
   const { data: session } = useSession();
 
+  const [remainderCount, setRemainderCount] = useState(0);
+
   useEffect(() => {
     const checkReminders = async () => {
       try {
-        const response = await axios.get(
-          `/api/remainder/?userId=${session?.user.id}`
-        );
+        const response = await axios.get(`/api/remainder/`);
 
         const today = new Date().toISOString().split("T")[0];
 
@@ -35,6 +36,8 @@ const NavBar = () => {
         const dueReminders = response.data.data.filter(
           (reminder: { date: string }) => reminder.date.split("T")[0] === today
         );
+
+        setRemainderCount(dueReminders.length);
 
         console.log("Due reminders:", dueReminders);
 
@@ -87,11 +90,7 @@ const NavBar = () => {
   const renderDialogComponent = () => {
     switch (tab) {
       case "parties":
-        return (
-          <AddPartyDialogComponent
-            userId={session?.user.id ? session?.user.id : ""}
-          />
-        );
+        return <AddPartyDialogComponent />;
       case "trips":
         return <AddTripDialogComponent />;
       case "drivers":
@@ -118,7 +117,13 @@ const NavBar = () => {
 
       <div className="flex items-center space-x-4">
         {renderDialogComponent()}
-        <FaBell className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
+
+        <Link href={"/remainders"} className="relative cursor-pointer">
+          <FaBell className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            {remainderCount}
+          </span>
+        </Link>
         <PiLineVerticalThin className="text-2xl text-gray-700 hover:text-gray-900 transition-colors" />
         <AvatarComponent />
         <p className="font-bold text-lg text-gray-800">

@@ -25,7 +25,6 @@ export interface ReminderCreate {
 }
 
 export interface PartyDetails {
-  userId: string;
   name: string;
   phone: string;
   openingBalance: number;

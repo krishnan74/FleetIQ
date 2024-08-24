@@ -3,33 +3,9 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+import { Trip } from "@/lib/interface";
 
-interface Trip {
-  id: string;
-  from: string;
-  to: string;
-  vendor: VendorDetails;
-  vendorId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface VendorDetails {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: {
-    id: string;
-    doorNumber: string;
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    vendorId: string;
-  };
-  trips: Trip[];
-}
+import { VendorDetails } from "@/lib/interface";
 
 const Page = () => {
   const [vendorDetails, setVendorDetails] = useState<VendorDetails>();
@@ -61,14 +37,6 @@ const Page = () => {
           <p className="text-xl font-bold">{vendorDetails?.name}</p>
           <p className="font-semibold">{vendorDetails?.email}</p>
           <p className="font-semibold">{vendorDetails?.phone}</p>
-          <p className="text-gray-700">
-            <span className="font-medium">Address:</span>
-            <br />
-            {vendorDetails?.address.doorNumber} {vendorDetails?.address.street}
-            <br />
-            {vendorDetails?.address.city}, {vendorDetails?.address.state}{" "}
-            {vendorDetails?.address.zipCode}
-          </p>
         </div>
       </div>
 
