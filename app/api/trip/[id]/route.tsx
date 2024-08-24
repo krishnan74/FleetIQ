@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { TripTransaction } from "@/lib/createInterface";
-import { TripStatus } from "@prisma/client";
+import { DriverStatus, TripStatus, TruckStatus } from "@prisma/client";
 
 export async function GET(
   req: NextRequest,
@@ -67,6 +67,24 @@ export async function PUT(
           },
         });
 
+        const driver = await prisma.driver.update({
+          where: {
+            id: trip.driverId,
+          },
+          data: {
+            status: DriverStatus.AVAILABLE,
+          },
+        });
+
+        const truck = await prisma.truck.update({
+          where: {
+            id: trip.truckId,
+          },
+          data: {
+            status: TruckStatus.AVAILABLE,
+          },
+        });
+
       case TripStatus.POD_RECEIVED:
         trip = await prisma.trip.update({
           where: {
@@ -113,3 +131,4 @@ export async function PUT(
     );
   }
 }
+

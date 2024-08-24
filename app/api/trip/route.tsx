@@ -1,13 +1,15 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import {
+  DriverStatus,
   ExpenseType,
   TransactionMode,
   TripStatus,
   TripTransactionType,
+  TruckStatus,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../auth/[...nextauth]/authOptions";
 
 export async function GET(req: NextRequest) {
   try {
@@ -204,6 +206,24 @@ export async function POST(req: NextRequest) {
 
       data: {
         totalBalance: vendorBalance,
+      },
+    });
+
+    const driver = await prisma.driver.update({
+      where: {
+        id: driverId,
+      },
+      data: {
+        status: DriverStatus.ONTRIP,
+      },
+    });
+
+    const truck = await prisma.truck.update({
+      where: {
+        id: truckId,
+      },
+      data: {
+        status: TruckStatus.ONTRIP,
       },
     });
 
