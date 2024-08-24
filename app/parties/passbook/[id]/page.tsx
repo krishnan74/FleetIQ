@@ -111,14 +111,14 @@ const Page = () => {
           Passbook
         </Link>
 
-        <Link
+        {/* <Link
           href={`/parties/partyDetails/${id}`}
           className={`px-4 py-2 ${
             currentTab == "partyDetails" ? "border-b" : " "
           }`}
         >
           Party Details
-        </Link>
+        </Link> */}
       </div>
 
       <div className=" flex gap-5 mb-5">

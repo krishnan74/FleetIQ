@@ -93,14 +93,14 @@ const Page = () => {
           Passbook
         </Link>
 
-        <Link
+        {/* <Link
           href={`/parties/partyDetails/${id}`}
           className={`px-4 py-2 ${
             currentTab == "partyDetails" ? "border-b" : " "
           }`}
         >
           Party Details
-        </Link>
+        </Link> */}
       </div>
 
       <div className=" flex gap-5 mb-5">
@@ -142,6 +142,10 @@ const Page = () => {
             <TableHead className="py-3 px-4 text-white  text-left">
               {" "}
               Actions
+            </TableHead>
+            <TableHead className="py-3 px-4 text-white  text-left">
+              {" "}
+              View
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -218,7 +222,7 @@ const Page = () => {
                   onClick={redirectToDetails(trip.id)}
                   className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700"
                 >
-                  View Details
+                  View Trip
                 </Button>
               </TableCell>
             </TableRow>
