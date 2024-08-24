@@ -19,7 +19,6 @@ const SideBar: React.FC<SideBarProps> = ({ links }) => {
   const path = pathname.split("/")[1];
   const colorHex = "bg-blue-500";
 
-  console.log(pathname);
   return (
     <div className="flex flex-col  gap-3 left-0 h-[100vh] fixed bg-[#F6F6F6] w-[13vw] border text-black">
       <h1 className="text-2xl font-bold tracking-wider text-center mt-10 mb-10">
@@ -28,9 +27,14 @@ const SideBar: React.FC<SideBarProps> = ({ links }) => {
       <div className="flex flex-col  gap-3 pr-2">
         {links.map((link) => (
           <Link
-            href={`/${link.name.toLowerCase()}`}
+            href={
+              link.name.toLowerCase() == "dashboard"
+                ? "/"
+                : `/${link.name.toLowerCase()}`
+            }
             className={`flex gap-4 pl-10 w-[180px] py-4 items-center text-black rounded-br-lg rounded-tr-lg ${
-              path == link.name.toLowerCase()
+              path == link.name.toLowerCase() ||
+              (link.name.toLowerCase() == "dashboard" && path == "")
                 ? colorHex + "  text-white"
                 : "bg-transparent"
             }    `}

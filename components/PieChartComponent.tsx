@@ -34,7 +34,6 @@ const chartConfig = {
     label: "Income",
     color: "#3B82F6",
   },
-
   expense: {
     label: "Expense",
     color: "#EF4444",
@@ -58,11 +57,12 @@ export const PieChartComponent: React.FC<PieChartComponentProps> = ({
 
   const chartData = [
     { state: "income", money: totalIncome, fill: "var(--color-income)" },
-
     { state: "expense", money: totalExpense, fill: "var(--color-expense)" },
   ];
 
   const profit = totalIncome - totalExpense;
+  const profitPercentage =
+    totalIncome > 0 ? ((profit / totalIncome) * 100).toFixed(1) : 0;
 
   return (
     <Card className="flex flex-col h-full">
@@ -131,10 +131,19 @@ export const PieChartComponent: React.FC<PieChartComponentProps> = ({
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          {profit > 0 ? (
+            <>
+              Trending up by {profitPercentage}%{" "}
+              <TrendingUp className="h-4 w-4" />
+            </>
+          ) : (
+            "No profit trend this period"
+          )}
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing money for the last 6 months
+          {type === "monthlyTrips"
+            ? "Showing profit for the current month"
+            : "Showing total profit till now"}
         </div>
       </CardFooter>
     </Card>

@@ -1,16 +1,16 @@
 import React from "react";
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
 
-interface VendorCardProps {
+interface DriverCardProps {
   count: number;
   title: string;
-  vendorBalance: number;
+  driverBalance: number;
 }
 
-const VendorCard: React.FC<VendorCardProps> = ({
+const DriverCard: React.FC<DriverCardProps> = ({
   count,
   title,
-  vendorBalance,
+  driverBalance,
 }) => {
   return (
     <div className="relative flex-col justify-between flex p-5 h-full rounded-xl border bg-card text-card-foreground shadow">
@@ -22,12 +22,12 @@ const VendorCard: React.FC<VendorCardProps> = ({
 
       <div className="flex justify-between">
         <p className="text-[#666] text-sm">
-          Total Balance: {" "}
-          <span className="text-black font-bold">₹ {vendorBalance}</span>
+          Total Driver Balance:{" "}
+          <span className="text-black font-bold">₹ {driverBalance}</span>
         </p>
       </div>
     </div>
   );
 };
 
-export default VendorCard;
+export default DriverCard;

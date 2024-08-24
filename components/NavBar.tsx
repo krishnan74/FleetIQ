@@ -12,6 +12,7 @@ import AddTruckDialogComponent from "@/app/trucks/components/AddTruckDialogCompo
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useToast } from "./ui/use-toast";
+import { LogoutButton } from "@/app/auth";
 import Link from "next/link";
 
 const NavBar = () => {
@@ -129,6 +130,8 @@ const NavBar = () => {
         <p className="font-bold text-lg text-gray-800">
           {session?.user?.name || "User Name"}
         </p>
+
+        <LogoutButton />
       </div>
     </div>
   );
