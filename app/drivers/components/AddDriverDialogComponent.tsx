@@ -18,8 +18,13 @@ import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 
 import { DriverDetails } from "@/lib/createInterface";
+import { DataFormProps } from "@/lib/interface";
 
-const AddDriverDialogComponent = () => {
+const AddDriverDialogComponent: React.FC<DataFormProps> = ({
+  setRefresh,
+  refresh,
+  className,
+}) => {
   const { toast } = useToast();
   const [openAmount, setOpenAmount] = useState(false);
   const [driverPay, setDriverPay] = useState("driverPay");
@@ -58,7 +63,7 @@ const AddDriverDialogComponent = () => {
           description: `Name: ${driverResponse.data.data.name} | Phone: ${driverResponse.data.data.phone}`,
         });
         setOpen(false);
-        window.location.reload();
+        setRefresh ? setRefresh(!refresh) : window.location.reload();
       } else {
         toast({
           title: "Driver creation failed",
@@ -75,10 +80,12 @@ const AddDriverDialogComponent = () => {
   };
 
   return (
-    <div>
+    <div className={className}>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <Button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700">
+        <DialogTrigger className={className}>
+          <Button
+            className={`${className} bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700`}
+          >
             Add Driver
           </Button>
         </DialogTrigger>

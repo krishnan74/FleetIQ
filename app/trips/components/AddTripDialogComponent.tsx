@@ -33,6 +33,9 @@ import {
 
 import { locations } from "@/lib/utils";
 import { Trip } from "@/lib/createInterface";
+import AddDriverDialogComponent from "@/app/drivers/components/AddDriverDialogComponent";
+import AddTruckDialogComponent from "@/app/trucks/components/AddTruckDialogComponent";
+import AddPartyDialogComponent from "@/app/parties/components/AddPartyDialogComponent";
 
 const AddTripDialogComponent = () => {
   const { toast } = useToast();
@@ -48,6 +51,7 @@ const AddTripDialogComponent = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const [showMore, setShowMore] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -150,7 +154,7 @@ const AddTripDialogComponent = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refresh]);
 
   return (
     <div>
@@ -190,6 +194,12 @@ const AddTripDialogComponent = () => {
                               {party.name}
                             </SelectItem>
                           ))}
+
+                          <AddPartyDialogComponent
+                            className="w-full"
+                            refresh={refresh}
+                            setRefresh={setRefresh}
+                          />
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -242,6 +252,12 @@ const AddTripDialogComponent = () => {
                               {driver.name}
                             </SelectItem>
                           ))}
+
+                          <AddDriverDialogComponent
+                            className="w-full"
+                            refresh={refresh}
+                            setRefresh={setRefresh}
+                          />
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -285,7 +301,12 @@ const AddTripDialogComponent = () => {
                                 </div>
                               </div>
                             </SelectItem>
-                          ))}
+                          ))}{" "}
+                          <AddTruckDialogComponent
+                            className="w-full"
+                            refresh={refresh}
+                            setRefresh={setRefresh}
+                          />
                         </SelectGroup>
                       </SelectContent>
                     </Select>

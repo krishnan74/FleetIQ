@@ -51,7 +51,8 @@ const PODReceivedDialogComponent: React.FC<DataFormProps> = ({
           description: `POD received on ${formattedDate}`,
         });
         setOpen(false);
-        setRefresh(!refresh);
+                setRefresh ? setRefresh(!refresh) : window.location.reload();
+
       } else {
         toast({
           title: "POD receiving failed",

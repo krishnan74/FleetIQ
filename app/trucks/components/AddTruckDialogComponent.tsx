@@ -29,8 +29,13 @@ import { TruckType, TruckOwnership } from "@prisma/client";
 
 import { DriverDetails, VendorDetails } from "@/lib/interface";
 import { Truck } from "@/lib/createInterface";
+import { DataFormProps } from "@/lib/interface";
 
-const AddTruckDialogComponent = () => {
+const AddTruckDialogComponent: React.FC<DataFormProps> = ({
+  setRefresh,
+  refresh,
+  className,
+}) => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
@@ -87,7 +92,7 @@ const AddTruckDialogComponent = () => {
           description: `Registration Number: ${response.data.data.registrationNumber} | Type: ${response.data.data.truckType}`,
         });
         setOpen(false);
-        window.location.reload();
+        setRefresh ? setRefresh(!refresh) : window.location.reload();
       } else {
         toast({
           title: "Truck creation failed",
@@ -104,10 +109,12 @@ const AddTruckDialogComponent = () => {
   };
 
   return (
-    <div>
+    <div className={className}>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <Button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700">
+        <DialogTrigger className={className}>
+          <Button
+            className={`${className} bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700`}
+          >
             Add Truck
           </Button>
         </DialogTrigger>

@@ -52,7 +52,7 @@ const CompleteTripDialogComponent: React.FC<DataFormProps> = ({
           description: `With end KMS readings: ${endKMSReadings}`,
         });
         setOpen(false);
-        setRefresh(!refresh);
+        setRefresh ? setRefresh(!refresh) : window.location.reload();
       } else {
         toast({
           title: "Trip completion failed",

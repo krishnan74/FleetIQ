@@ -13,8 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
+import { DataFormProps } from "@/lib/interface";
 
-const AddVendorDialogComponent = () => {
+const AddVendorDialogComponent: React.FC<DataFormProps> = ({
+  setRefresh,
+  refresh,
+  className,
+}) => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -48,16 +53,20 @@ const AddVendorDialogComponent = () => {
       }
 
       setOpen(false);
+
+      setRefresh ? setRefresh(!refresh) : window.location.reload();
     } catch (e: any) {
       console.log("Error while creating vendor :: ", e);
     }
   };
 
   return (
-    <div>
+    <div className={className}>
       <Dialog>
-        <DialogTrigger>
-          <Button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700">
+        <DialogTrigger className={className}>
+          <Button
+            className={`${className} bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700`}
+          >
             Add Vendor
           </Button>
         </DialogTrigger>
