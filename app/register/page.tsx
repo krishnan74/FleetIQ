@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { User } from "@/lib/createInterface";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { LoginButton } from "../auth";
 
 const Register = () => {
@@ -23,8 +22,39 @@ const Register = () => {
     }));
   };
 
+  const validateForm = (): boolean => {
+    if (formData.userName.length < 3) {
+      setError("Username must be at least 3 characters long.");
+      return false;
+    }
+
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setError("Please enter a valid phone number.");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.");
+      return false;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return false;
+    }
+
+    setError(null); // Clear error if all validations pass
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const response = await axios.post("/api/register/", formData);
 
@@ -128,12 +158,13 @@ const Register = () => {
           >
             Register
           </Button>
-
+        </form>
+        <div className="flex flex-col items-center">
           <p className="mt-4 text-center text-gray-600">
             Already have an account?{" "}
           </p>
           <LoginButton />
-        </form>
+        </div>
       </div>
     </div>
   );

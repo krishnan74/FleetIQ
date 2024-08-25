@@ -127,7 +127,8 @@ const AddExpenseDialogComponent: React.FC<DataFormProps> = ({
             description: `Current trip profit is ${tripResponse.data.data.profit}`,
           });
           setOpen(false);
-          setRefresh(!true);
+                  setRefresh ? setRefresh(!refresh) : window.location.reload();
+
         } else {
           toast({
             title: "Trip updation failed",

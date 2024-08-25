@@ -114,9 +114,10 @@ export interface Expense {
 }
 
 export interface DataFormProps {
-  setRefresh: SetState<boolean>;
-  refresh: boolean;
+  setRefresh?: SetState<boolean>;
+  refresh?: boolean;
   tripId?: string;
   partyId?: string;
+  className?: string;
 }
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;

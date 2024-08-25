@@ -16,8 +16,13 @@ import { DatePicker } from "@/components/DatePicker";
 import axios from "axios";
 
 import { PartyDetails } from "@/lib/createInterface";
+import { DataFormProps } from "@/lib/interface";
 
-const AddPartyDialogComponent = () => {
+const AddPartyDialogComponent: React.FC<DataFormProps> = ({
+  className,
+  setRefresh,
+  refresh,
+}) => {
   const { toast } = useToast();
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -63,7 +68,7 @@ const AddPartyDialogComponent = () => {
         });
         setOpen(false);
 
-        window.location.reload();
+        setRefresh ? setRefresh(!refresh) : window.location.reload();
       } else {
         toast({
           title: "Party creation failed",
@@ -84,10 +89,12 @@ const AddPartyDialogComponent = () => {
   };
 
   return (
-    <div>
+    <div className={className}>
       <Dialog>
-        <DialogTrigger>
-          <Button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700">
+        <DialogTrigger className={className}>
+          <Button
+            className={`${className} bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700`}
+          >
             Add Party
           </Button>
         </DialogTrigger>
