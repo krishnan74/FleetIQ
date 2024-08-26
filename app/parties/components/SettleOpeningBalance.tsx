@@ -97,7 +97,7 @@ const SettleOpeningBalance: React.FC<DataFormProps> = ({
           description: `Current party balance is ${tripTransactionResponse.data.data.partyBalance}`,
         });
         setOpen(false);
-        setRefresh(!refresh);
+        setRefresh ? setRefresh(!refresh) : window.location.reload();
       } else {
         toast({
           title: "Trip updation failed",

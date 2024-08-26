@@ -19,6 +19,7 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ date, setDate }: DatePickerProps) {
+  const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   // Handle date selection, checking if the date is defined
   const handleSelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {
@@ -29,7 +30,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
   };
 
   return (
-    <Popover>
+    <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -46,7 +47,10 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={handleSelect} // Use the updated handler
+          onSelect={(e) => {
+            handleSelect(e);
+            setIsCalendarOpen(false);
+          }} // Use the updated handler
           initialFocus
         />
       </PopoverContent>
