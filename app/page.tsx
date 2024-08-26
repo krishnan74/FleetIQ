@@ -1,11 +1,24 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LoginButton } from "./auth";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      console.log("Session found, redirecting to dashboard");
+      router.push("/dashboard");
+    }
+  }, [session, router]);
+
   return (
-    <div className={` bg-gradient-to-r from-blue-400 to-purple-600 text-white`}>
+    <div className={`bg-gradient-to-r from-blue-400 to-purple-600 text-white`}>
       <div className="flex flex-col items-center justify-center h-screen text-center px-6 py-12">
         <h1 className="text-5xl font-extrabold mb-6">Welcome to FleetIQ</h1>
         <p className="text-lg mb-8 max-w-lg mx-auto">

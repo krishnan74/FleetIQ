@@ -23,7 +23,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Trip } from "@/lib/interface";
+import { Trip, VendorDetails } from "@/lib/interface";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -83,44 +83,63 @@ const VendorBalanceReportDialogComponent = () => {
   const fileName = "Vendor Balance Report";
 
   const fetchData = async () => {
-    console.log(
-      "Fetching data for month:",
-      currentMonth,
-      "and year:",
-      currentYear
-    );
+    // console.log(
+    //   "Fetching data for month:",
+    //   currentMonth,
+    //   "and year:",
+    //   currentYear
+    // );
 
     try {
       const response = await axios.get(`/api/tripTransactions/`);
-      console.log("API response:", response.data);
+      const vendorResponse = await axios.get(`/api/vendor/`);
+      //console.log("API response:", response.data);
 
-      if (response.data.message === "success") {
+      if (
+        response.data.message === "success" &&
+        vendorResponse.data.message === "success"
+      ) {
         const currentMonthTrips = response.data.data.filter(
           (trip: Trip) =>
             new Date(trip.startedAt).getMonth().toString() === currentMonth &&
             new Date(trip.startedAt).getFullYear().toString() === currentYear
         );
 
-        console.log(
-          "Filtered trips for the selected month and year:",
-          currentMonthTrips
-        );
+        const vendors = vendorResponse.data.data;
+
+        // console.log(
+        //   "Filtered trips for the selected month and year:",
+        //   currentMonthTrips
+        // );
 
         // Separate trips by Vendor ownership type
         const vendorDetails: {
           [key: string]: { trips: number; balance: number };
         } = {};
 
-        currentMonthTrips.forEach((trip: Trip) => {
-          const vendorName = trip.vendor.name;
+        if (currentMonthTrips.length === 0) {
+          vendors.forEach((vendor: VendorDetails) => {
+            const vendorName = vendor.name;
 
-          if (!vendorDetails[vendorName]) {
-            vendorDetails[vendorName] = { trips: 0, balance: 0 };
-          }
+            if (!vendorDetails[vendorName]) {
+              vendorDetails[vendorName] = { trips: 0, balance: 0 };
+            }
 
-          vendorDetails[vendorName].balance = trip.vendor.totalBalance;
-          vendorDetails[vendorName].trips += 1; // Increment trip count
-        });
+            vendorDetails[vendorName].balance = vendor.totalBalance;
+            vendorDetails[vendorName].trips = 0; // Set trip count to 0
+          });
+        } else {
+          currentMonthTrips.forEach((trip: Trip) => {
+            const vendorName = trip.vendor.name;
+
+            if (!vendorDetails[vendorName]) {
+              vendorDetails[vendorName] = { trips: 0, balance: 0 };
+            }
+
+            vendorDetails[vendorName].balance = trip.vendor.totalBalance;
+            vendorDetails[vendorName].trips += 1; // Increment trip count
+          });
+        }
 
         console.log("Vendor details with cumulative data:", vendorDetails);
 

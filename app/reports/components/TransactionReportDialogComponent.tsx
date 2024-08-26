@@ -82,16 +82,16 @@ const TransactionReportDialogComponent = () => {
   const fileName = "Transaction Report";
 
   const fetchData = async () => {
-    console.log(
-      "Fetching data for month:",
-      currentMonth,
-      "and year:",
-      currentYear
-    );
+    // console.log(
+    //   "Fetching data for month:",
+    //   currentMonth,
+    //   "and year:",
+    //   currentYear
+    // );
 
     try {
       const response = await axios.get(`/api/tripTransactions/`);
-      console.log("API response:", response.data);
+      //console.log("API response:", response.data);
 
       if (response.data.message === "success") {
         const currentMonthTransactions = response.data.data
@@ -102,10 +102,10 @@ const TransactionReportDialogComponent = () => {
           )
           .flatMap((trip: Trip) => trip.transactions);
 
-        console.log(
-          "Filtered transactions for the selected month and year:",
-          currentMonthTransactions
-        );
+        // console.log(
+        //   "Filtered transactions for the selected month and year:",
+        //   currentMonthTransactions
+        // );
 
         setTransactions(currentMonthTransactions);
       }
@@ -226,7 +226,7 @@ const TransactionReportDialogComponent = () => {
                 <Select
                   value={currentYear}
                   onValueChange={(value) => {
-                    console.log("Selected year:", value);
+                    //console.log("Selected year:", value);
                     setCurrentYear(value);
                   }}
                 >
@@ -260,7 +260,7 @@ const TransactionReportDialogComponent = () => {
                     type="button"
                     variant="secondary"
                     onClick={() => {
-                      console.log("Dialog closed");
+                      //console.log("Dialog closed");
                       setOpen(false);
                     }}
                   >

@@ -90,16 +90,16 @@ const TruckRevenueReportDialogComponent = () => {
   const fileName = "Truck Revenue Report";
 
   const fetchData = async () => {
-    console.log(
-      "Fetching data for month:",
-      currentMonth,
-      "and year:",
-      currentYear
-    );
+    // console.log(
+    //   "Fetching data for month:",
+    //   currentMonth,
+    //   "and year:",
+    //   currentYear
+    // );
 
     try {
       const response = await axios.get(`/api/tripTransactions/`);
-      console.log("API response:", response.data);
+      // console.log("API response:", response.data);
 
       if (response.data.message === "success") {
         const currentMonthTrips = response.data.data.filter(
@@ -150,11 +150,11 @@ const TruckRevenueReportDialogComponent = () => {
           truckDetails[truckNumber].profit += trip.profit || 0;
         });
 
-        console.log("My truck details with cumulative data:", myTruckDetails);
-        console.log(
-          "Market truck details with cumulative data:",
-          marketTruckDetails
-        );
+        // console.log("My truck details with cumulative data:", myTruckDetails);
+        // console.log(
+        //   "Market truck details with cumulative data:",
+        //   marketTruckDetails
+        // );
 
         setMyTruckData(myTruckDetails);
         setMarketTruckData(marketTruckDetails);

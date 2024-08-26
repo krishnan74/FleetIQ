@@ -23,7 +23,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Trip } from "@/lib/interface";
+import { PartyDetails, Trip } from "@/lib/interface";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -34,6 +34,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 // Register required components
 ChartJS.register(
@@ -45,7 +47,6 @@ ChartJS.register(
   Legend
 );
 
-// Get current year and month
 const presentYear = new Date().getFullYear();
 const presentMonth = new Date().getMonth().toString();
 
@@ -83,44 +84,72 @@ const PartyBalanceReportDialogComponent = () => {
   const fileName = "Party Balance Report";
 
   const fetchData = async () => {
-    console.log(
-      "Fetching data for month:",
-      currentMonth,
-      "and year:",
-      currentYear
-    );
+    // console.log(
+    //   "Fetching data for month:",
+    //   currentMonth,
+    //   "and year:",
+    //   currentYear
+    // );
 
     try {
       const response = await axios.get(`/api/tripTransactions/`);
-      console.log("API response:", response.data);
 
-      if (response.data.message === "success") {
+      const partyResponse = await axios.get(`/api/party/`);
+
+      if (
+        response.data.message === "success" &&
+        partyResponse.data.message === "success"
+      ) {
+        const currenMonthParties = partyResponse.data.data.filter(
+          (party: PartyDetails) =>
+            new Date(party.openingBalanceDate).getMonth().toString() ===
+              currentMonth &&
+            new Date(party.openingBalanceDate).getFullYear().toString() ===
+              currentYear
+        );
+
         const currentMonthTrips = response.data.data.filter(
           (trip: Trip) =>
             new Date(trip.startedAt).getMonth().toString() === currentMonth &&
             new Date(trip.startedAt).getFullYear().toString() === currentYear
         );
 
-        console.log(
-          "Filtered trips for the selected month and year:",
-          currentMonthTrips
-        );
+        // console.log(
+        //   "Filtered trips for the selected month and year:",
+        //   currentMonthTrips
+        // );
 
         // Separate trips by Party ownership type
         const partyDetails: {
           [key: string]: { trips: number; balance: number };
         } = {};
 
-        currentMonthTrips.forEach((trip: Trip) => {
-          const partyName = trip.party.name;
+        if (currentMonthTrips.length === 0) {
+          console.log("No trips found for the selected month and year");
 
-          if (!partyDetails[partyName]) {
-            partyDetails[partyName] = { trips: 0, balance: 0 };
-          }
+          currenMonthParties.forEach((party: PartyDetails) => {
+            const partyName = party.name;
 
-          partyDetails[partyName].balance = trip.party.totalBalance;
-          partyDetails[partyName].trips += 1; // Increment trip count
-        });
+            if (!partyDetails[partyName]) {
+              partyDetails[partyName] = { trips: 0, balance: 0 };
+            }
+
+            partyDetails[partyName].balance = party.openingBalance;
+            partyDetails[partyName].trips = 0;
+          });
+        } else {
+          currentMonthTrips.forEach((trip: Trip) => {
+            const partyName = trip.party.name;
+
+            if (!partyDetails[partyName]) {
+              partyDetails[partyName] = { trips: 0, balance: 0 };
+            }
+
+            partyDetails[partyName].balance = trip.party.totalBalance;
+
+            partyDetails[partyName].trips += 1; // Increment trip count
+          });
+        }
 
         console.log("Party details with cumulative data:", partyDetails);
 
@@ -187,7 +216,7 @@ const PartyBalanceReportDialogComponent = () => {
   ];
 
   const exportToExcel = () => {
-    console.log("Exporting data to Excel:", data);
+    //console.log("Exporting data to Excel:", data);
 
     const aoaData = data.map((row) => row.map((cell) => cell.value));
     const worksheet = XLSX.utils.aoa_to_sheet(aoaData);
@@ -231,7 +260,10 @@ const PartyBalanceReportDialogComponent = () => {
             <DialogTitle className="text-3xl font-bold pb-5 border-b mb-5 text-center text-gray-700">
               Party Balance Report
             </DialogTitle>
-            <DialogDescription className="w-full h-[80vh] overflow-y-auto space-y-6">
+            <DialogDescription
+              className="w-full h-[80vh] overflow-y-auto space-y-6"
+              id="report-content"
+            >
               <div className="flex gap-5">
                 <Select
                   value={currentMonth}
@@ -256,7 +288,7 @@ const PartyBalanceReportDialogComponent = () => {
                 <Select
                   value={currentYear}
                   onValueChange={(value) => {
-                    console.log("Selected year:", value);
+                    //console.log("Selected year:", value);
                     setCurrentYear(value);
                   }}
                 >
@@ -290,14 +322,14 @@ const PartyBalanceReportDialogComponent = () => {
                     type="button"
                     variant="secondary"
                     onClick={() => {
-                      console.log("Dialog closed");
+                      //console.log("Dialog closed");
                       setOpen(false);
                     }}
                   >
                     Close
                   </Button>
                 </DialogClose>
-                <Button onClick={exportToExcel}>Download</Button>
+                <Button onClick={exportToExcel}>Download Excel</Button>
               </DialogFooter>
             </DialogDescription>
           </DialogHeader>

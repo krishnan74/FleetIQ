@@ -89,16 +89,16 @@ const ProfitReportDialogComponent = () => {
   const fileName = "Profit & Loss Report";
 
   const fetchData = async () => {
-    console.log(
-      "Fetching data for month:",
-      currentMonth,
-      "and year:",
-      currentYear
-    );
+    // console.log(
+    //   "Fetching data for month:",
+    //   currentMonth,
+    //   "and year:",
+    //   currentYear
+    // );
 
     try {
       const response = await axios.get(`/api/tripTransactions/`);
-      console.log("API response:", response.data);
+      // console.log("API response:", response.data);
 
       if (response.data.message === "success") {
         const currentMonthTrips = response.data.data.filter(
@@ -107,10 +107,10 @@ const ProfitReportDialogComponent = () => {
             new Date(trip.startedAt).getFullYear().toString() === currentYear
         );
 
-        console.log(
-          "Filtered trips for the selected month and year:",
-          currentMonthTrips
-        );
+        // console.log(
+        //   "Filtered trips for the selected month and year:",
+        //   currentMonthTrips
+        // );
 
         const totalProfit = currentMonthTrips.reduce(
           (acc: number, curr: Trip) => acc + (curr.profit || 0),
@@ -158,14 +158,14 @@ const ProfitReportDialogComponent = () => {
           );
         }, 0);
 
-        console.log("Calculated values:", {
-          totalProfit,
-          totalExpenses,
-          totalIncome,
-          advances,
-          charges,
-          payments,
-        });
+        // console.log("Calculated values:", {
+        //   totalProfit,
+        //   totalExpenses,
+        //   totalIncome,
+        //   advances,
+        //   charges,
+        //   payments,
+        // });
 
         setTrips(currentMonthTrips);
         setOverallProfit(totalProfit);
@@ -322,7 +322,7 @@ const ProfitReportDialogComponent = () => {
                 <Select
                   value={currentYear}
                   onValueChange={(value) => {
-                    console.log("Selected year:", value);
+                    //console.log("Selected year:", value);
                     setCurrentYear(value);
                   }}
                 >
@@ -356,7 +356,7 @@ const ProfitReportDialogComponent = () => {
                     type="button"
                     variant="secondary"
                     onClick={() => {
-                      console.log("Dialog closed");
+                      //console.log("Dialog closed");
                       setOpen(false);
                     }}
                   >

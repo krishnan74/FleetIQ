@@ -83,16 +83,16 @@ const PartyRevenueReportDialogComponent = () => {
   const fileName = "Party Revenue Report";
 
   const fetchData = async () => {
-    console.log(
-      "Fetching data for month:",
-      currentMonth,
-      "and year:",
-      currentYear
-    );
+    // console.log(
+    //   "Fetching data for month:",
+    //   currentMonth,
+    //   "and year:",
+    //   currentYear
+    // );
 
     try {
       const response = await axios.get(`/api/tripTransactions/`);
-      console.log("API response:", response.data);
+      //console.log("API response:", response.data);
 
       if (response.data.message === "success") {
         const currentMonthTrips = response.data.data.filter(
@@ -101,10 +101,10 @@ const PartyRevenueReportDialogComponent = () => {
             new Date(trip.startedAt).getFullYear().toString() === currentYear
         );
 
-        console.log(
-          "Filtered trips for the selected month and year:",
-          currentMonthTrips
-        );
+        // console.log(
+        //   "Filtered trips for the selected month and year:",
+        //   currentMonthTrips
+        // );
 
         // Separate trips by Party ownership type
         const partyDetails: {
@@ -122,7 +122,7 @@ const PartyRevenueReportDialogComponent = () => {
           partyDetails[partyName].trips += 1; // Increment trip count
         });
 
-        console.log("Party details with cumulative data:", partyDetails);
+        //console.log("Party details with cumulative data:", partyDetails);
 
         setPartyData(partyDetails);
 
@@ -187,7 +187,7 @@ const PartyRevenueReportDialogComponent = () => {
   ];
 
   const exportToExcel = () => {
-    console.log("Exporting data to Excel:", data);
+    //console.log("Exporting data to Excel:", data);
 
     const aoaData = data.map((row) => row.map((cell) => cell.value));
     const worksheet = XLSX.utils.aoa_to_sheet(aoaData);
@@ -236,7 +236,7 @@ const PartyRevenueReportDialogComponent = () => {
                 <Select
                   value={currentMonth}
                   onValueChange={(value) => {
-                    console.log("Selected month:", value);
+                    //console.log("Selected month:", value);
                     setCurrentMonth(value);
                   }}
                 >
@@ -256,7 +256,7 @@ const PartyRevenueReportDialogComponent = () => {
                 <Select
                   value={currentYear}
                   onValueChange={(value) => {
-                    console.log("Selected year:", value);
+                    //console.log("Selected year:", value);
                     setCurrentYear(value);
                   }}
                 >
@@ -290,7 +290,7 @@ const PartyRevenueReportDialogComponent = () => {
                     type="button"
                     variant="secondary"
                     onClick={() => {
-                      console.log("Dialog closed");
+                      //console.log("Dialog closed");
                       setOpen(false);
                     }}
                   >
