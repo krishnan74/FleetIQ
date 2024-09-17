@@ -35,6 +35,26 @@ export interface PartyDetails {
   companyName?: string;
 }
 
+export interface PartyInvoiceDetails {
+  invoiceDate: string;
+  dueDate: string;
+  amount: number;
+  balance: number;
+  tripId: string;
+  invoiceNumber: string;
+  partyId: string;
+}
+
+export interface VendorInvoiceDetails {
+  invoiceDate: string;
+  dueDate: string;
+  amount: number;
+  balance: number;
+  tripId: string;
+  invoiceNumber: string;
+  vendorId: string;
+}
+
 export interface Trip {
   from: string;
   to: string;

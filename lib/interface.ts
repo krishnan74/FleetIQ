@@ -15,6 +15,28 @@ export interface PartyDetails {
   transactions: TripTransaction[];
 }
 
+export interface PartyInvoiceDetails {
+  id: string;
+  invoiceDate: string;
+  dueDate: string;
+  amount: number;
+  balance: number;
+  tripId: string;
+  invoiceNumber: string;
+  party: PartyDetails;
+}
+
+export interface VendorInvoiceDetails {
+  id: string;
+  invoiceDate: string;
+  dueDate: string;
+  amount: number;
+  balance: number;
+  tripId: string;
+  invoiceNumber: string;
+  vendor: VendorDetails;
+}
+
 export interface Reminder {
   id: string;
   type: string;
