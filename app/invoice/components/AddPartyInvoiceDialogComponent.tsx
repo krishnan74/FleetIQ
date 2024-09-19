@@ -127,9 +127,11 @@ const AddPartyInvoiceDialogComponent = () => {
                   <TableBody>
                     {parties?.map((party) => (
                       <InvoiceTripDialogComponent
+                        key={party.id}
                         trips={party.trips}
                         name={party.name}
                         totalBalance={party.totalBalance}
+                        partyId={party.id}
                       />
                     ))}
                   </TableBody>

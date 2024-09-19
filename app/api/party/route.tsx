@@ -21,7 +21,11 @@ export async function GET(req: NextRequest) {
         userId: userId,
       },
       include: {
-        trips: true,
+        trips: {
+          include: {
+            truck: true,
+          },
+        },
         transactions: true,
       },
     });

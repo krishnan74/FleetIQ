@@ -28,27 +28,41 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body: PartyInvoiceDetails = await req.json();
-    const {
-      invoiceDate,
-      dueDate,
-      amount,
-      balance,
-      tripId,
-      invoiceNumber,
-      partyId,
-    } = body;
+    const { invoiceDate, dueDate, amount, balance, tripIds, partyId } = body;
 
-    const partyInvoice = await prisma.partyInvoice.create({
-      data: {
-        invoiceDate,
-        dueDate,
-        amount,
-        balance,
-        tripId,
-        invoiceNumber,
-        partyId,
+    const latestInvoiceNumber = await prisma.partyInvoice.findFirst({
+      orderBy: {
+        invoiceNumber: "desc",
       },
     });
+
+    let partyInvoice;
+
+    if (!latestInvoiceNumber) {
+      partyInvoice = await prisma.partyInvoice.create({
+        data: {
+          invoiceDate,
+          dueDate,
+          amount,
+          balance,
+          tripIds,
+          invoiceNumber: 0,
+          partyId,
+        },
+      });
+    } else {
+      partyInvoice = await prisma.partyInvoice.create({
+        data: {
+          invoiceDate,
+          dueDate,
+          amount,
+          balance,
+          tripIds,
+          invoiceNumber: latestInvoiceNumber.invoiceNumber + 1,
+          partyId,
+        },
+      });
+    }
 
     return NextResponse.json(
       {

@@ -69,7 +69,7 @@ const Page = () => {
   };
 
   const redirectToDetails = (id: string) => () => {
-    router.push(`/invoices/trips/${id}`);
+    router.push(`/invoice/party/single-invoice/${id}`);
   };
 
   useEffect(() => {
@@ -155,15 +155,17 @@ const Page = () => {
               className="cursor-pointer hover:bg-gray-50 transition-colors"
             >
               <TableCell className="py-3 px-4 font-medium">
-                {invoice.invoiceDate}
+                {new Date(invoice.invoiceDate).toDateString()}
               </TableCell>
               <TableCell className="py-3 px-4">
-                {invoice.invoiceNumber}
+                INV - {invoice.invoiceNumber + 1}
               </TableCell>
               <TableCell className="py-3 px-4">
-                {new Date(invoice?.party?.name).toDateString().substring(3)}
+                {invoice?.party?.name}
               </TableCell>
-              <TableCell className="py-3 px-4 ">{invoice.dueDate}</TableCell>
+              <TableCell className="py-3 px-4 ">
+                {new Date(invoice.dueDate).toDateString()}
+              </TableCell>
               <TableCell className="py-3 px-4 text-right font-medium">
                 {invoice.amount.toFixed(2)}
               </TableCell>

@@ -184,8 +184,7 @@ model Trip {
 
 
   expenses     Expense[]
-  partyInvoice     PartyInvoice?
-  vendorInvoice    VendorInvoice?
+
   //transactions of the Trip
   transactions TripTransaction[]
 }
@@ -214,13 +213,14 @@ model PartyInvoice {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   invoiceDate   DateTime
   dueDate       DateTime
-  invoiceNumber String
+  invoiceNumber Float
   amount        Float
   balance       Float
   party         Party    @relation(fields: [partyId], references: [id])
   partyId       String   @db.ObjectId
-  trip          Trip     @relation(fields: [tripId], references: [id])
-  tripId        String   @unique @db.ObjectId
+  
+  tripIds       String[]
+
 }
 
 model VendorInvoice{
@@ -232,8 +232,8 @@ model VendorInvoice{
   balance       Float
   vendor        Vendor    @relation(fields: [vendorId], references: [id])
   vendorId      String   @db.ObjectId
-  trip          Trip     @relation(fields: [tripId], references: [id])
-  tripId        String   @unique @db.ObjectId
+  tripIds       String[]
+
 }
 
 enum TripStatus {

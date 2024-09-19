@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       dueDate,
       amount,
       balance,
-      tripId,
+      tripIds,
       invoiceNumber,
       vendorId,
     } = body;
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
         dueDate,
         amount,
         balance,
-        tripId,
+        tripIds,
         invoiceNumber,
         vendorId,
       },
