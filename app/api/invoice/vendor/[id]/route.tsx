@@ -10,7 +10,7 @@ export async function GET(
   }
 ) {
   try {
-    const vendorInvoices = await prisma.vendorInvoice.findUniqueOrThrow({
+    const vendorInvoice = await prisma.vendorInvoice.findUniqueOrThrow({
       where: {
         id: context.params.id,
       },
@@ -21,7 +21,7 @@ export async function GET(
     return NextResponse.json(
       {
         message: "success",
-        data: vendorInvoices,
+        data: vendorInvoice,
       },
       { status: 200 }
     );

@@ -38,17 +38,39 @@ export async function POST(req: NextRequest) {
       vendorId,
     } = body;
 
-    const vendorInvoice = await prisma.vendorInvoice.create({
-      data: {
-        invoiceDate,
-        dueDate,
-        amount,
-        balance,
-        tripIds,
-        invoiceNumber,
-        vendorId,
+    const latestInvoiceNumber = await prisma.vendorInvoice.findFirst({
+      orderBy: {
+        invoiceNumber: "desc",
       },
     });
+
+    let vendorInvoice;
+
+    if (!latestInvoiceNumber) {
+      vendorInvoice = await prisma.vendorInvoice.create({
+        data: {
+          invoiceDate,
+          dueDate,
+          amount,
+          balance,
+          tripIds,
+          invoiceNumber: 0,
+          vendorId,
+        },
+      });
+    } else {
+      vendorInvoice = await prisma.vendorInvoice.create({
+        data: {
+          invoiceDate,
+          dueDate,
+          amount,
+          balance,
+          tripIds,
+          invoiceNumber: latestInvoiceNumber.invoiceNumber + 1,
+          vendorId,
+        },
+      });
+    }
 
     return NextResponse.json(
       {

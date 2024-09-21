@@ -10,23 +10,25 @@ export async function GET(
   }
 ) {
   try {
-    const partyInvoices = await prisma.partyInvoice.findUniqueOrThrow({
+    const invoiceId = context.params.id;
+    const partyInvoice = await prisma.partyInvoice.findUnique({
       where: {
-        id: context.params.id,
+        id: invoiceId,
       },
       include: {
         party: true,
       },
     });
+
     return NextResponse.json(
       {
         message: "success",
-        data: partyInvoices,
+        data: partyInvoice,
       },
       { status: 200 }
     );
   } catch (e: any) {
-    console.log("Error while fetching invoices :: ", e);
+    console.log("Error while fetching invoice :: ", e);
     return NextResponse.json(
       { message: "Failed", error: e.message },
       { status: 500 }
