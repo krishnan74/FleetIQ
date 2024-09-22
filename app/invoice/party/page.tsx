@@ -158,7 +158,7 @@ const Page = () => {
                 {new Date(invoice.invoiceDate).toDateString()}
               </TableCell>
               <TableCell className="py-3 px-4">
-                INV - {invoice.invoiceNumber + 1}
+                INV - {invoice.invoiceNumber}
               </TableCell>
               <TableCell className="py-3 px-4">
                 {invoice?.party?.name}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -40,13 +40,16 @@ const InvoiceTripDialogComponent: React.FC<InvoiceTrip> = ({
   const [open, setOpen] = useState(false);
   const [invoiceDate, setInvoiceDate] = useState<Date | undefined>(undefined);
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
-  const [selectedTripIds, setSelectedTripIds] = useState<string[]>([]);
+  const [selectedTripId, setSelectedTripId] = useState<string | undefined>(
+    undefined
+  );
+  const [invoiceNumber, setInvoiceNumber] = useState<string>("");
   const [formData, setFormData] = useState<PartyInvoiceDetails>({
     invoiceDate: "",
     dueDate: "",
     amount: 0,
     balance: 0,
-    tripIds: [],
+    tripId: "",
     invoiceNumber: "",
     partyId: partyId,
   });
@@ -54,7 +57,7 @@ const InvoiceTripDialogComponent: React.FC<InvoiceTrip> = ({
   const [error, setError] = useState<string | null>(null);
 
   const handleCreateInvoice = async () => {
-    if (!invoiceDate || !dueDate || selectedTripIds.length === 0) {
+    if (!invoiceDate || !dueDate || !selectedTripId) {
       setError("Please fill all required fields and select at least one trip.");
       return;
     }
@@ -66,7 +69,7 @@ const InvoiceTripDialogComponent: React.FC<InvoiceTrip> = ({
         ...formData,
         invoiceDate: invoiceDate.toISOString(),
         dueDate: dueDate.toISOString(),
-        tripIds: selectedTripIds,
+        tripId: selectedTripId,
       };
 
       // Post the invoice data
@@ -74,7 +77,7 @@ const InvoiceTripDialogComponent: React.FC<InvoiceTrip> = ({
 
       if (response.status === 200) {
         setOpen(false);
-        setSelectedTripIds([]);
+        setSelectedTripId(undefined);
         setInvoiceDate(undefined);
         setDueDate(undefined);
       }
@@ -84,6 +87,25 @@ const InvoiceTripDialogComponent: React.FC<InvoiceTrip> = ({
       setLoading(false);
     }
   };
+
+  const fetchInvoiceNumber = async () => {
+    try {
+      const response = await axios.get(
+        "/api/invoice/party?forInvoiceNumber=true"
+      );
+      if (response.status === 200) {
+        const invoiceNumberString: string =
+          "XYZ" + (response.data.data.invoiceNumber + 1);
+        setInvoiceNumber(invoiceNumberString);
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching invoice number", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoiceNumber();
+  }, []);
 
   return (
     <div className="w-full">
@@ -122,7 +144,7 @@ const InvoiceTripDialogComponent: React.FC<InvoiceTrip> = ({
                   <p className="font-semibold text-lg text-gray-700">
                     Invoice Number
                   </p>
-                  <p className="text-lg text-gray-600">0</p>
+                  <p className="text-lg text-gray-600">{invoiceNumber}</p>
                 </div>
                 <div>
                   <label
@@ -175,13 +197,16 @@ const InvoiceTripDialogComponent: React.FC<InvoiceTrip> = ({
                         <input
                           type="checkbox"
                           className="mr-2 h-4 w-4 cursor-pointer"
+                          disabled={
+                            selectedTripId && selectedTripId !== trip.id
+                              ? true
+                              : false
+                          }
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedTripIds([...selectedTripIds, trip.id]);
+                              setSelectedTripId(trip.id);
                             } else {
-                              setSelectedTripIds(
-                                selectedTripIds.filter((id) => id !== trip.id)
-                              );
+                              setSelectedTripId(undefined);
                             }
                           }}
                         />

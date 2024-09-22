@@ -40,7 +40,7 @@ export interface PartyInvoiceDetails {
   dueDate: string;
   amount: number;
   balance: number;
-  tripIds: string[];
+  tripId: string;
   invoiceNumber: string;
   partyId: string;
 }
@@ -50,7 +50,7 @@ export interface VendorInvoiceDetails {
   dueDate: string;
   amount: number;
   balance: number;
-  tripIds: string[];
+  tripId: string;
   invoiceNumber: string;
   vendorId: string;
 }
