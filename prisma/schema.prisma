@@ -63,6 +63,11 @@ model Party {
   gstNumber          String?
   PANNumber          String?
   companyName        String?
+  doorNumber String?
+  street     String?
+  city       String?
+  state      String?
+  zipCode    String?
   transactions       PartyTransaction[]
 }
 

@@ -1,6 +1,21 @@
 import { TripStatus } from "@prisma/client";
 import { ExpenseType } from "@prisma/client";
 
+export interface UserDetails {
+  id: string;
+  userName: string;
+  email: string;
+  password: string;
+  phone: string;
+  gstNumber?: string;
+  companyName?: string;
+  doorNumber?: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+}
+
 export interface PartyDetails {
   id: string;
   name: string;
@@ -66,9 +81,9 @@ export interface Trip {
   partyFreightAmount: number;
   partyBalance: number;
   startKMSReadings: number;
-  lrNumber: String | null;
-  material: String | null;
-  notes: String | null;
+  lrNumber: string | null;
+  material: string | null;
+  notes: string | null;
   transactions: TripTransaction[];
   totalExpenseAmount: number;
 }

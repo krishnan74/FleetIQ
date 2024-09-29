@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { PartyInvoiceDetails } from "@/lib/interface";
+import { PartyInvoiceDetails, UserDetails } from "@/lib/interface";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,12 @@ const Page = () => {
   const [invoiceDetails, setInvoiceDetails] =
     useState<PartyInvoiceDetails | null>(null);
 
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
+
   const fetchInvoiceDetails = async () => {
     try {
       const response = await axios.get(`/api/invoice/party/${id}`);
 
-      
       if (response.data.message === "success") {
         setInvoiceDetails(response.data.data);
       }
@@ -26,14 +27,98 @@ const Page = () => {
     }
   };
 
+  const fetchUserDetails = async () => {
+    try {
+      const response = await axios.get("/api/user/1");
+
+      if (response.data.message === "success") {
+        setUserDetails(response.data.data);
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching user details", error);
+    }
+  };
+
   useEffect(() => {
     fetchInvoiceDetails();
+    fetchUserDetails();
   }, []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
       {invoiceDetails ? (
         <>
+          <div className="grid grid-cols-4">
+            <div className="col-span-2 flex flex-col">
+              <p>{userDetails?.companyName}</p>
+              <p>{userDetails?.doorNumber}</p>
+              <p>{userDetails?.street}</p>
+              <p>{userDetails?.city}</p>
+              <p>{userDetails?.state}</p>
+              <p>{userDetails?.zipCode}</p>
+            </div>
+
+            <div className="col-span-1 flex-col">
+              <div>
+                <p>Invoice Number</p>
+                <p>{invoiceDetails.invoiceNumber}</p>
+              </div>
+              <div>
+                <p>Delivery Note</p>
+                <p>{"Notes"}</p>
+              </div>
+              <div>
+                <p>Reference No & Date</p>
+                <p>{"Refer"}</p>
+              </div>
+            </div>
+
+            <div className="col-span-1 flex-col">
+              <div>
+                <p>Date</p>
+                <p>{invoiceDetails.invoiceDate}</p>
+              </div>
+              <div></div>
+              <div>
+                <p>Other References</p>
+                <p>{""}</p>
+              </div>
+            </div>
+
+            <div className="col-span-2 flex flex-col">
+              <p>{invoiceDetails?.party.companyName}</p>
+              <p>GSTIN/UIN{invoiceDetails?.party.gstNumber}</p>
+              <p>PAN{invoiceDetails?.party.PANNumber}</p>
+            </div>
+
+            <div className="col-span-1 flex-col">
+              <div>
+                <p>Invoice Number</p>
+                <p>{invoiceDetails.invoiceNumber}</p>
+              </div>
+              <div>
+                <p>Delivery Note</p>
+                <p>{"Notes"}</p>
+              </div>
+              <div>
+                <p>Reference No & Date</p>
+                <p>{"Refer"}</p>
+              </div>
+            </div>
+
+            <div className="col-span-1 flex-col">
+              <div>
+                <p>Date</p>
+                <p>{invoiceDetails.invoiceDate}</p>
+              </div>
+              <div></div>
+              <div>
+                <p>Other References</p>
+                <p>{""}</p>
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-col">
             <h2>Invoice Details</h2>
             <p>
@@ -83,7 +168,10 @@ const Page = () => {
             </p>
           </div>
 
-          <Link href={`/api/invoice-pdf/party/${invoiceDetails.id}`} target="_blank">
+          <Link
+            href={`/api/invoice-pdf/party/${invoiceDetails.id}`}
+            target="_blank"
+          >
             <Button>Download</Button>
           </Link>
         </>
