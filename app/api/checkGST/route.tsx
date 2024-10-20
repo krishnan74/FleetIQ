@@ -3,11 +3,10 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
+    const { gstNumber } = await req.json();
     const response = await axios.get(
-      "https://sheet.gstincheck.co.in/check/47c2be27364710723e6e259c3f30dfdc/29AAFCR4326L1Z0"
+      `https://sheet.gstincheck.co.in/check/47c2be27364710723e6e259c3f30dfdc/${gstNumber}`
     );
-
-    console.log(response);
 
     return NextResponse.json(
       {
