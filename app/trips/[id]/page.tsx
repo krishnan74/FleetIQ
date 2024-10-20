@@ -23,6 +23,7 @@ import TripBillDialogComponent from "../components/TripBillDialogComponent";
 import PODReceivedDialogComponent from "../components/PODReceivedDialogComponent";
 import PODSubmittedDialogComponent from "../components/PODSubmittedDialogComponent";
 import SettleTripDialogComponent from "../components/SettleTripDialogComponent";
+import OnlineBiltyDialogComponent from "../components/OnlineBiltyDialogComponent";
 
 const Page = () => {
   const [tripDetails, setTripDetails] = useState<Trip>();
@@ -410,7 +411,7 @@ const Page = () => {
           <div className="flex flex-col gap-5">
             <div className="flex justify-between p-3 items-center border rounded-md">
               <p>Online Bilty/LR</p>
-              <Button>Create LR</Button>
+              <OnlineBiltyDialogComponent />
             </div>
             <div className="flex justify-between p-3 border-b items-center border rounded-md">
               <p>POD Challan</p>

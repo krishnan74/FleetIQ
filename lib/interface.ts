@@ -150,11 +150,26 @@ export interface Expense {
   tripId: string;
 }
 
+export interface ConsigneeDetails {
+  gstNumber: string;
+  name: string;
+  addressLine1: string;
+  addressLine2: string;
+  state: string;
+  pincode: string;
+  contactNumber: string;
+}
+
 export interface DataFormProps {
   setRefresh?: SetState<boolean>;
   refresh?: boolean;
   tripId?: string;
   partyId?: string;
   className?: string;
+}
+
+export interface BillFormProps {
+  setPageNo?: SetState<number>;
+  pageNo?: number;
 }
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
