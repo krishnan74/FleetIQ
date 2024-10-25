@@ -110,3 +110,16 @@ export interface Truck {
   driverId: string;
   vendorId: string;
 }
+
+export interface OnlineBiltyDetails {
+  consigneeId: string;
+  consignorId: string;
+  tripId: string;
+  material: string;
+  weight: number;
+  unit: string;
+  noOfPackages: number;
+  paidBy: string;
+  gstPercentage: number;
+  gstPaidBy: string;
+}

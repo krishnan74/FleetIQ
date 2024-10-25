@@ -151,13 +151,14 @@ export interface Expense {
 }
 
 export interface ConsigneeDetails {
+  id: string;
   gstNumber: string;
   name: string;
   addressLine1: string;
   addressLine2: string;
   state: string;
-  pincode: string;
-  contactNumber: string;
+  zipCode: string;
+  phone: string;
 }
 
 export interface DataFormProps {

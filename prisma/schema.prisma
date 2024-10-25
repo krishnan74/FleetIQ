@@ -22,13 +22,46 @@ model User {
   city       String?
   state      String?
   zipCode    String?
-
+  consignors  Consignor[]
+  consignees Consignee[]
   parties    Party[]
   vendors    Vendor[]
   drivers    Driver[]
   trucks     Truck[]
   trips      Trip[]
   remainders Reminder[]
+}
+
+model Consignee{
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  user               User               @relation(fields: [userId], references: [id])
+  userId             String             @db.ObjectId
+  name       String
+  phone      String
+  gstNumber  String @unique
+  addressLine1 String?
+  addressLine2 String?
+  state      String?
+  zipCode    String?
+
+  onlineBilties OnlineBilty[]
+
+}
+
+model Consignor{
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  user               User               @relation(fields: [userId], references: [id])
+  userId             String             @db.ObjectId
+  name       String
+  phone      String
+  gstNumber  String @unique
+  addressLine1 String?
+  addressLine2 String?
+  state      String?
+  zipCode    String?
+
+  onlineBilties OnlineBilty[]
+
 }
 
 model Reminder {
@@ -197,11 +230,32 @@ model Trip {
   partyInvoice PartyInvoice?
   vendorInvoice VendorInvoice?
 
+  onlineBilty OnlineBilty?
 
   expenses     Expense[]
 
   //transactions of the Trip
   transactions TripTransaction[]
+}
+
+model OnlineBilty {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  consignee      Consignee @relation(fields: [consigneeId], references: [id])
+  consigneeId    String   @db.ObjectId
+  consignor      Consignor @relation(fields: [consignorId], references: [id])
+  consignorId    String   @db.ObjectId
+
+  trip           Trip    @relation(fields: [tripId], references: [id])
+  tripId         String   @db.ObjectId @unique
+  material       String
+  weight         Float
+  unit           String
+  noOfPackages   Int
+  paidBy         String
+  gstPercentage  Float
+  gstPaidBy      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Expense {
