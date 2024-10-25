@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConsigneeDetails } from "@/lib/createInterface";
 
-const AddConsigneeDialogComponent = () => {
+const AddConsignorDialogComponent = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<ConsigneeDetails>({
@@ -38,16 +38,16 @@ const AddConsigneeDialogComponent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/consignee", formData);
+      const response = await axios.post("/api/consignor", formData);
       if (response.data.message === "success") {
         toast({
-          title: "Consignee created successfully",
+          title: "Consignor created successfully",
           description: `Name: ${response.data.data.name} | GSTNumber: ${response.data.data.gstNumber}`,
         });
         setOpen(false);
       } else {
         toast({
-          title: "Consignee creation failed",
+          title: "Consignor creation failed",
           description: "Please try again.",
         });
       }
@@ -55,9 +55,9 @@ const AddConsigneeDialogComponent = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An error occurred while creating the consignee.",
+        description: "An error occurred while creating the consignor.",
       });
-      console.error("Error while creating consignee:", error);
+      console.error("Error while creating consignor:", error);
     }
   };
 
@@ -109,13 +109,13 @@ const AddConsigneeDialogComponent = () => {
             className="text-white bg-blue-500 hover:bg-blue-700"
             onClick={() => setOpen(true)}
           >
-            Add Consignee
+            Add Consignor
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="font-bold text-2xl pb-5 border-b mb-5">
-              Add Consignee
+              Add Consignor
             </DialogTitle>
             <DialogDescription>
               <p>We will be fetching details from GST Number</p>
@@ -269,4 +269,4 @@ const AddConsigneeDialogComponent = () => {
   );
 };
 
-export default AddConsigneeDialogComponent;
+export default AddConsignorDialogComponent;
