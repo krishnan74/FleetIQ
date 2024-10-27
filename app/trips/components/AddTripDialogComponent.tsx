@@ -171,7 +171,7 @@ const AddTripDialogComponent = () => {
             </DialogTitle>
             <DialogDescription>
               <form className="space-y-6" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-6 h-[80vh] overflow-y-scroll">
                   <div className="flex flex-col">
                     <label
                       htmlFor="party"
