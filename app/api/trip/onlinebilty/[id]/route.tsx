@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { DriverStatus, TripStatus, TruckStatus } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 
 export async function GET(
   req: NextRequest,
@@ -29,7 +31,6 @@ export async function GET(
       },
       { status: 200 }
     );
-    
   } catch (err: any) {
     console.error("Error while fetching onlineBilty:", err);
     return NextResponse.json(
@@ -48,7 +49,20 @@ export async function POST(
   }
 ) {
   try {
-    const body = await req.json();
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    const body: {
+      consigneeId: string;
+      consignorId: string;
+      material: string;
+      weight: number;
+      unit: string;
+      noOfPackages: number;
+      paidBy: string;
+      gstPercentage: number;
+      gstPaidBy: string;
+    } = await req.json();
     const {
       consigneeId,
       consignorId,
@@ -85,6 +99,11 @@ export async function POST(
         trip: {
           connect: {
             id: context.params.id,
+          },
+        },
+        user: {
+          connect: {
+            id: userId,
           },
         },
       },
