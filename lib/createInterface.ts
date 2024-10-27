@@ -123,3 +123,13 @@ export interface OnlineBiltyDetails {
   gstPercentage: number;
   gstPaidBy: string;
 }
+
+export interface ConsigneeDetails {
+  gstNumber: string;
+  name: string;
+  addressLine1: string;
+  addressLine2: string;
+  state: string;
+  zipCode: string;
+  phone: string;
+}

@@ -161,6 +161,35 @@ export interface ConsigneeDetails {
   phone: string;
 }
 
+export interface BiltyTrip {
+  from: string;
+  to: string;
+  truck: {
+    registrationNumber: string;
+  };
+  partyFreightAmount: number;
+  partyBalance: number;
+  lrNumber: string | null;
+  material: string | null;
+  completedAt: string;
+  startedAt: string;
+}
+
+export interface OnlineBiltyDetails {
+  id: string;
+  material: string;
+  weight: number;
+  unit: string;
+  noOfPackages: number;
+  paidBy: string;
+  gstPercentage: number;
+  gstPaidBy: string;
+  user: UserDetails;
+  trip: BiltyTrip;
+  consignee: ConsigneeDetails;
+  consignor: ConsigneeDetails;
+}
+
 export interface DataFormProps {
   setRefresh?: SetState<boolean>;
   refresh?: boolean;
