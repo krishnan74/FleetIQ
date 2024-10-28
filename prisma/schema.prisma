@@ -22,6 +22,11 @@ model User {
   city       String?
   state      String?
   zipCode    String?
+  bankName  String?
+  accountHolderName String?
+  accountNumber String?
+  bankBranch String?
+  ifscCode String?
   consignors  Consignor[]
   consignees Consignee[]
   parties    Party[]

@@ -29,3 +29,34 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    // Parse the request body to get user details
+    const userData = await req.json();
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: userData,
+    });
+
+    return NextResponse.json(
+      {
+        message: "User updated successfully",
+        data: updatedUser,
+      },
+      { status: 200 }
+    );
+  } catch (e: any) {
+    console.log("Error while updating userDetails :: ", e);
+    return NextResponse.json(
+      { message: "Failed to update user", error: e.message },
+      { status: 500 }
+    );
+  }
+}
