@@ -14,6 +14,7 @@ import { authOptions } from "./api/auth/[...nextauth]/authOptions";
 import { Metadata } from "next";
 import { LoginButton } from "./auth";
 import SideBar from "@/components/SideBar";
+import { Analytics } from "@vercel/analytics/react";
 import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -67,6 +68,7 @@ export default async function RootLayout({
             </div>
           </div>
           <Toaster />
+          <Analytics />
         </body>
       </Providers>
     </html>
