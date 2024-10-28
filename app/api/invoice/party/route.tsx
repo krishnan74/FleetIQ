@@ -48,11 +48,17 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body: PartyInvoiceDetails = await req.json();
-    const { invoiceDate, dueDate, amount, balance, tripId, partyId } = body;
+    const { invoiceDate, dueDate, tripId, partyId } = body;
 
     const latestInvoiceNumber = await prisma.partyInvoice.findFirst({
       orderBy: {
         invoiceNumber: "desc",
+      },
+    });
+
+    const trip = await prisma.trip.findUnique({
+      where: {
+        id: tripId,
       },
     });
 
@@ -63,8 +69,8 @@ export async function POST(req: NextRequest) {
         data: {
           invoiceDate,
           dueDate,
-          amount,
-          balance,
+          amount: trip?.partyFreightAmount || 0,
+          balance: trip?.partyBalance || 0,
           tripId,
           invoiceNumber: 1,
           partyId,
@@ -75,8 +81,8 @@ export async function POST(req: NextRequest) {
         data: {
           invoiceDate,
           dueDate,
-          amount,
-          balance,
+          amount: trip?.partyFreightAmount || 0,
+          balance: trip?.partyBalance || 0,
           tripId,
           invoiceNumber: latestInvoiceNumber.invoiceNumber + 1,
           partyId,

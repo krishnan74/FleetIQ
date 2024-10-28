@@ -227,7 +227,7 @@ const OnlineBilty = ({ bilty }: { bilty: OnlineBiltyDetails }) => {
                   marginBottom: 10,
                 }}
               >
-                Consignor's Name & Address
+                Consignor&apos;s Name & Address
               </Text>
               <Text style={styles.addressLine}>
                 {bilty.consignor.name} (GST: {bilty.consignor.gstNumber})
@@ -250,7 +250,7 @@ const OnlineBilty = ({ bilty }: { bilty: OnlineBiltyDetails }) => {
                   marginBottom: 10,
                 }}
               >
-                Consignee's Name & Address
+                Consignee&apos;s Name & Address
               </Text>
               <Text style={styles.addressLine}>
                 {bilty.consignee.name} (GST: {bilty.consignee.gstNumber})

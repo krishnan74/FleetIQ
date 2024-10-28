@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import { PartyInvoiceDetails } from "@/lib/interface";
 import AddPartyInvoiceDialogComponent from "../components/AddPartyInvoiceDialogComponent";
+import Link from "next/link";
 
 const Page = () => {
   const [invoices, setInvoices] = useState<PartyInvoiceDetails[]>();
@@ -173,12 +174,15 @@ const Page = () => {
                 {invoice.balance.toFixed(2)}
               </TableCell>
               <TableCell className="py-3 px-4 text-right">
-                <Button
-                  onClick={redirectToDetails(invoice.id)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700"
+                <Link
+                  href={`/api/invoice-pdf/party/${invoice.id}`}
+                  target="_blank"
                 >
-                  View Details
-                </Button>
+                  <Button className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700">
+                    {" "}
+                    Download
+                  </Button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

@@ -14,6 +14,11 @@ export interface UserDetails {
   city?: string;
   state?: string;
   zipCode?: string;
+  bankName?: string;
+  accountHolderName?: string;
+  accountNumber?: string;
+  bankBranch?: string;
+  ifscCode?: string;
 }
 
 export interface PartyDetails {
@@ -39,6 +44,23 @@ export interface PartyInvoiceDetails {
   tripId: string;
   invoiceNumber: string;
   party: PartyDetails;
+  user: UserDetails;
+  truck: TruckZ;
+  trip: TripZ;
+  consignee: ConsigneeDetails;
+  consignor: ConsigneeDetails;
+  onbilty: OnlineBiltyDetailsForInvoice;
+}
+
+export interface OnlineBiltyDetailsForInvoice {
+  id: string;
+  material: string;
+  weight: number;
+  unit: string;
+  noOfPackages: number;
+  paidBy: string;
+  gstPercentage: number;
+  gstPaidBy: string;
 }
 
 export interface VendorInvoiceDetails {
@@ -63,10 +85,10 @@ export interface Reminder {
 export interface Trip {
   id: string;
   status: TripStatus;
-  vendorId: string;
-  partyId: string;
-  driverId: string;
-  truckId: string;
+  vendorId?: string;
+  partyId?: string;
+  driverId?: string;
+  truckId?: string;
   createdAt: string;
   completedAt: string;
   startedAt: string;
@@ -75,17 +97,17 @@ export interface Trip {
   profit: number;
   updatedAt: string;
   truck: Truck;
-  party: PartyDetails;
-  driver: DriverDetails;
-  vendor: VendorDetails;
+  party?: PartyDetails;
+  driver?: DriverDetails;
+  vendor?: VendorDetails;
   partyFreightAmount: number;
   partyBalance: number;
   startKMSReadings: number;
   lrNumber: string | null;
   material: string | null;
   notes: string | null;
-  transactions: TripTransaction[];
-  totalExpenseAmount: number;
+  transactions?: TripTransaction[];
+  totalExpenseAmount?: number;
 }
 
 export interface TripTransaction {
@@ -141,6 +163,33 @@ export interface Truck {
   vendorId: string;
   trips: Trip[];
   status: string;
+}
+
+export interface TruckZ {
+  id: string;
+  registrationNumber: string;
+  truckType: string;
+  truckOwnerShip: string;
+}
+
+export interface TripZ {
+  id: string;
+  status: TripStatus;
+
+  createdAt: string;
+  completedAt: string;
+  startedAt: string;
+  from: string;
+  to: string;
+  profit: number;
+  updatedAt: string;
+
+  partyFreightAmount: number;
+  partyBalance: number;
+  startKMSReadings: number;
+  lrNumber: string | null;
+  material: string | null;
+  notes: string | null;
 }
 
 export interface Expense {
