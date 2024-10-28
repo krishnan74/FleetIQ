@@ -74,8 +74,6 @@ export async function POST(
       gstPercentage,
       gstPaidBy,
     } = body;
-    console.log("Request body:", body);
-    console.log("Context params:", context.params);
 
     const onlineBilty = await prisma.onlineBilty.create({
       data: {
@@ -108,7 +106,6 @@ export async function POST(
         },
       },
     });
-    console.log("Created onlineBilty:", onlineBilty);
 
     return NextResponse.json(
       {

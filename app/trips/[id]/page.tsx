@@ -38,6 +38,7 @@ const Page = () => {
   const fetchTripDetails = async () => {
     try {
       const response = await axios.get(`/api/trip/${id}`);
+
       if (response.data.message === "success") {
         setTripDetails(response.data.data);
 
@@ -95,14 +96,14 @@ const Page = () => {
           </Link>
 
           <Link
-            href={`/drivers/${tripDetails?.driver.id}`}
+            href={`/drivers/${tripDetails?.driver?.id}`}
             className="driver-card flex-1 flex justify-between border p-5 rounded-md items-center"
           >
             <div className="flex">
               <GiSteeringWheel className="text-5xl " />
               <div className="flex flex-col ml-4">
                 <p className="text-xl font-bold">Driver Name</p>
-                <p className=" text-[#666]">{tripDetails?.driver.name}</p>
+                <p className=" text-[#666]">{tripDetails?.driver?.name}</p>
               </div>
             </div>
             <FaChevronRight className="text-2xl ml-4" />
@@ -111,14 +112,14 @@ const Page = () => {
 
         <div className="flex flex-col p-5 rounded-md border">
           <div className="flex justify-between border-b pb-5">
-            <p className="text-2xl font-bold">{tripDetails?.party.name}</p>
+            <p className="text-2xl font-bold">{tripDetails?.party?.name}</p>
           </div>
 
           <div className="grid grid-cols-4 gap-3 mt-5">
             <div className="flex justify-between col-span-2 p-5 border rounded-md">
               <div>
                 <p className="text-sm font-light">Party Name</p>
-                <p className="text-lg font-bold">{tripDetails?.party.name}</p>
+                <p className="text-lg font-bold">{tripDetails?.party?.name}</p>
               </div>
 
               <div>
@@ -405,14 +406,23 @@ const Page = () => {
 
         <div className="w-full p-5 gap-y-2 border rounded-md">
           <div className="flex justify-between pb-5 border-b items-center">
-            <p>{tripDetails?.party.name}</p>
+            <p>{tripDetails?.party?.name}</p>
           </div>
 
           <div className="flex flex-col gap-5">
             <div className="flex justify-between p-3 items-center border rounded-md">
               <p>Online Bilty/LR</p>
-              <OnlineBiltyDialogComponent />
+              {tripDetails?.onlineBilty?.noOfPackages == undefined ? (
+                <OnlineBiltyDialogComponent />
+              ) : (
+                <Link href={`/api/trip/onlinebilty-pdf/${id}`}>
+                  <Button className="text-white bg-blue-500 hover:bg-blue-700">
+                    View LR
+                  </Button>
+                </Link>
+              )}
             </div>
+
             <div className="flex justify-between p-3 border-b items-center border rounded-md">
               <p>POD Challan</p>
               <Button>Add POD</Button>

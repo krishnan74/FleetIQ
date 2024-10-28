@@ -57,6 +57,7 @@ export default async function RootLayout({
               { name: "Trucks", icon: <FaTruck /> },
               { name: "Remainders", icon: <FaBell /> },
               { name: "Reports", icon: <FaFileInvoice /> },
+              { name: "Invoice", icon: <FaFileInvoice /> },
             ]}
           />
           <div className="bg-[#F6F6F6] p-5 w-[87vw] h-[100vh] right-0 absolute">

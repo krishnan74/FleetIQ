@@ -94,7 +94,7 @@ const TripBillDialogComponent = () => {
       { value: "Truck: " },
       { value: trip?.truck.registrationNumber || "" },
       { value: "Driver: " },
-      { value: trip?.driver.name || "" },
+      { value: trip?.driver?.name || "" },
     ],
     [
       { value: "" },

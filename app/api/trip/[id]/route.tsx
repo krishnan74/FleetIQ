@@ -23,6 +23,7 @@ export async function GET(
         truck: true,
         transactions: true,
         expenses: true,
+        onlineBilty: true,
       },
     });
 
@@ -131,4 +132,3 @@ export async function PUT(
     );
   }
 }
-

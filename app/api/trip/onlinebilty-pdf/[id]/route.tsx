@@ -11,7 +11,24 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { toWords } from "number-to-words";
 import { OnlineBiltyDetails } from "@/lib/interface";
+
+function titleCase(str: string) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(function (word) {
+      return word
+        .replace(/-/g, " ") // Replace hyphens with spaces
+        .split(" ") // Split the word if needed (e.g. "forty-eight" becomes ["forty", "eight"])
+        .map(function (part) {
+          return part.charAt(0).toUpperCase() + part.slice(1);
+        })
+        .join(" ");
+    })
+    .join(" ");
+}
 
 // Define the styles for the document
 const styles = StyleSheet.create({
@@ -385,9 +402,14 @@ const OnlineBilty = ({ bilty }: { bilty: OnlineBiltyDetails }) => {
           {/* Freight Row */}
           <View style={styles.tableRow}>
             <Text style={[styles.tableCell, { flex: 1 }]}>Freight</Text>
-            <Text style={styles.tableCell}>Rs. 2,000.00</Text>
-            <Text style={styles.tableCell}>5</Text>
-            <Text style={styles.tableCell}>Rs. 2,100.00</Text>
+            <Text style={styles.tableCell}>
+              {bilty.trip.partyFreightAmount}
+            </Text>
+            <Text style={styles.tableCell}>{bilty.gstPercentage}</Text>
+            <Text style={styles.tableCell}>
+              {bilty.trip.partyFreightAmount +
+                (bilty.trip.partyFreightAmount * bilty.gstPercentage) / 100}
+            </Text>
           </View>
 
           {/* Amount Row (Colspan Simulation) */}
@@ -395,25 +417,28 @@ const OnlineBilty = ({ bilty }: { bilty: OnlineBiltyDetails }) => {
             <Text style={[styles.tableCell, { flex: 1 }]}>Amount</Text>
             {/* Simulating Colspan by making this cell span across 3 columns */}
             <Text style={[styles.tableCell, { flex: 3, textAlign: "center" }]}>
-              Rs. 2,100.00
+              Rs.{" "}
+              {bilty.trip.partyFreightAmount +
+                (bilty.trip.partyFreightAmount * bilty.gstPercentage) / 100}
             </Text>
           </View>
 
           {/* Advance Row (Colspan Simulation) */}
-          <View style={styles.tableRow}>
+          {/* <View style={styles.tableRow}>
             <Text style={[styles.tableCell, { flex: 1 }]}>Advance</Text>
-            {/* Simulating Colspan by making this cell span across 3 columns */}
             <Text style={[styles.tableCell, { flex: 3, textAlign: "center" }]}>
               Rs. 0.00
             </Text>
-          </View>
+          </View> */}
 
           {/* To Pay Row (Colspan Simulation) */}
           <View style={styles.tableRow}>
             <Text style={[styles.tableCell, { flex: 1 }]}>To Pay</Text>
             {/* Simulating Colspan by making this cell span across 3 columns */}
             <Text style={[styles.tableCell, { flex: 3, textAlign: "center" }]}>
-              Rs. 2,100.00
+              Rs.
+              {bilty.trip.partyFreightAmount +
+                (bilty.trip.partyFreightAmount * bilty.gstPercentage) / 100}
             </Text>
           </View>
         </View>
@@ -428,7 +453,14 @@ const OnlineBilty = ({ bilty }: { bilty: OnlineBiltyDetails }) => {
           }}
         >
           <Text>Amount In Words</Text>
-          <Text>Two Thousand One Hundred Only</Text>
+          <Text>
+            {titleCase(
+              toWords(
+                bilty.trip.partyFreightAmount +
+                  (bilty.trip.partyFreightAmount * bilty.gstPercentage) / 100
+              )
+            )}
+          </Text>
         </View>
 
         {/* Disclaimer */}

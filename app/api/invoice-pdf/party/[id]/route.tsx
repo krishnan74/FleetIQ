@@ -405,7 +405,7 @@ const Invoice = ({ invoice }: { invoice: PartyInvoiceDetails }) => {
         >
           <View>
             <View>
-              <Text style={styles.boldText}>Company's Bank Details</Text>
+              <Text style={styles.boldText}>Company&apos;s Bank Details</Text>
               <View
                 style={{
                   display: "flex",
@@ -414,7 +414,7 @@ const Invoice = ({ invoice }: { invoice: PartyInvoiceDetails }) => {
               >
                 <View>
                   <Text>Bank Name:</Text>
-                  <Text>A/C Holder's Name: </Text>
+                  <Text>A/C Holder&apos;s Name: </Text>
                   <Text>A/C No: </Text>
                   <Text>Branch & IFS Code: </Text>
                 </View>

@@ -85,10 +85,10 @@ export interface Reminder {
 export interface Trip {
   id: string;
   status: TripStatus;
-  vendorId?: string;
-  partyId?: string;
-  driverId?: string;
-  truckId?: string;
+  vendorId: string;
+  partyId: string;
+  driverId: string;
+  truckId: string;
   createdAt: string;
   completedAt: string;
   startedAt: string;
@@ -97,17 +97,18 @@ export interface Trip {
   profit: number;
   updatedAt: string;
   truck: Truck;
-  party?: PartyDetails;
-  driver?: DriverDetails;
-  vendor?: VendorDetails;
+  party: PartyDetails;
+  driver: DriverDetails;
+  vendor: VendorDetails;
   partyFreightAmount: number;
   partyBalance: number;
   startKMSReadings: number;
   lrNumber: string | null;
   material: string | null;
   notes: string | null;
-  transactions?: TripTransaction[];
-  totalExpenseAmount?: number;
+  transactions: TripTransaction[];
+  totalExpenseAmount: number;
+  onlineBilty?: OnlineBiltyDetails;
 }
 
 export interface TripTransaction {
